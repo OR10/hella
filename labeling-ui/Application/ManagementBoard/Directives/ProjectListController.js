@@ -109,8 +109,19 @@ class ProjectListController {
      */
     this.projectCreators = new Map();
 
-    this.leadActionButton = [];
+    /**
+     * @type {Object}
+     */
+    this.leadActionButton = null;
+
+    /**
+     * @type {Array.<Object>}
+     */
     this.actionButtons = [];
+
+    /**
+     * @type {Array.<bool>}
+     */
     this.openActionsToggle = [];
 
     // Reload upon request
@@ -743,10 +754,18 @@ class ProjectListController {
     return '';
   }
 
+  /**
+   *
+   * @returns {bool}
+   */
   showUploadSpinner(project) {
     return this.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress');
   }
 
+  /**
+   *
+   * @param {number} projectId
+   */
   toggleActions(projectId) {
     Object.keys(this.openActionsToggle).forEach(actionToggle => {
       if (actionToggle === projectId) {
@@ -757,12 +776,22 @@ class ProjectListController {
     });
   }
 
+  /**
+   *
+   * @returns {bool}
+   */
   isActionDropDownVisible() {
     return this.actionButtons.filter(actionButton => actionButton.visible).length > 1;
   }
 
+  /**
+   *
+   * @param {Object} project
+   * @returns {Object}
+   */
   createLeadAction(project) {
     const visibleActions = this.actionButtons.filter(actionButton => actionButton.visible);
+    // maybe you will later change here the order of action buttons based on current project state
     switch (project.status) {
       case 'todo':
         break;
@@ -777,6 +806,11 @@ class ProjectListController {
     }
     return visibleActions[0];
   }
+
+  /**
+   *
+   * @param {Object} project
+   */
   createActionButtons(project) {
     this.actionButtons = [];
     const uploadButton = {
