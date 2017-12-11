@@ -40,8 +40,8 @@ table.table {
           }
 
           .icon:hover, .fa:hover {
-            font-weight: bold;
-            color: white !important;
+            // font-weight: bold;
+            color: $color-ut-midgrey-1 !important;
           }
 
         }
@@ -93,7 +93,6 @@ table.table {
 
     td.action-cell {
       padding: 0;
-
       button, button:hover, button:active {
         background: transparent;
         padding: .2rem .5rem !important;
