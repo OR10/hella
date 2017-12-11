@@ -238,47 +238,52 @@ class LabeledThingGateway {
       });
   }
 
+  /**
+   * @param labeledThing
+   * @private
+   */
   _recalculateLtifsIncompleteCheck(labeledThing) {
-    return this.getAssociatedLabeledThingsInFrames(labeledThing)
-      .then(labeledThingsInFrame => {
-        this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame)
-          .then(
-            ghostedLabeledThingInFrames => this._updateIncompleteStateLabeledThingsInFrames(
-              ghostedLabeledThingInFrames,
-              labeledThing
-            ));
-      });
-  }
-
-  _updateIncompleteStateLabeledThingsInFrames(labeledThingInFrames, labeledThing) {
-    labeledThingInFrames.forEach(labeledThingInFrame => {
-      console.error(labeledThingInFrame);
-      const task = labeledThingInFrame.task;
-      const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
-      const oldIncompleteValue = labeledThingInFrame.incomplete;
-      labeledThingInFrame.updateIncompleteStatus(this._labelStructureService)
-        .then(() => {
-          if (oldIncompleteValue !== labeledThingInFrame.incomplete) {
-            const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(
-              labeledThingInFrame);
-            this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
-            return dbContext.put(serializedLabeledThingInFrame)
-              .then(response => {
-                return dbContext.get(response.id);
-              })
-              .then(readDocument => {
-                return this._revisionManager.extractRevision(readDocument);
-              })
-              .then(() => {
-                this._isLabeledThingIncomplete(dbContext, labeledThing)
-                  .then(incomplete => {
-                    if (labeledThing.incomplete !== incomplete) {
-                      this._saveLabeledThingWithoutPackagingExecutor(labeledThing);
-                      console.error('Updated ltif');
+    return this._$q(resolve => {
+      this.getAssociatedLabeledThingsInFrames(labeledThing)
+        .then(labeledThingsInFrame => {
+          this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame)
+            .then(ghostedLabeledThingInFrames => {
+              if (ghostedLabeledThingInFrames.length === 0) {
+                resolve();
+              }
+              ghostedLabeledThingInFrames.forEach(labeledThingInFrame => {
+                const task = labeledThingInFrame.task;
+                const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+                const oldIncompleteValue = labeledThingInFrame.incomplete;
+                labeledThingInFrame.updateIncompleteStatus(this._labelStructureService)
+                  .then(() => {
+                    if (oldIncompleteValue !== labeledThingInFrame.incomplete) {
+                      const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(
+                        labeledThingInFrame);
+                      this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
+                      dbContext.put(serializedLabeledThingInFrame)
+                        .then(response => {
+                          return dbContext.get(response.id);
+                        })
+                        .then(readDocument => {
+                          return this._revisionManager.extractRevision(readDocument);
+                        })
+                        .then(() => {
+                          this._isLabeledThingIncomplete(dbContext, labeledThing)
+                            .then(incomplete => {
+                              if (labeledThing.incomplete !== incomplete) {
+                                this._saveLabeledThingWithoutPackagingExecutor(labeledThing).then(() => resolve());
+                              } else {
+                                resolve();
+                              }
+                            });
+                        });
+                    } else {
+                      resolve();
                     }
                   });
               });
-          }
+            });
         });
     });
   }
