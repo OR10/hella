@@ -12,6 +12,8 @@ class LabeledThingGateway {
    * @param {PouchDbViewService} pouchDbViewService
    * @param {LabeledThingGroupGateway} labeledThingGroupGateway
    * @param {CurrentUserService} currentUserService
+   * @param {LabelStructureService} labelStructureService
+   * @param {GhostingService} ghostingService
    */
   constructor(
     $q,
@@ -22,7 +24,9 @@ class LabeledThingGateway {
     revisionManager,
     pouchDbViewService,
     labeledThingGroupGateway,
-    currentUserService
+    currentUserService,
+    labelStructureService,
+    ghostingService
   ) {
     /**
      * @type {angular.$q}
@@ -83,6 +87,18 @@ class LabeledThingGateway {
      * @private
      */
     this._currentUserService = currentUserService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {GhostingService}
+     * @private
+     */
+    this._ghostingService = ghostingService;
   }
 
   /**
@@ -216,8 +232,60 @@ class LabeledThingGateway {
         ]);
       })
       .then(() => {
+        this._recalculateLtifsIncompleteCheck(labeledThing);
+      }).then(() => {
         return readLabeledThing;
       });
+  }
+
+  /**
+   * @param labeledThing
+   * @private
+   */
+  _recalculateLtifsIncompleteCheck(labeledThing) {
+    return this._$q(resolve => {
+      this.getAssociatedLabeledThingsInFrames(labeledThing)
+        .then(labeledThingsInFrame => {
+          this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame)
+            .then(ghostedLabeledThingInFrames => {
+              if (ghostedLabeledThingInFrames.length === 0) {
+                resolve();
+              }
+              ghostedLabeledThingInFrames.forEach(labeledThingInFrame => {
+                const task = labeledThingInFrame.task;
+                const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
+                const oldIncompleteValue = labeledThingInFrame.incomplete;
+                labeledThingInFrame.updateIncompleteStatus(this._labelStructureService)
+                  .then(() => {
+                    if (oldIncompleteValue !== labeledThingInFrame.incomplete) {
+                      const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(
+                        labeledThingInFrame);
+                      this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
+                      dbContext.put(serializedLabeledThingInFrame)
+                        .then(response => {
+                          return dbContext.get(response.id);
+                        })
+                        .then(readDocument => {
+                          return this._revisionManager.extractRevision(readDocument);
+                        })
+                        .then(() => {
+                          this._isLabeledThingIncomplete(dbContext, labeledThing)
+                            .then(incomplete => {
+                              if (labeledThing.incomplete !== incomplete) {
+                                this._saveLabeledThingWithoutPackagingExecutor(labeledThing).then(() => resolve());
+                              } else {
+                                resolve();
+                              }
+                            });
+                        });
+                    } else {
+                      resolve();
+                    }
+                  });
+              });
+            });
+        });
+    });
   }
 
   /**
@@ -522,6 +590,8 @@ LabeledThingGateway.$inject = [
   'pouchDbViewService',
   'labeledThingGroupGateway',
   'currentUserService',
+  'labelStructureService',
+  'ghostingService',
 ];
 
 export default LabeledThingGateway;
