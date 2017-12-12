@@ -1249,10 +1249,15 @@ class ViewerController {
         this._extractAndStorePaperThingShapesAndGhosts(labeledThingsInFrame, ghostedLabeledThingsInFrame);
         this._extractAndStorePaperGroupShapes(labeledThingGroupsInFrame);
 
-        this.framePosition.lock.release();
+        if (this.framePosition.lock.isLocked) {
+          this.framePosition.lock.release();
+        }
       }
     ).catch(error => {
       console.error(error); // eslint-disable-line no-console
+      if (this.framePosition.lock.isLocked) {
+        this.framePosition.lock.release();
+      }
     });
   }
 
