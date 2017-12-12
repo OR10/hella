@@ -94,10 +94,10 @@
 
   </table>
   <ul class="x-button-drop-menu" id="action-container" ng-style="{'display': vm.openActionsToggle[vm.selectedProjectId] === true ? 'block' : 'none', 'left': vm.actionsButtonDropDownLeftStyle, 'top': vm.actionsButtonDropDownTopStyle}">
-    <li ng-repeat="actionButton in vm.actionButtons">
+    <li ng-repeat="actionButton in vm.actionButtons" ng-click="actionButton.action()">
       <button tooltip="{{actionButton.text}}"
               ng-if="actionButton.visible"
-              ng-click="actionButton.action()"
+
       >
         <i class="fa" ng-class="actionButton.icon"></i> {{actionButton.shortText}}
       </button>
