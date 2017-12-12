@@ -109,6 +109,31 @@ class ProjectListController {
      */
     this.projectCreators = new Map();
 
+    /**
+     * @type {Array.<Object>}
+     */
+    this.actionButtons = [];
+
+    /**
+     * @type {Array.<bool>}
+     */
+    this.openActionsToggle = [];
+
+    /**
+     * @type {string}
+     */
+    this.selectedProjectId = null;
+
+    /**
+     * @type {string}
+     */
+    this.actionsButtonDropDownLeftStyle = null;
+
+    /**
+     * @type {string}
+     */
+    this.actionsButtonDropDownTopStyle = null;
+
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
@@ -116,10 +141,20 @@ class ProjectListController {
 
     // Listen to window resize event to redraw table progress
     angular.element(window).on('resize', () => {
+      if (this.selectedProjectId !== null) {
+        this.toggleActions(this.selectedProjectId);
+      }
       this.projects.forEach((item, index) => {
         this.calculateTableRowHeight(index);
         $scope.$apply();
       });
+    });
+
+    angular.element(document.querySelector('#project-list-table')).bind('mousewheel', () => {
+      if (this.selectedProjectId !== null) {
+        this.toggleActions(this.selectedProjectId);
+        $scope.$apply();
+      }
     });
   }
 
@@ -160,9 +195,10 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  openProject(projectId) {
+  openProject(project) {
+    const projectId = project.id;
     if (this.userPermissions.canViewTaskList !== true) {
       return;
     }
@@ -171,17 +207,19 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  exportProject(projectId) {
+  exportProject(project) {
+    const projectId = project.id;
     this._$state.go('labeling.reporting.export', {projectId});
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
+   * @param {object} project
    */
-  setProjectStatusToDeleted(projectId, projectName) {
+  setProjectStatusToDeleted(project) {
+    const projectId = project.id;
+    const projectName = project.name;
     this._modalService.show(
       new this._InputDialog(
         {
@@ -200,10 +238,11 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
+   * @param {object} project
    */
-  deleteProject(projectId, projectName) {
+  deleteProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
     this._modalService.info(
       {
         title: 'Delete this Project.',
@@ -220,9 +259,10 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
+   * @param {object} project
    */
-  repairProject(projectId) {
+  repairProject(project) {
+    const projectId = project.id;
     this.loadingInProgress = true;
     this._projectGateway.repairProject(projectId)
       .then(() => this._triggerReloadAll());
@@ -239,11 +279,12 @@ class ProjectListController {
   }
 
   /**
-   * @param {string} projectId
-   * @param {string} projectName
-   * @param {boolean} projectFinished
+   * @param {object} project
    */
-  closeProject(projectId, projectName, projectFinished) {
+  closeProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
+    const projectFinished = project.taskCount === project.taskFinishedCount;
     if (!projectFinished && !this.userPermissions.canMoveInProgressProjectToDone) {
       this._modalService.info(
         {
@@ -277,13 +318,12 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  reopenProject(projectId) { // eslint-disable-line no-unused-vars
-    // @TODO: Implement
-  }
-
-  acceptProject(projectId, projectName, taskInPreProcessingCount) {
+  acceptProject(project) {
+    const projectId = project.id;
+    const projectName = project.name;
+    const taskInPreProcessingCount = project.taskInPreProcessingCount;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
@@ -351,7 +391,13 @@ class ProjectListController {
     });
   }
 
-  changeLabelGroupAssignment(projectId, currentLabelingGroup, projectName) {
+  /**
+   * @param {object} project
+   */
+  changeLabelGroupAssignment(project) {
+    const projectId = project.id;
+    const currentLabelingGroup = project.labelingGroupId;
+    const projectName = project.name;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getMyLabelingGroups().then(reponse => {
@@ -482,10 +528,11 @@ class ProjectListController {
   }
 
   /**
-   * @param {String} projectId
-   * @param {int} taskInPreProcessingCount
+   * @param {object} project
    */
-  assignProject(projectId, taskInPreProcessingCount) {
+  assignProject(project) {
+    const projectId = project.id;
+    const taskInPreProcessingCount = project.taskInPreProcessingCount;
     this.showLoadingMask = true;
 
     this._labelingGroupGateway.getLabelManagers().then(response => {
@@ -566,13 +613,18 @@ class ProjectListController {
   }
 
   /**
-   * @param {number} projectId
+   * @param {object} project
    */
-  openReport(projectId) { // eslint-disable-line no-unused-vars
+  openReport(project) {
+    const projectId = project.id;
     this._$state.go('labeling.reporting.list', {projectId});
   }
 
-  showFlaggedTasks(projectId) {
+  /**
+   * @param {object} project
+   */
+  showFlaggedTasks(project) {
+    const projectId = project.id;
     this._$state.go('labeling.projects.flagged', {projectId});
   }
 
@@ -720,6 +772,206 @@ class ProjectListController {
       return 'disabled';
     }
     return '';
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {bool}
+   */
+  showUploadSpinner(project) {
+    return this.userPermissions.canDeleteProject && project.status === 'deleted' && (project.deletedState === 'pending' || project.deletedState === 'in_progress');
+  }
+
+  /**
+   *
+   * @param {number} projectId
+   */
+  toggleActions(projectId) {
+    Object.keys(this.openActionsToggle).forEach(actionToggle => {
+      if (actionToggle === projectId) {
+        this.openActionsToggle[actionToggle] = !this.openActionsToggle[actionToggle];
+      } else {
+        this.openActionsToggle[actionToggle] = false;
+      }
+    });
+    this.selectedProjectId = this.openActionsToggle[projectId] === true ? projectId : null;
+    this.calculatePositionOfActionButtonsDropDown(projectId);
+  }
+
+  /**
+   * @param {Object} project
+   * @returns {bool}
+   */
+  isActionDropDownVisible(project) {
+    return Object.values(this.actionButtons[project.id]).filter(actionButton => actionButton.visible).length > 1;
+  }
+
+  /**
+   *
+   * @param {Object} project
+   * @returns {Object}
+   */
+  createLeadAction(project) {
+    const visibleActions = Object.values(this.actionButtons[project.id]).filter(actionButton => actionButton.visible);
+    // maybe you will later change here the order of action buttons based on current project state
+    switch (project.status) {
+      case 'todo':
+        break;
+      case 'in_progress':
+        break;
+      case 'done':
+        break;
+      case 'delete':
+        break;
+      default:
+        break;
+    }
+    this.actionButtons[project.id] = this.actionButtons[project.id].filter(actionButton => actionButton !== visibleActions[0]);
+    return visibleActions[0];
+  }
+
+
+  /**
+   * Calculate new position of actions dropdown
+   */
+  calculatePositionOfActionButtonsDropDown(projectId) {
+    if (this.selectedProjectId !== undefined && this.selectedProjectId !== null) {
+      const id = 'action-project-id-' + this.selectedProjectId;
+      const clickedButtonBounds = angular.element(document.getElementById(id))[0].getBoundingClientRect();
+      const left = (clickedButtonBounds.x - 140 + clickedButtonBounds.width) + 'px';
+      let top;
+      const actionListHeight = (this.actionButtons[projectId].filter(actionButton => actionButton.visible).length * 30.38) + 10;
+      const dropDownHeight = clickedButtonBounds.y + actionListHeight;
+      if (window.innerHeight < dropDownHeight + 20) {
+        top = (clickedButtonBounds.y - actionListHeight - 5) + 'px';
+      } else {
+        top = (clickedButtonBounds.y + 28) + 'px';
+      }
+      this.actionsButtonDropDownLeftStyle = left;
+      this.actionsButtonDropDownTopStyle = top;
+    }
+  }
+
+  /**
+   *
+   * @param {Object} project
+   */
+  createActionButtons(project) {
+    const uploadButton = {
+      id: 'upload',
+      text: this.getTooltipForUploadMedia(project),
+      shortText: 'Upload',
+      visible: this.userPermissions.canUploadNewVideo && project.status === 'todo',
+      action: () => this.goToUploadPage(project),
+      ngClass: this.isUploadTooltipDisabled(project),
+      icon: 'fa-cloud-upload',
+    };
+    const exportButton = {
+      id: 'export',
+      text: 'Export Project',
+      shortText: 'Export',
+      visible: this.userPermissions.canExportProject && project.status !== 'deleted',
+      action: () => this.exportProject(project),
+      ngClass: '',
+      icon: 'fa-external-link',
+    };
+    const flaggedTasksButton = {
+      id: 'flagged',
+      text: 'Show flagged Tasks',
+      shortText: 'Flag',
+      visible: this.userPermissions.canViewAttentionTasks && project.status !== 'deleted',
+      action: () => this.showFlaggedTasks(project),
+      ngClass: '',
+      icon: 'fa-flag',
+    };
+    const acceptProjectButton = {
+      id: 'accept-project',
+      text: 'Accept Project and assign to team',
+      shortText: 'Accept',
+      visible: this.userPermissions.canAcceptProject && project.status === 'todo',
+      action: () => this.acceptProject(project),
+      ngClass: '',
+      icon: 'fa-check-square-o',
+    };
+    const labelGroupAssignmentButton = {
+      id: 'label-group-assignment',
+      text: 'Change label group assignment',
+      shortText: 'Assignment',
+      visible: this.userPermissions.canChangeProjectLabelGroupAssignment && project.status === 'in_progress',
+      action: () => this.changeLabelGroupAssignment(project),
+      ngClass: '',
+      icon: 'fa-users',
+    };
+    const labelManagerButton = {
+      id: 'select-label-manager',
+      text: project.labelManager !== undefined ? 'Selected Label Manager: ' + project.labelManager.username : 'Assign project to a Label Manager',
+      shortText: 'Labelmanager',
+      visible: this.userPermissions.canAssignProject && project.status === 'todo',
+      action: () => this.assignProject(project),
+      ngClass: project.labelManager !== undefined ? 'green' : '',
+      icon: 'fa-user',
+    };
+    const closeProjectButton = {
+      id: 'close',
+      text: 'Close Project (Move to done)',
+      shortText: 'Close',
+      visible: this.userPermissions.canMoveInProgressProjectToDone && project.status === 'in_progress',
+      action: () => this.closeProject(project),
+      ngClass: '',
+      icon: 'fa-check-square',
+    };
+    const reportButton = {
+      id: 'report',
+      text: 'View Report of Project',
+      shortText: 'Report',
+      visible: this.userPermissions.canViewProjectReport && project.status !== 'deleted',
+      action: () => this.openReport(project),
+      ngClass: '',
+      icon: 'fa-file',
+    };
+    const deleteButton = {
+      id: 'delete-status',
+      text: 'Delete this Project. Data can be shown in delete tap',
+      shortText: 'Delete',
+      visible: this.userPermissions.canDeleteProject && (project.status === 'todo' || project.status === 'done'),
+      action: () => this.setProjectStatusToDeleted(project),
+      ngClass: '',
+      icon: 'fa-trash-o',
+    };
+    const deleteFinallyButton = {
+      id: 'delete-finally',
+      text: 'Delete this Project. Warning: All data related to this project will be deleted and they are no longer available.',
+      shortText: 'Delete',
+      visible: this.userPermissions.canDeleteProject && project.status === 'deleted' && project.deletedState === 'unaccepted',
+      action: () => this.deleteProject(project),
+      ngClass: '',
+      icon: 'fa-trash-o icon-fa warning-color',
+    };
+    const repairButton = {
+      id: 'repair',
+      text: 'Repair tasks',
+      shortText: 'Repair',
+      visible: this.userPermissions.canRepairProject && project.status !== 'deleted',
+      action: () => this.repairProject(project),
+      ngClass: '',
+      icon: 'fa-wrench icon-fa',
+    };
+
+    this.actionButtons[project.id] = [
+      uploadButton,
+      exportButton,
+      flaggedTasksButton,
+      acceptProjectButton,
+      labelGroupAssignmentButton,
+      labelManagerButton,
+      closeProjectButton,
+      reportButton,
+      deleteButton,
+      deleteFinallyButton,
+      repairButton,
+    ];
+
+    this.openActionsToggle[project.id] = false;
   }
 }
 
