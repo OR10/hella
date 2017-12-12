@@ -1253,6 +1253,9 @@ class ViewerController {
       }
     ).catch(error => {
       console.error(error); // eslint-disable-line no-console
+      if (this.framePosition.lock.isLocked) {
+        this.framePosition.lock.release();
+      }
     });
   }
 
