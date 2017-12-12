@@ -300,7 +300,6 @@ class LabeledThingInFrameGateway {
    */
   saveLabeledThingInFrame(labeledThingInFrame, taskId = null) {
     let storedLabeledThingInFrame;
-    let storedLabeledThing;
 
     taskId = taskId ? taskId : labeledThingInFrame.labeledThing.task.id; // eslint-disable-line no-param-reassign
 
@@ -328,33 +327,7 @@ class LabeledThingInFrameGateway {
               return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
             })
             .then(deserializedLabeledThingInFrame => {
-              storedLabeledThingInFrame = deserializedLabeledThingInFrame;
-              storedLabeledThing = deserializedLabeledThingInFrame.labeledThing;
-
-              return dbContext.query(this._pouchDbViewService.getDesignDocumentViewName('labeledThingInFrameByLabeledThingIdAndIncomplete'), {
-                group: true,
-                group_level: 1,
-                startkey: [storedLabeledThing.id, storedLabeledThing.frameRange.startFrameIndex],
-                endkey: [storedLabeledThing.id, storedLabeledThing.frameRange.endFrameIndex],
-              });
-            })
-            .then(response => {
-              const ltifIsOnLtStartFrame = (labeledThingInFrame.frameIndex === storedLabeledThing.frameRange.startFrameIndex);
-              const ltifIsComplete = !labeledThingInFrame.incomplete;
-              const ltHasNoIncompleteLtifs = response.rows[0].value === 0;
-
-              const isLabeledThingComplete = ltHasNoIncompleteLtifs || (ltifIsOnLtStartFrame && ltifIsComplete);
-              const isLabeledThingIncomplete = !isLabeledThingComplete;
-
-              const serializedLabeledThing = this._couchDbModelSerializer.serialize(storedLabeledThing);
-              serializedLabeledThing.incomplete = isLabeledThingIncomplete;
-              serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
-
-              this._injectRevisionOrFailSilently(serializedLabeledThing);
-
-              return dbContext.put(serializedLabeledThing)
-                .then(dbResponse => dbContext.get(dbResponse.id))
-                .then(readLabeledThingDocument => this._revisionManager.extractRevision(readLabeledThingDocument));
+              return this._labeledThingGateway.saveLabeledThingWithoutPackagingExecutor(deserializedLabeledThingInFrame.labeledThing);
             })
             .then(() => {
               return storedLabeledThingInFrame;

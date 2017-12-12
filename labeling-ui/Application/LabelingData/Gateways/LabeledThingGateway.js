@@ -192,8 +192,7 @@ class LabeledThingGateway {
   /**
    * Save a {@link LabeledThing} without using the packaging executor
    *
-   * This method is supposed to be only called internally. Its execution should always be executed inside a
-   * `labeledThing` based packaging executor queue.
+   * This method needs to be public because we need to call this method in the ltif gateway
    *
    * The method handles the removal of {@link LabeledThingInFrame} objects, as well as {@link LabeledThingGroupInFrame}
    * objects, which are no longer valid due the `new` frameRange of the given `LabeledThing` as part of the update.
@@ -204,7 +203,7 @@ class LabeledThingGateway {
    * @returns {LabeledThing}
    * @protected
    */
-  _saveLabeledThingWithoutPackagingExecutor(labeledThing) {
+  saveLabeledThingWithoutPackagingExecutor(labeledThing) {
     const task = labeledThing.task;
     const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
@@ -232,7 +231,7 @@ class LabeledThingGateway {
         ]);
       })
       .then(() => {
-        this._recalculateLtifsIncompleteCheck(labeledThing);
+        return this._recalculateLtifsIncompleteCheck(labeledThing);
       }).then(() => {
         return readLabeledThing;
       });
@@ -243,45 +242,70 @@ class LabeledThingGateway {
    * @private
    */
   _recalculateLtifsIncompleteCheck(labeledThing) {
+    const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     return this._$q(resolve => {
-      this.getAssociatedLabeledThingsInFrames(labeledThing)
+      this._getAssociatedLabeledThingsInFrames(labeledThing.task, labeledThing)
+        .then(labeledThingsInFrame => {
+          return labeledThingsInFrame.rows.map(labeledThingInFrame => {
+            this._revisionManager.extractRevision(labeledThingInFrame.doc);
+            return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing);
+          });
+        })
         .then(labeledThingsInFrame => {
           this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame)
             .then(ghostedLabeledThingInFrames => {
-              if (ghostedLabeledThingInFrames.length === 0) {
-                resolve();
-              }
+              const promises = [];
               ghostedLabeledThingInFrames.forEach(labeledThingInFrame => {
                 const task = labeledThingInFrame.task;
                 const dbContext = this._pouchDbContextService.provideContextForTaskId(task.id);
                 const oldIncompleteValue = labeledThingInFrame.incomplete;
-                labeledThingInFrame.updateIncompleteStatus(this._labelStructureService)
-                  .then(() => {
-                    if (oldIncompleteValue !== labeledThingInFrame.incomplete) {
-                      const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(
-                        labeledThingInFrame);
-                      this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
-                      dbContext.put(serializedLabeledThingInFrame)
-                        .then(response => {
-                          return dbContext.get(response.id);
-                        })
-                        .then(readDocument => {
-                          return this._revisionManager.extractRevision(readDocument);
-                        })
-                        .then(() => {
-                          this._isLabeledThingIncomplete(dbContext, labeledThing)
-                            .then(incomplete => {
-                              if (labeledThing.incomplete !== incomplete) {
-                                this._saveLabeledThingWithoutPackagingExecutor(labeledThing).then(() => resolve());
-                              } else {
-                                resolve();
-                              }
+                promises.push(
+                  this._$q(resolveLabeledThing => {
+                    labeledThingInFrame.updateIncompleteStatus(this._labelStructureService)
+                      .then(() => {
+                        if (oldIncompleteValue !== labeledThingInFrame.incomplete) {
+                          const serializedLabeledThingInFrame = this._couchDbModelSerializer.serialize(
+                            labeledThingInFrame);
+                          this._injectRevisionOrFailSilently(serializedLabeledThingInFrame);
+                          dbContext.put(serializedLabeledThingInFrame)
+                            .then(response => {
+                              return dbContext.get(response.id);
+                            })
+                            .then(readDocument => {
+                              return this._revisionManager.extractRevision(readDocument);
+                            })
+                            .then(() => {
+                              this._isLabeledThingIncomplete(dbContext, labeledThing)
+                                .then(isIncomplete => {
+                                  if (isIncomplete === serializedLabeledThing.incomplete) {
+                                    throw new Error('Nothing to do here - skip');
+                                  }
+                                  serializedLabeledThing.lastModifiedByUserId = this._currentUserService.get().id;
+                                  serializedLabeledThing.incomplete = isIncomplete;
+                                  this._injectRevisionOrFailSilently(serializedLabeledThing);
+                                  return dbContext.put(serializedLabeledThing);
+                                })
+                                .then(dbResponse => {
+                                  return dbContext.get(dbResponse.id);
+                                })
+                                .then(readLabeledThingDocument => {
+                                  this._revisionManager.extractRevision(readLabeledThingDocument);
+                                  resolveLabeledThing();
+                                })
+                                .catch(() => {
+                                  // do nothing here
+                                  resolveLabeledThing();
+                                });
                             });
-                        });
-                    } else {
-                      resolve();
-                    }
-                  });
+                        } else {
+                          resolveLabeledThing();
+                        }
+                      });
+                  })
+                );
+              });
+              this._$q.all(promises).then(() => {
+                resolve();
               });
             });
         });
@@ -336,7 +360,7 @@ class LabeledThingGateway {
     //       Monkey-patch pouchdb? Fix error handling at usage point?
     return this._packagingExecutor.execute(
       'labeledThing',
-      () => this._saveLabeledThingWithoutPackagingExecutor(labeledThing)
+      () => this.saveLabeledThingWithoutPackagingExecutor(labeledThing)
     );
   }
 
@@ -478,7 +502,7 @@ class LabeledThingGateway {
         const promises = [];
 
         modifiedLabeledThings.forEach(labeledThing => {
-          promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
+          promises.push(this.saveLabeledThingWithoutPackagingExecutor(labeledThing));
         });
 
         return this._$q.all(promises);
@@ -522,7 +546,7 @@ class LabeledThingGateway {
     const promises = [];
 
     modifiedLabeledThings.forEach(labeledThing => {
-      promises.push(this._saveLabeledThingWithoutPackagingExecutor(labeledThing));
+      promises.push(this.saveLabeledThingWithoutPackagingExecutor(labeledThing));
     });
 
     return this._$q.all(promises);

@@ -482,7 +482,7 @@ describe('LabeledThingGateway', () => {
 
     $rootScope.$apply();
 
-    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThing = gateway.saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
     const storedLabeledThingDocument = storedLabeledThing.toJSON();
     delete storedLabeledThingDocument.createdAt;
     delete storedLabeledThingDocument.lastModifiedAt;
@@ -537,7 +537,7 @@ describe('LabeledThingGateway', () => {
 
     $rootScope.$apply();
 
-    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThing = gateway.saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
     const storedLabeledThingDocument = storedLabeledThing.toJSON();
     delete storedLabeledThingDocument.createdAt;
     delete storedLabeledThingDocument.lastModifiedAt;
@@ -597,7 +597,7 @@ describe('LabeledThingGateway', () => {
 
     $rootScope.$apply();
 
-    const storedLabeledThing = gateway._saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
+    const storedLabeledThing = gateway.saveLabeledThingWithoutPackagingExecutor.calls.mostRecent().args[0];
     const storedLabeledThingDocument = storedLabeledThing.toJSON();
     delete storedLabeledThingDocument.createdAt;
     delete storedLabeledThingDocument.lastModifiedAt;
