@@ -1,4 +1,4 @@
-<div class="grid-block vertical">
+<div class="grid-block vertical" id="project-list-table">
   <loading-mask ng-if="vm.loadingInProgress" spinner="true"></loading-mask>
   <!--
       Display proper no projects information
@@ -48,8 +48,8 @@
           {{project[column.property]}}
 
           <span class="tagDisplay" ng-if="column.property === 'name'" ng-repeat="campaign in project.campaigns">
-                    {{campaign.name}}
-                </span>
+            {{campaign.name}}
+          </span>
 
           <i ng-if="column.property === 'taskCount' && project.taskInPreProcessingCount > 0"
              class="fa fa-spin fa-spinner"
@@ -60,7 +60,7 @@
         </td>
 
         <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.createActionButtons(project)">
-          <span class="x-split-button" ng-class="{'open': vm.openActionsToggle[project.id] === true}">
+          <span class="x-split-button" id="action-project-id-{{project.id}}" ng-class="{'open': vm.openActionsToggle[project.id] === true}">
             <button
                     tooltip="{{vm.leadActionButton.text}}"
                     ng-if="vm.leadActionButton.visible"
@@ -80,16 +80,6 @@
               >
               &#9660;
             </button>
-            <ul class="x-button-drop-menu">
-              <li ng-repeat="actionButton in vm.actionButtons">
-                <button tooltip="{{actionButton.text}}"
-                        ng-if="actionButton.visible"
-                        ng-click="actionButton.action()"
-                >
-                  <i class="fa" ng-class="actionButton.icon"></i> {{actionButton.shortText}}
-                </button>
-              </li>
-            </ul>
           </span>
         </td>
       </tr>
@@ -103,5 +93,14 @@
     </tfoot>
 
   </table>
-
+  <ul class="x-button-drop-menu" id="action-container" ng-style="{'display': vm.openActionsToggle[vm.selectedProjectId] === true ? 'block' : 'none', 'left': vm.actionsButtonDropDownLeftStyle, 'top': vm.actionsButtonDropDownTopStyle}">
+    <li ng-repeat="actionButton in vm.actionButtons">
+      <button tooltip="{{actionButton.text}}"
+              ng-if="actionButton.visible"
+              ng-click="actionButton.action()"
+      >
+        <i class="fa" ng-class="actionButton.icon"></i> {{actionButton.shortText}}
+      </button>
+    </li>
+  </ul>
 </div>

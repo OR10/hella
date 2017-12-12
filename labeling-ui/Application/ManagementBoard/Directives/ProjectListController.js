@@ -124,6 +124,21 @@ class ProjectListController {
      */
     this.openActionsToggle = [];
 
+    /**
+     * @type {string}
+     */
+    this.selectedProjectId = null;
+
+    /**
+     * @type {string}
+     */
+    this.actionsButtonDropDownLeftStyle = null;
+
+    /**
+     * @type {string}
+     */
+    this.actionsButtonDropDownTopStyle = null;
+
     // Reload upon request
     this._$scope.$on('project-list:reload-requested', () => {
       this.updatePage(this._currentPage, this._currentItemsPerPage);
@@ -131,10 +146,20 @@ class ProjectListController {
 
     // Listen to window resize event to redraw table progress
     angular.element(window).on('resize', () => {
+      if (this.selectedProjectId !== null) {
+        this.toggleActions(this.selectedProjectId);
+      }
       this.projects.forEach((item, index) => {
         this.calculateTableRowHeight(index);
         $scope.$apply();
       });
+    });
+
+    angular.element(document.querySelector('#project-list-table')).bind('mousewheel', () => {
+      if (this.selectedProjectId !== null) {
+        this.toggleActions(this.selectedProjectId);
+        $scope.$apply();
+      }
     });
   }
 
@@ -774,6 +799,8 @@ class ProjectListController {
         this.openActionsToggle[actionToggle] = false;
       }
     });
+    this.selectedProjectId = this.openActionsToggle[projectId] === true ? projectId : null;
+    this.calculatePositionOfActionButtonsDropDown();
   }
 
   /**
@@ -805,6 +832,28 @@ class ProjectListController {
         break;
     }
     return visibleActions[0];
+  }
+
+
+  /**
+   * Calculate new position of actions dropdown
+   */
+  calculatePositionOfActionButtonsDropDown() {
+    if (this.selectedProjectId !== undefined && this.selectedProjectId !== null) {
+      const id = 'action-project-id-' + this.selectedProjectId;
+      const clickedButtonBounds = angular.element(document.getElementById(id))[0].getBoundingClientRect();
+      const left = (clickedButtonBounds.x - 140 + clickedButtonBounds.width) + 'px';
+      let top;
+      const actionListHeight = (this.actionButtons.filter(actionButton => actionButton.visible).length * 30.38) + 10;
+      const dropDownHeight = clickedButtonBounds.y + actionListHeight;
+      if (window.innerHeight < dropDownHeight + 20) {
+        top = (clickedButtonBounds.y - actionListHeight - 5) + 'px';
+      } else {
+        top = (clickedButtonBounds.y + 28) + 'px';
+      }
+      this.actionsButtonDropDownLeftStyle = left;
+      this.actionsButtonDropDownTopStyle = top;
+    }
   }
 
   /**

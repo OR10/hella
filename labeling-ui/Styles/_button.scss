@@ -91,9 +91,7 @@ button {
 }
 
 .x-button-drop-menu {
-  position: absolute;
-  top: 27px;
-  right: 0;
+  position: fixed;
   z-index: 9999;
   display: none;
   float: left;
