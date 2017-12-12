@@ -962,17 +962,19 @@ class ProjectListController {
       icon: 'fa-wrench icon-fa',
     };
 
-    this.actionButtons.push(uploadButton);
-    this.actionButtons.push(exportButton);
-    this.actionButtons.push(flaggedTasksButton);
-    this.actionButtons.push(acceptProjectButton);
-    this.actionButtons.push(labelGroupAssignmentButton);
-    this.actionButtons.push(labelManagerButton);
-    this.actionButtons.push(closeProjectButton);
-    this.actionButtons.push(reportButton);
-    this.actionButtons.push(deleteButton);
-    this.actionButtons.push(deleteFinallyButton);
-    this.actionButtons.push(repairButton);
+    this.actionButtons.push(
+      uploadButton,
+      exportButton,
+      flaggedTasksButton,
+      acceptProjectButton,
+      labelGroupAssignmentButton,
+      labelManagerButton,
+      closeProjectButton,
+      reportButton,
+      deleteButton,
+      deleteFinallyButton,
+      repairButton
+    );
 
     const leadActionButton = this.createLeadAction(project);
     this.openActionsToggle[project.id] = false;
