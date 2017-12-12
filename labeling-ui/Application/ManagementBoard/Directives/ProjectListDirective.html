@@ -59,24 +59,25 @@
              class="fa fa-warning" tooltip="Failed to create {{project.taskFailedCount}} tasks."></i>
         </td>
 
-        <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.createActionButtons(project)">
+        <td class="action-cell" ng-click="$event.stopPropagation()" ng-init="vm.createActionButtons(project);leadActionButton = vm.createLeadAction(project)">
           <span class="x-split-button" id="action-project-id-{{project.id}}" ng-class="{'open': vm.openActionsToggle[project.id] === true}">
             <button
-                    tooltip="{{vm.leadActionButton.text}}"
-                    ng-if="vm.leadActionButton.visible"
-                    ng-click="vm.leadActionButton.action()"
-                    ng-class="[vm.leadActionButton.ngClass, {'single-action': vm.isActionDropDownVisible() === false}]"
+
+                    tooltip="{{leadActionButton.text}}"
+                    ng-if="leadActionButton.visible"
+                    ng-click="leadActionButton.action()"
+                    ng-class="[leadActionButton.ngClass, {'single-action': vm.isActionDropDownVisible(project) === false}]"
                     class="x-button x-button-main"
             >
-                <i class="fa" ng-class="vm.leadActionButton.icon"></i>
-                  {{vm.leadActionButton.shortText}}
+                <i class="fa" ng-class="leadActionButton.icon"></i>
+                  {{leadActionButton.shortText}}
                 <i ng-if="vm.showUploadSpinner(project)"
                    class="fa fa-spin fa-spinner">
                 </i>
             </button>
             <button class="x-button x-button-drop"
                     ng-click="vm.toggleActions(project.id)"
-                    ng-show="vm.isActionDropDownVisible()"
+                    ng-show="vm.isActionDropDownVisible(project)"
               >
               &#9660;
             </button>
@@ -93,8 +94,8 @@
     </tfoot>
 
   </table>
-  <ul class="x-button-drop-menu" id="action-container" ng-style="{'display': vm.openActionsToggle[vm.selectedProjectId] === true ? 'block' : 'none', 'left': vm.actionsButtonDropDownLeftStyle, 'top': vm.actionsButtonDropDownTopStyle}">
-    <li ng-repeat="actionButton in vm.actionButtons" ng-click="actionButton.action()">
+  <ul class="x-button-drop-menu" id="action-container" ng-init="" ng-style="{'display': vm.openActionsToggle[vm.selectedProjectId] === true ? 'block' : 'none', 'left': vm.actionsButtonDropDownLeftStyle, 'top': vm.actionsButtonDropDownTopStyle}">
+    <li ng-repeat="actionButton in vm.actionButtons[vm.selectedProjectId]" ng-click="actionButton.action();vm.toggleActions(vm.selectedProjectId)">
       <button tooltip="{{actionButton.text}}"
               ng-if="actionButton.visible"
 

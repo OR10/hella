@@ -110,11 +110,6 @@ class ProjectListController {
     this.projectCreators = new Map();
 
     /**
-     * @type {Object}
-     */
-    this.leadActionButton = null;
-
-    /**
      * @type {Array.<Object>}
      */
     this.actionButtons = [];
@@ -780,7 +775,7 @@ class ProjectListController {
   }
 
   /**
-   *
+   * @param {Object} project
    * @returns {bool}
    */
   showUploadSpinner(project) {
@@ -800,15 +795,15 @@ class ProjectListController {
       }
     });
     this.selectedProjectId = this.openActionsToggle[projectId] === true ? projectId : null;
-    this.calculatePositionOfActionButtonsDropDown();
+    this.calculatePositionOfActionButtonsDropDown(projectId);
   }
 
   /**
-   *
+   * @param {Object} project
    * @returns {bool}
    */
-  isActionDropDownVisible() {
-    return this.actionButtons.filter(actionButton => actionButton.visible).length > 1;
+  isActionDropDownVisible(project) {
+    return Object.values(this.actionButtons[project.id]).filter(actionButton => actionButton.visible).length > 1;
   }
 
   /**
@@ -817,7 +812,7 @@ class ProjectListController {
    * @returns {Object}
    */
   createLeadAction(project) {
-    const visibleActions = this.actionButtons.filter(actionButton => actionButton.visible);
+    const visibleActions = Object.values(this.actionButtons[project.id]).filter(actionButton => actionButton.visible);
     // maybe you will later change here the order of action buttons based on current project state
     switch (project.status) {
       case 'todo':
@@ -831,6 +826,7 @@ class ProjectListController {
       default:
         break;
     }
+    this.actionButtons[project.id] = this.actionButtons[project.id].filter(actionButton => actionButton !== visibleActions[0]);
     return visibleActions[0];
   }
 
@@ -838,13 +834,13 @@ class ProjectListController {
   /**
    * Calculate new position of actions dropdown
    */
-  calculatePositionOfActionButtonsDropDown() {
+  calculatePositionOfActionButtonsDropDown(projectId) {
     if (this.selectedProjectId !== undefined && this.selectedProjectId !== null) {
       const id = 'action-project-id-' + this.selectedProjectId;
       const clickedButtonBounds = angular.element(document.getElementById(id))[0].getBoundingClientRect();
       const left = (clickedButtonBounds.x - 140 + clickedButtonBounds.width) + 'px';
       let top;
-      const actionListHeight = (this.actionButtons.filter(actionButton => actionButton.visible).length * 30.38) + 10;
+      const actionListHeight = (this.actionButtons[projectId].filter(actionButton => actionButton.visible).length * 30.38) + 10;
       const dropDownHeight = clickedButtonBounds.y + actionListHeight;
       if (window.innerHeight < dropDownHeight + 20) {
         top = (clickedButtonBounds.y - actionListHeight - 5) + 'px';
@@ -861,7 +857,6 @@ class ProjectListController {
    * @param {Object} project
    */
   createActionButtons(project) {
-    this.actionButtons = [];
     const uploadButton = {
       id: 'upload',
       text: this.getTooltipForUploadMedia(project),
@@ -932,7 +927,7 @@ class ProjectListController {
       visible: this.userPermissions.canViewProjectReport && project.status !== 'deleted',
       action: () => this.openReport(project),
       ngClass: '',
-      icon: 'fa-check-square',
+      icon: 'fa-file',
     };
     const deleteButton = {
       id: 'delete-status',
@@ -962,7 +957,7 @@ class ProjectListController {
       icon: 'fa-wrench icon-fa',
     };
 
-    this.actionButtons.push(
+    this.actionButtons[project.id] = [
       uploadButton,
       exportButton,
       flaggedTasksButton,
@@ -973,13 +968,10 @@ class ProjectListController {
       reportButton,
       deleteButton,
       deleteFinallyButton,
-      repairButton
-    );
+      repairButton,
+    ];
 
-    const leadActionButton = this.createLeadAction(project);
     this.openActionsToggle[project.id] = false;
-    this.leadActionButton = leadActionButton;
-    this.actionButtons = this.actionButtons.filter(actionButton => actionButton !== leadActionButton);
   }
 }
 
