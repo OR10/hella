@@ -719,6 +719,7 @@ export default class LabelSelectorController {
     }
 
     if (this.isMultiAttributeSelection(page)) {
+      this.multiSelection = true;
       if (toDeleteLabel === undefined) {
         if (selectedLabeledObject.classes.length === 0) {
           selectedLabeledObject.setClasses(responses);
@@ -730,6 +731,7 @@ export default class LabelSelectorController {
         selectedLabeledObject.removeClass(toDeleteLabel);
       }
     } else {
+      this.multiSelection = false;
       const currentSelectedClass = page.responses.find(pageResponse => pageResponse.value !== undefined);
       if (currentSelectedClass === undefined && responses[0] !== undefined) {
         selectedLabeledObject.addClass(responses[0]);
