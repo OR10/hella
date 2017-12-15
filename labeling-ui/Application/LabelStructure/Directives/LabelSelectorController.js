@@ -731,7 +731,6 @@ export default class LabelSelectorController {
         selectedLabeledObject.removeClass(toDeleteLabel);
       }
     } else {
-      this.multiSelection = false;
       const currentSelectedClass = page.responses.find(pageResponse => pageResponse.value !== undefined);
       if (currentSelectedClass === undefined && responses[0] !== undefined) {
         selectedLabeledObject.addClass(responses[0]);
