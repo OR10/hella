@@ -902,7 +902,7 @@ class ProjectListController {
       ngClass: '',
       icon: 'fa-users',
     };
-    const labelManagerButton = {
+    const labelManagerButton = { // eslint-disable-line no-unused-vars
       id: 'select-label-manager',
       text: project.labelManager !== undefined ? 'Selected Label Manager: ' + project.labelManager.username : 'Assign project to a Label Manager',
       shortText: 'Labelmanager',
