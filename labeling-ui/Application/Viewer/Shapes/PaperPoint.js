@@ -229,7 +229,7 @@ class PaperPoint extends PaperThingShape {
   }
 
   /**
-   * @returns {boolean}
+   * @returns {number}
    */
   initialDragDistance() {
     return 1;
