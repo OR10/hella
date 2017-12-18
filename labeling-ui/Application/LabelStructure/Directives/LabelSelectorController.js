@@ -719,6 +719,7 @@ export default class LabelSelectorController {
     }
 
     if (this.isMultiAttributeSelection(page)) {
+      this.multiSelection = true;
       if (toDeleteLabel === undefined) {
         if (selectedLabeledObject.classes.length === 0) {
           selectedLabeledObject.setClasses(responses);
