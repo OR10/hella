@@ -963,7 +963,7 @@ class ProjectListController {
       flaggedTasksButton,
       acceptProjectButton,
       labelGroupAssignmentButton,
-      labelManagerButton,
+      // labelManagerButton,
       closeProjectButton,
       reportButton,
       deleteButton,
