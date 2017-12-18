@@ -145,7 +145,7 @@ class PaperShape extends paper.Group {
   }
 
   /**
-   * @returns {boolean}
+   * @returns {number}
    */
   initialDragDistance() {
     return 8;

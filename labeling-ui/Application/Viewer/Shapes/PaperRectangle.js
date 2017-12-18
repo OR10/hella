@@ -300,6 +300,13 @@ class PaperRectangle extends PaperThingShape {
       },
     };
   }
+
+  /**
+   * @returns {number}
+   */
+  initialDragDistance() {
+    return 4;
+  }
 }
 
 /**
