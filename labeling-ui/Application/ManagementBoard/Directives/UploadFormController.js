@@ -117,6 +117,8 @@ class UploadFormController {
 
     this.$flow = null;
 
+    this.useLossLess = false;
+
     organisationService.subscribe(newOrganisation => {
       this.currentOrganisationId = newOrganisation.id;
     });
@@ -241,6 +243,7 @@ class UploadFormController {
   }
 
   uploadStarted() {
+    console.error(this.useLossLess)
     this.uploadInProgress = true;
     this._inProgressService.start('Upload is in progress!');
   }
