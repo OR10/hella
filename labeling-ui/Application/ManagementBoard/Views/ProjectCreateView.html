@@ -1,12 +1,12 @@
 <loading-mask ng-if="vm.loadingInProgress > 0" spinner="true"></loading-mask>
-<page-title title="Projectmanagment - create a new project">
+<page-title title="Projectmanagment - Creation">
     <back-link state-link="labeling.projects.list"
                tooltip="Back to Project list"
     ></back-link>
 </page-title>
 <div class="page-content">
     <tab-view>
-        <tab header="mainsettings">
+        <tab header="main settings">
             <div class="grid-block align-center gray-tab-view">
                 <form class="grid-content">
                     <h2>Create a new project</h2>
@@ -123,11 +123,12 @@
                     </table>
                     <div class="form-control">
                         <tab-view>
-                            <tab header="Requirements.XML">
+                            <tab header="Requirements XML">
                                 <div class="grid-block horizontal">
                                     <div class="grid-content">
+                                        <label for="requirementsTaskType">Task type</label>
                                         <select id="requirementsTaskType" ng-model="vm.taskTypeToAdd" ng-class="{error: !vm.validation.requirementsTaskType}">
-                                            <option value="" disabled selected>Select task type</option>
+                                            <option value="" disabled selected>-- Select --</option>
                                             <option ng-repeat="taskType in vm.taskTypes"
                                                     value="{{taskType.id}}">
                                                 {{taskType.name}}
@@ -135,8 +136,9 @@
                                         </select>
                                     </div>
                                     <div class="grid-content">
+                                        <label for="requirementsTaskType">Task configuration</label>
                                         <select id="requirementsTaskConfig" ng-model="vm.taskConfigToAdd" ng-class="{error: !vm.validation.requirementsTaskConfig}">
-                                            <option value="" disabled selected>Select task configuration</option>
+                                            <option value="" disabled selected>-- Select --</option>
                                             <option ng-repeat="taskConfig in vm.requirementsXmlTaskConfigurations"
                                                     value="{{taskConfig.id}}">
                                                 {{taskConfig.name}}
