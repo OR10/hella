@@ -144,10 +144,6 @@ class ProjectListController {
       if (this.selectedProjectId !== null) {
         this.toggleActions(this.selectedProjectId);
       }
-      this.projects.forEach((item, index) => {
-        this.calculateTableRowHeight(index);
-        $scope.$apply();
-      });
     });
 
     angular.element(document.querySelector('#project-list-table')).bind('mousewheel', () => {
@@ -474,18 +470,20 @@ class ProjectListController {
     const startTimeStamp = project.creationTimestamp;
     const endTimeStamp = project.dueTimestamp;
     if (startTimeStamp === undefined || endTimeStamp === undefined || startTimeStamp === null || endTimeStamp === null) {
-      return null;
+      return this.calculateProjectProgressForJobs(project);
     }
     const endDate = moment.unix(endTimeStamp);
     const startDate = moment.unix(startTimeStamp);
-    const projectDuration = moment.duration(endDate.diff(startDate)).asDays();
-    const currentProgress = moment.duration(moment().diff(startDate)).asDays();
+    const projectDuration = Math.round(moment.duration(endDate.diff(startDate)).asDays());
+    const currentProgress = Math.round(moment.duration(moment().diff(startDate)).asDays());
 
     let colorClass = this._getBackgroundColorForProgress(null);
 
     if (projectDuration > currentProgress) {
       // project is in due date
-      const progress = Math.round((currentProgress) * 100 / projectDuration);
+      const standardizedCurrentProgress = currentProgress === 0 ? 1 : currentProgress;
+      const progress = Math.round((standardizedCurrentProgress) * 100 / projectDuration);
+
       colorClass = this._getBackgroundColorForProgress(progress);
       if (progress === 0) {
         return {progress: '-99%', class: colorClass};
@@ -497,20 +495,28 @@ class ProjectListController {
   }
 
   /**
+   * Calculate the project progress by all jobs in realtion with processed jobs
+   * @param {Object} project
+   * @returns {Object}
+   */
+  calculateProjectProgressForJobs(project) {
+    const processed = project.taskInProgressCount;
+    const jobs = project.taskCount;
+
+    if (jobs === 0) {
+      return {progress: '-99%', class: 'darkgray2-progress-color'};
+    }
+    const progress = (processed) * 100 / jobs;
+    return {progress: progress - 100 + '%', class: 'darkgray-progress-color'};
+  }
+
+  /**
    * Returns the height of complete row because it will dynamically rendered.
    * @param {int} index
    * @returns {String}
    */
-  calculateTableRowHeight(index) {
-    const trs = angular.element(document.querySelectorAll('.view-list-table tbody tr'));
-    if (trs.length !== 0) {
-      const tr = trs[index + 1];
-      if (tr.clientHeight === 0) {
-        return '46px'; // default value
-      }
-      return tr.clientHeight + 'px';
-    }
-    return '0px';
+  calculateTableRowHeight() {
+    return '5px';
   }
 
   /**
