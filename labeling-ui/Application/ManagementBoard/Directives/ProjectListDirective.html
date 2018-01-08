@@ -47,7 +47,7 @@
 
           {{project[column.property]}}
           <div ng-if="column.property === 'name'">
-            <span class="tagDisplay" ng-show="project.campaigns.length === 0"></span>
+            <span class="tagDisplay" style="background-color: transparent" ng-show="project.campaigns.length === 0"></span>
             <span class="tagDisplay" ng-repeat="campaign in project.campaigns">{{campaign.name}}</span>
           </div>
           <!--<div>
