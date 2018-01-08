@@ -99,6 +99,9 @@ describe('UploadFormController test suite', () => {
   beforeEach(() => {
     $flow = {
       files: [],
+      opts: {
+        query: {},
+      },
     };
     controller.$flow = $flow;
   });
