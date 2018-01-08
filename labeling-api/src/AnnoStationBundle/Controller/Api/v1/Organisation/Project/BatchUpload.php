@@ -241,7 +241,7 @@ class BatchUpload extends Controller\Base
                         $project,
                         basename($targetPath),
                         $targetPath,
-                        false
+                        $request->request->getBoolean('lossless', false)
                     );
                 } elseif ($this->isImageFile($flowRequest->getFileName())) {
                     // Image compression is determined by their input image type

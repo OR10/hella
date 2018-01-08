@@ -243,7 +243,7 @@ class UploadFormController {
   }
 
   uploadStarted() {
-    console.error(this.useLossLess)
+    this.$flow.opts.query = {lossless: this.useLossLess};
     this.uploadInProgress = true;
     this._inProgressService.start('Upload is in progress!');
   }
