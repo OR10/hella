@@ -47,49 +47,49 @@ button {
   display: inline-block;
   text-align: left;
   min-width: 125px;
-}
+  .x-button {
+    position: relative;
+    margin: 0;
+    height: 30px;
+    float: left;
+    outline: none;
+    line-height: 27px;
+    background: #F2F2F2 !important;
+    font-size: 14px !important;
+    border-radius: 4px;
+  }
+  .x-button-drop {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 1px solid #E0E0E0;
+  }
 
-.x-button {
-  position: relative;
-  margin: 0;
-  height: 30px;
-  float: left;
-  outline: none;
-  line-height: 27px;
-  background: #F2F2F2 !important;
-  font-size: 14px !important;
-  border-radius: 4px;
-}
+  .x-button:hover {
+    cursor: pointer;
+    background: #E0E0E0;
+  }
 
-.x-button:hover {
-  cursor: pointer;
-  background: #E0E0E0;
-}
+  .x-button:active {
+    background: #D3D3D3;
+  }
 
-.x-button:active {
-  background: #D3D3D3;
-}
+  .x-button.x-button-drop {
+    height: 30px;
+  }
 
-.x-button.x-button-drop {
-  height: 30px;
-}
+  .open > .x-button-drop-menu {
+    display: block;
+  }
 
-.open > .x-button-drop-menu {
-  display: block;
-}
+  .x-button-main {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .single-action {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+  }
 
-.x-button-main {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.single-action {
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 4px !important;
-}
-.x-button-drop {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-left: 1px solid #E0E0E0;
 }
 
 .x-button-drop-menu {
