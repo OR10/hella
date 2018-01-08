@@ -164,14 +164,14 @@ class ValidateDocUpdateDocumentExistenceInTaskDatabases implements Check\CheckIn
                     GuzzleHttp\Psr7\Response $response,
                     $index
                 ) use (
-                    &$invalidValidateFunctions
+                    $urls
                 ) {
                     if (!$this->isValidateDocUpdateDocumentResponseValid($response)) {
-                        $this->invalidValidateFunctions[] = $this->urls[$index];
+                        $this->invalidValidateFunctions[] = $urls[$index];
                     }
                 },
-                'rejected'    => function ($reason, $index) {
-                    $this->missingValidateDocUpdateDocuments[]  = $this->urls[$index];
+                'rejected'    => function ($reason, $index) use ($urls) {
+                    $this->missingValidateDocUpdateDocuments[]  = $urls[$index];
                     $this->lastMissingValidateDocUpdateDocument = time();
                 },
             ]
