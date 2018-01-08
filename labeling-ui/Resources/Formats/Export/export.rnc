@@ -162,14 +162,14 @@ grammar {
   }
 
   CuboidShape = element e:cuboid {
-    element e:top-left-front {XYZCoordinateAttributes},
-    element e:top-right-front {XYZCoordinateAttributes},
-    element e:bottom-right-front {XYZCoordinateAttributes},
-    element e:bottom-left-front {XYZCoordinateAttributes},
-    element e:top-left-back {XYZCoordinateAttributes},
-    element e:top-right-back {XYZCoordinateAttributes},
-    element e:bottom-right-back {XYZCoordinateAttributes},
-    element e:bottom-left-back {XYZCoordinateAttributes},
+    element e:top-left-front {XYZCoordinateAttributes}?,
+    element e:top-right-front {XYZCoordinateAttributes}?,
+    element e:bottom-right-front {XYZCoordinateAttributes}?,
+    element e:bottom-left-front {XYZCoordinateAttributes}?,
+    element e:top-left-back {XYZCoordinateAttributes}?,
+    element e:top-right-back {XYZCoordinateAttributes}?,
+    element e:bottom-right-back {XYZCoordinateAttributes}?,
+    element e:bottom-left-back {XYZCoordinateAttributes}?,
     element e:image-top-left-front {XYCoordinateAttributes}?,
     element e:image-top-right-front {XYCoordinateAttributes}?,
     element e:image-bottom-right-front {XYCoordinateAttributes}?,
