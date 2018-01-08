@@ -245,14 +245,14 @@ class LabeledThingGateway {
     const serializedLabeledThing = this._couchDbModelSerializer.serialize(labeledThing);
     return this._$q(resolve => {
       this._getAssociatedLabeledThingsInFrames(labeledThing.task, labeledThing)
-        .then(labeledThingsInFrame => {
-          return labeledThingsInFrame.rows.map(labeledThingInFrame => {
+        .then(labeledThingsInFrames=> {
+          return labeledThingsInFrames.rows.map(labeledThingInFrame => {
             this._revisionManager.extractRevision(labeledThingInFrame.doc);
             return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(labeledThingInFrame.doc, labeledThing);
           });
         })
-        .then(labeledThingsInFrame => {
-          this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrame)
+        .then(labeledThingsInFrames => {
+          this._ghostingService.calculateClassGhostsForLabeledThingsInFrames(labeledThingsInFrames)
             .then(ghostedLabeledThingInFrames => {
               const promises = [];
               ghostedLabeledThingInFrames.forEach(labeledThingInFrame => {
