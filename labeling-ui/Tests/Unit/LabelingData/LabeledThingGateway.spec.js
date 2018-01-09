@@ -440,7 +440,7 @@ describe('LabeledThingGateway', () => {
   it('should assign labeled things to a labeled thing group', () => {
     const task = taskFrontendModel;
 
-    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+    spyOn(gateway, 'saveLabeledThingWithoutPackagingExecutor').and.callThrough();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -497,7 +497,7 @@ describe('LabeledThingGateway', () => {
   it('should unassign labeled things from a labeled thing group', () => {
     const task = taskFrontendModel;
 
-    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+    spyOn(gateway, 'saveLabeledThingWithoutPackagingExecutor').and.callThrough();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
@@ -552,7 +552,7 @@ describe('LabeledThingGateway', () => {
   it('should unassign all labeled things from a labeled thing group', () => {
     const task = taskFrontendModel;
 
-    spyOn(gateway, '_saveLabeledThingWithoutPackagingExecutor').and.callThrough();
+    spyOn(gateway, 'saveLabeledThingWithoutPackagingExecutor').and.callThrough();
 
     const labeledThingGroup = new LabeledThingGroup({
       id: 'LABELED-THING-GROUP-ID',
