@@ -735,8 +735,11 @@ export default class LabelSelectorController {
       if (currentSelectedClass === undefined && responses[0] !== undefined) {
         selectedLabeledObject.addClass(responses[0]);
       } else {
-        this.choices[currentSelectedClass.id].selected = !this.choices[currentSelectedClass.id].selected;
-        selectedLabeledObject.removeClass(currentSelectedClass.value);
+        if (selectedLabeledObject.classes.length > 1) {
+          this.choices[currentSelectedClass.id].selected = !this.choices[currentSelectedClass.id].selected;
+          selectedLabeledObject.removeClass(currentSelectedClass.value);
+        }
+
         if (this.searchAttributes.length > 0) {
           this._getRequiredValuesForValueToRemove(selectedLabeledObject, currentSelectedClass.value);
         }
