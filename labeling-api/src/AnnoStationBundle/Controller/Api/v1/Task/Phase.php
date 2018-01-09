@@ -77,13 +77,13 @@ class Phase extends Controller\Base
 
         if (!$task->isAllPhasesDone()) {
             if ($task->getLatestAssignedUserIdForPhase($task->getCurrentPhase()) !== null) {
-                throw new Exception\PreconditionFailedHttpException();
+                throw new Exception\PreconditionFailedHttpException('The task is still assigned to a user');
             }
 
             if ($currentStatus !== Model\LabelingTask::STATUS_TODO &&
                 $currentStatus !== Model\LabelingTask::STATUS_DONE
             ) {
-                throw new Exception\PreconditionFailedHttpException();
+                throw new Exception\PreconditionFailedHttpException('You can\'t move the task in this state');
             }
         }
 
@@ -106,7 +106,7 @@ class Phase extends Controller\Base
                 break;
             case Model\LabelingTask::PHASE_REVIEW:
                 if (!$task->hasReviewPhase()) {
-                    throw new Exception\BadRequestHttpException();
+                    throw new Exception\BadRequestHttpException('This task has no review phase');
                 }
                 $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
                 $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);

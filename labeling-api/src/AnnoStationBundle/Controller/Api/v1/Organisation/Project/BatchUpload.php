@@ -190,7 +190,7 @@ class BatchUpload extends Controller\Base
         $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $flowRequest->getFileName()]);
 
         if (!$file->validateChunk()) {
-            throw new HttpKernel\Exception\BadRequestHttpException();
+            throw new HttpKernel\Exception\BadRequestHttpException('The uploaded chunk is invalid');
         }
 
         // There are some situations where the same previous request is aborted and send again from the ui.

@@ -668,7 +668,7 @@ class Project extends Controller\Base
 
         $labelManager = $this->userFacade->getUserById($assignedLabelManagerId);
         if (!$labelManager->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('You need label manager permissions');
         }
 
         $project->addLabelManagerAssignmentHistory($labelManager);

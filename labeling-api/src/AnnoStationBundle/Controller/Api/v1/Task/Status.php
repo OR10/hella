@@ -207,7 +207,7 @@ class Status extends Controller\Base
 
         if ($this->userPermissions->hasPermission('canMoveTaskInOtherPhase')) {
             if ($task->getStatus($phase) !== Model\LabelingTask::STATUS_TODO) {
-                throw new Exception\BadRequestHttpException();
+                throw new Exception\BadRequestHttpException('Task is not in todo state');
             }
             $task->setStatus($phase, Model\LabelingTask::STATUS_IN_PROGRESS);
             $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_IN_PROGRESS, $user);

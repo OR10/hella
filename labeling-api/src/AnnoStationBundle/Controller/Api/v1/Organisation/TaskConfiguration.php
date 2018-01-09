@@ -17,6 +17,7 @@ use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 
 /**
@@ -167,7 +168,7 @@ class TaskConfiguration extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $taskConfiguration->getUserId()) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('You can only delete your own task configurations');
         }
 
         $projectsInUse = $this->projectFacade->getProjectsByTaskConfiguration($taskConfiguration);
@@ -233,35 +234,29 @@ class TaskConfiguration extends Controller\Base
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         if (!$request->files->has('file') || !$request->get('name')) {
-            return View\View::create()
-                ->setData(['error' => 'Invalid data'])
-                ->setStatusCode(400);
+            throw new BadRequestHttpException('file or name is missing');
         }
 
         $user = $this->tokenStorage->getToken()->getUser();
         $name = $request->get('name');
         if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($organisation, $user, $name)) > 0) {
-            return View\View::create()
-                ->setData(['error' => sprintf(
+            throw new ConflictHttpException(
+                sprintf(
                     'A Task Configuration with the name %s already exists',
                     $name
-                )])
-                ->setStatusCode(409);
+                )
+            );
         }
 
         $xml = new \DOMDocument();
         $xml->load($request->files->get('file'));
         $errorMessage = $this->requirementsXmlValidator->validateRelaxNg($xml);
         if ($errorMessage !== null) {
-            return View\View::create()
-                ->setData(['error' => $errorMessage])
-                ->setStatusCode(406);
+            throw new NotAcceptableHttpException($errorMessage);
         }
 
         if (!$this->hasXmlUniqueIds($xml)) {
-            return View\View::create()
-                ->setData(['error' => 'Found duplicate IDs in XML file.'])
-                ->setStatusCode(406);
+            throw new NotAcceptableHttpException('Found duplicate IDs in XML file.');
         }
 
         $file    = $request->files->get('file');

@@ -221,12 +221,17 @@ class Common extends Module {
             );
           });
 
-          $rootScope.$on('serverError', () => {
+          $rootScope.$on('serverError', (listener, error) => {
+            let errorMessage = 'Please reload the page or go back to the main page.';
+
+            if (error !== undefined && error.message !== undefined) {
+              errorMessage = error.message;
+            }
             modalService.info(
               {
-                title: 'Server Error (5xx)',
+                title: 'Server Error',
                 headline: 'There was an error with the application!',
-                message: 'Please reload the page or go back to the main page.',
+                message: errorMessage,
                 confirmButtonText: 'Go to main page',
                 cancelButtonText: 'Reload page',
               },
@@ -238,12 +243,17 @@ class Common extends Module {
             );
           });
 
-          $rootScope.$on('clientError', () => {
+          $rootScope.$on('clientError', (listener, error) => {
+            let errorMessage = 'Please reload the page or go back to the main page.';
+
+            if (error !== undefined && error.message !== undefined) {
+              errorMessage = error.message;
+            }
             modalService.info(
               {
                 title: 'Client Error (4xx)',
                 headline: 'There was an error with the application!',
-                message: 'Please reload the page or go back to the main page.',
+                message: errorMessage,
                 confirmButtonText: 'Go to main page',
                 cancelButtonText: 'Reload page',
               },
@@ -255,12 +265,17 @@ class Common extends Module {
             );
           });
 
-          $rootScope.$on('revisionError', () => {
+          $rootScope.$on('revisionError', (listener, error) => {
+            let errorMessage = 'Please reload the page and contact your Label Manager about this error.';
+
+            if (error !== undefined && error.message !== undefined) {
+              errorMessage = error.message;
+            }
             modalService.info(
               {
                 title: 'Revision Error (409)',
                 headline: 'There was an error with the application!',
-                message: 'Please reload the page and contact your Label Manager about this error.',
+                message: errorMessage,
                 confirmButtonText: 'Reload Page',
               },
               () => window.location.reload(),
