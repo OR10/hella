@@ -27,8 +27,8 @@ class LinearPolyInterpolationEasing extends InterpolationEasing {
 
     currentPoints.forEach((point, index) => {
       const newCalculatePoint = {
-        x: point.x + (endPoints[index].x - point.x) * delta,
-        y: point.y + (endPoints[index].y - point.y) * delta,
+        x: Math.round(point.x + (endPoints[index].x - point.x) * delta),
+        y: Math.round(point.y + (endPoints[index].y - point.y) * delta),
       };
       points.push(newCalculatePoint);
     });

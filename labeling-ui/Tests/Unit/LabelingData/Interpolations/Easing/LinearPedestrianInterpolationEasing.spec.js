@@ -57,7 +57,7 @@ describe('LinearPedestrianInterpolationEasing Test Suite', () => {
       const endLtif = {shapes: [endShape]};
 
       const expectedGhostShapeAfterEasing = {
-        topCenter: { x: 3, y: 1.5 },
+        topCenter: { x: 3, y: 2 },
         bottomCenter: { x: 2, y: 4 },
       };
 

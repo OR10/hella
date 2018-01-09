@@ -23,12 +23,12 @@ class LinearPedestrianInterpolationEasing extends InterpolationEasing {
     const endBottomCenter = clone(endShape.bottomCenter);
 
     const topCenter = {
-      x: currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) * delta,
-      y: currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) * delta,
+      x: Math.round(currentTopCenter.x + (endTopCenter.x - currentTopCenter.x) * delta),
+      y: Math.round(currentTopCenter.y + (endTopCenter.y - currentTopCenter.y) * delta),
     };
     const bottomCenter = {
-      x: currentBottomCenter.x + (endBottomCenter.x - currentBottomCenter.x) * delta,
-      y: currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) * delta,
+      x: Math.round(currentBottomCenter.x + (endBottomCenter.x - currentBottomCenter.x) * delta),
+      y: Math.round(currentBottomCenter.y + (endBottomCenter.y - currentBottomCenter.y) * delta),
     };
 
     ghostShape.topCenter = topCenter;

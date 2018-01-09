@@ -21,8 +21,8 @@ class LinearPointInterpolationEasing extends InterpolationEasing {
     const endPoint = clone(endShape.point);
 
     const point = {
-      x: currentPoint.x + (endPoint.x - currentPoint.x) * delta,
-      y: currentPoint.y + (endPoint.y - currentPoint.y) * delta,
+      x: Math.round(currentPoint.x + (endPoint.x - currentPoint.x) * delta),
+      y: Math.round(currentPoint.y + (endPoint.y - currentPoint.y) * delta),
     };
 
     ghostShape.point = point;

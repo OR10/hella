@@ -57,8 +57,8 @@ describe('LinearRectangleInterpolationEasing Test Suite', () => {
       const endLtif = {shapes: [endShape]};
 
       const expectedGhostShapeAfterEasing = {
-        topLeft: { x: 3.6999999999999997, y: 35.599999999999994 },
-        bottomRight: { x: 32, y: 24.7 },
+        topLeft: { x: 4, y: 36 },
+        bottomRight: { x: 32, y: 25 },
       };
 
       easing.step(ghost, null, endLtif, delta);

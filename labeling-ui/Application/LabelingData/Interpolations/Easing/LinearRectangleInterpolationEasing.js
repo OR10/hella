@@ -23,12 +23,12 @@ class LinearRectangleInterpolationEasing extends InterpolationEasing {
     const endBottomRight = clone(endShape.bottomRight);
 
     const topLeft = {
-      x: currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) * delta,
-      y: currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) * delta,
+      x: Math.round(currentTopLeft.x + (endTopLeft.x - currentTopLeft.x) * delta),
+      y: Math.round(currentTopLeft.y + (endTopLeft.y - currentTopLeft.y) * delta),
     };
     const bottomRight = {
-      x: currentBottomRight.x + (endBottomRight.x - currentBottomRight.x) * delta,
-      y: currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) * delta,
+      x: Math.round(currentBottomRight.x + (endBottomRight.x - currentBottomRight.x) * delta),
+      y: Math.round(currentBottomRight.y + (endBottomRight.y - currentBottomRight.y) * delta),
     };
 
     ghostShape.topLeft = topLeft;
