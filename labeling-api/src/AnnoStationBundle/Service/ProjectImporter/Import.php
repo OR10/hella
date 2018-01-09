@@ -411,6 +411,15 @@ class Import
             );
         }
 
+        $videoTags = $xpath->query('./x:metadata/x:tags/x:tag', $videoDomElement);
+        $tags = [];
+        /** @var \DOMElement $videoTag */
+        foreach($videoTags as $videoTag) {
+            $tags[] = $videoTag->nodeValue;
+        }
+
+        $video->setTags($tags);
+
         $video->setOriginalId($videoDomElement->getAttribute('id'));
 
         if (is_file($calibrationFilePath)) {

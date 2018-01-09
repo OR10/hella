@@ -58,6 +58,11 @@ class Video extends Base
     private $originalId;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $tags;
+
+    /**
      * Static factory method for easy use of the fluent interface.
      *
      * @param AnnoStationBundleModel\Organisation $organisation
@@ -268,5 +273,25 @@ class Video extends Base
     public function setOriginalId($originalId)
     {
         $this->originalId = $originalId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        if (!is_array($this->tags)) {
+            return [];
+        }
+
+        return $this->tags;
+    }
+
+    /**
+     * @param mixed $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
     }
 }
