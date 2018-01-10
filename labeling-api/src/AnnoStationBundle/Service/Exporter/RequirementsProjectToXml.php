@@ -22,7 +22,7 @@ use AnnoStationBundle\Helper\ExportXml;
  * Any changes to the XML structure must be accepted by Hella Aglaia before!
  *
  * If you change the XML structure, you need to increase the XML version number!
- * puppet/hiera/annostation.yaml - `labeling_api::params::requirements_xml_version`
+ * puppet/hiera/global.yaml - `labeling_api::params::requirements_xml_version`
  *
  * !!!!!!!!!!!!!!!!!!!
  * !!!! Attention !!!!
