@@ -2,6 +2,7 @@
 <export xmlns="http://weblabel.hella-aglaia.com/schema/export">
     <!-- #9 -->
     <metadata>
+        <xml-version>1.00</xml-version>
         <annostation>
             <hostname>anno.crosscan.com</hostname>
             <build>1381</build>

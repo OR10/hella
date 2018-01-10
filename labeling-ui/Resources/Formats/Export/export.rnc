@@ -18,6 +18,7 @@ grammar {
 
 # <metadata>
   Metadata = element e:metadata {
+    element e:xml-version {text}? &
     AnnoStation &
     Requirements &
     AdditionalFrameNumberMapping? &

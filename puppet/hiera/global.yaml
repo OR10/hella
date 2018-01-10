@@ -36,3 +36,5 @@ couchdb::bind_address: '0.0.0.0'
 couchdb::data_dir_prefix: '/var/lib'
 
 nodejs::repo_url_suffix: 'node_4.x'
+
+labeling_api::params::requirements_xml_version: '1.0'

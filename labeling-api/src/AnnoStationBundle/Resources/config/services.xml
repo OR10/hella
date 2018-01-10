@@ -198,6 +198,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
+            <argument>%requirements_xml_version%</argument>
         </service>
 
         <service id="annostation.labeling_api.service.class_columns_factory"

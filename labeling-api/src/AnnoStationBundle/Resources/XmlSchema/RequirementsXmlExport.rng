@@ -20,6 +20,11 @@
     <define name="Metadata">
         <element name="e:metadata">
             <interleave>
+                <optional>
+                    <element name="e:xml-version">
+                        <text/>
+                    </element>
+                </optional>
                 <ref name="AnnoStation"/>
                 <ref name="Requirements"/>
                 <optional>

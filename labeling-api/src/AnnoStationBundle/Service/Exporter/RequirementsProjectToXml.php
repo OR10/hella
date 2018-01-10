@@ -14,6 +14,20 @@ use AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
+/**
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ *
+ * Any changes to the XML structure must be accepted by Hella Aglaia before!
+ *
+ * If you change the XML structure, you need to increase the XML version number!
+ * puppet/hiera/annostation.yaml - `labeling_api::params::requirements_xml_version`
+ *
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ */
 class RequirementsProjectToXml
 {
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
@@ -108,6 +122,11 @@ class RequirementsProjectToXml
     private $campaignFacade;
 
     /**
+     * @var string
+     */
+    private $requirementsXmlVersion;
+
+    /**
      * RequirementsProjectToXml constructor.
      *
      * @param Facade\Exporter                                         $exporterFacade
@@ -128,6 +147,7 @@ class RequirementsProjectToXml
      * @param LabeledThingGroup\FacadeInterface                       $labeledThingGroupFacadeFactory
      * @param LabeledThingGroupInFrame\FacadeInterface                $labeledThingGroupInFrameFacadeFactory
      * @param Service\DepthBuffer                                     $depthBufferService
+     * @param string                                                  $requirementsXmlVersion
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -147,7 +167,8 @@ class RequirementsProjectToXml
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
         LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
         LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFacadeFactory,
-        Service\DepthBuffer $depthBufferService
+        Service\DepthBuffer $depthBufferService,
+        $requirementsXmlVersion
     ) {
         $this->exporterFacade                                  = $exporterFacade;
         $this->projectFacade                                   = $projectFacade;
@@ -167,6 +188,7 @@ class RequirementsProjectToXml
         $this->depthBufferService                              = $depthBufferService;
         $this->calibrationDataFacade                           = $calibrationDataFacade;
         $this->campaignFacade                                  = $campaignFacade;
+        $this->requirementsXmlVersion                          = $requirementsXmlVersion;
     }
 
     /**
@@ -215,6 +237,7 @@ class RequirementsProjectToXml
                     $this->labelingGroupFacade,
                     $this->campaignFacade,
                     $taskConfigurations,
+                    $this->requirementsXmlVersion,
                     self::XML_NAMESPACE,
                     $additionalFrameNumberMapping
                 );

@@ -43,6 +43,11 @@ class Metadata extends ExportXml\Element
     /**
      * @var string
      */
+    private $requirementsXmlVersion;
+
+    /**
+     * @var string
+     */
     private $namespace;
 
     /**
@@ -57,6 +62,7 @@ class Metadata extends ExportXml\Element
         Facade\LabelingGroup $labelingGroupFacade,
         Facade\Campaign $campaignFacade,
         $taskConfigurations,
+        $requirementsXmlVersion,
         $namespace,
         AnnoStationBundleModel\AdditionalFrameNumberMapping $additionalFrameNumberMapping = null
     ) {
@@ -66,6 +72,7 @@ class Metadata extends ExportXml\Element
         $this->labelingGroupFacade          = $labelingGroupFacade;
         $this->campaignFacade               = $campaignFacade;
         $this->taskConfigurations           = $taskConfigurations;
+        $this->requirementsXmlVersion       = $requirementsXmlVersion;
         $this->namespace                    = $namespace;
         $this->additionalFrameNumberMapping = $additionalFrameNumberMapping;
     }
@@ -74,6 +81,9 @@ class Metadata extends ExportXml\Element
     {
         $metadata = $document->createElementNS($this->namespace, 'metadata');
 
+        $metadata->appendChild(
+            $document->createElementNS($this->namespace, 'xml-version', $this->requirementsXmlVersion)
+        );
 
         $annostation = new Element\Metadata\AnnoStation($this->namespace, gethostname(), '0');
         $metadata->appendChild($annostation->getElement($document));

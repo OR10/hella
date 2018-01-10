@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <export xmlns="http://weblabel.hella-aglaia.com/schema/export">
   <metadata>
+    <xml-version>1.0</xml-version>
     <annostation>
       <hostname></hostname>
       <build>0</build>
