@@ -844,14 +844,14 @@ class ProjectListController {
     if (this.selectedProjectId !== undefined && this.selectedProjectId !== null) {
       const id = 'action-project-id-' + this.selectedProjectId;
       const clickedButtonBounds = angular.element(document.getElementById(id))[0].getBoundingClientRect();
-      const left = (clickedButtonBounds.x - 140 + clickedButtonBounds.width) + 'px';
+      const left = (clickedButtonBounds.left - 140 + clickedButtonBounds.width) + 'px';
       let top;
       const actionListHeight = (this.actionButtons[projectId].filter(actionButton => actionButton.visible).length * 30.38) + 10;
-      const dropDownHeight = clickedButtonBounds.y + actionListHeight;
+      const dropDownHeight = clickedButtonBounds.top + actionListHeight;
       if (window.innerHeight < dropDownHeight + 20) {
-        top = (clickedButtonBounds.y - actionListHeight - 5) + 'px';
+        top = (clickedButtonBounds.top - actionListHeight - 5) + 'px';
       } else {
-        top = (clickedButtonBounds.y + 28) + 'px';
+        top = (clickedButtonBounds.top + 28) + 'px';
       }
       this.actionsButtonDropDownLeftStyle = left;
       this.actionsButtonDropDownTopStyle = top;
