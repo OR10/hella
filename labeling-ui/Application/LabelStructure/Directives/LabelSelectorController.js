@@ -435,26 +435,6 @@ export default class LabelSelectorController {
       });
     });
 
-    // Remove labels belonging to removed pages
-    if (this.pages !== null) {
-      this.pages.forEach(page => {
-        const id = page.id;
-        if (seenPages[id] === true) {
-          return;
-        }
-        page.responses.forEach(response => {
-          if (response.value !== undefined) {
-            // Remove the chosen value from the labelsObject
-            selectedLabeledObject.setClasses(
-              selectedLabeledObject.classes.filter(
-                label => label !== response.value
-              )
-            );
-          }
-        });
-      });
-    }
-
     if (this.searchAttributes.length > 0) {
       this.multiSelection = true;
       newPages = newPages.filter(page => {
@@ -490,6 +470,26 @@ export default class LabelSelectorController {
 
     this.pages = newPages;
     this.choices = newChoices;
+
+    // Remove labels belonging to removed pages
+    if (this.pages !== null) {
+      this.pages.forEach(page => {
+        const id = page.id;
+        if (seenPages[id] === true) {
+          return;
+        }
+        page.responses.forEach(response => {
+          if (response.value !== undefined) {
+            // Remove the chosen value from the labelsObject
+            selectedLabeledObject.setClasses(
+              selectedLabeledObject.classes.filter(
+                label => label !== response.value
+              )
+            );
+          }
+        });
+      });
+    }
 
     if (this.activePageIndex === null && this.pages.length > 0) {
       this.activePageIndex = 0;
