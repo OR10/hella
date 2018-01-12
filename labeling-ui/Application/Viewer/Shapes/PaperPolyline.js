@@ -41,19 +41,19 @@ class PaperPolyline extends PaperPath {
     const maxValueOfY = Math.min(...this._points.map(point => point.y));
     const highestPoint = this._points.find(point => point.y === maxValueOfY);
     let currentOffSet = 0;
-    const spacing = 7;
+    const spacing = 8;
     currentOffSet = maxValueOfY - spacing;
     super.classes.forEach(className => {
       const topLeftX = highestPoint.x;
       const topClassName = new paper.PointText({
-        fontSize: 7,
+        fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
         point: new paper.Point(topLeftX, currentOffSet),
         fillColor: this._color.primary,
         shadowColor: new paper.Color(0, 0, 0),
         shadowBlur: 2,
         justification: 'left',
-        shadowOffset: new paper.Point(2, 2),
+        shadowOffset: new paper.Point(1, 1),
         content: className,
       });
       currentOffSet -= spacing;

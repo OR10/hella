@@ -103,20 +103,20 @@ class PaperRectangle extends PaperThingShape {
 
   _drawClasses() {
     let currentOffSet = 0;
-    const spacing = 7;
+    const spacing = 8;
     const topPositionY = this._topLeft.y;
     currentOffSet = topPositionY - spacing;
     super.classes.forEach(className => {
       const topLeftX = this._topLeft.x;
       const topClassName = new paper.PointText({
-        fontSize: 7,
+        fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
         point: new paper.Point(topLeftX, currentOffSet),
         fillColor: this._color.primary,
         shadowColor: new paper.Color(0, 0, 0),
         shadowBlur: 2,
         justification: 'left',
-        shadowOffset: new paper.Point(2, 2),
+        shadowOffset: new paper.Point(1, 1),
         content: className,
       });
       currentOffSet -= spacing;
