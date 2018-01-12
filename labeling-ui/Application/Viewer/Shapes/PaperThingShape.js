@@ -61,6 +61,13 @@ class PaperThingShape extends PaperShape {
   }
 
   /**
+   * @returns {Array<String>}
+   */
+  get classes() {
+    return this.labeledThingInFrame.classes;
+  }
+
+  /**
    * @return {boolean}
    */
   canBeInterpolated() {

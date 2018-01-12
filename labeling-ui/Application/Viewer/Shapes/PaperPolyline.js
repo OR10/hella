@@ -32,6 +32,35 @@ class PaperPolyline extends PaperPath {
     });
   }
 
+  _drawShape() {
+    super._drawShape();
+    this._drawClasses();
+  }
+
+  _drawClasses() {
+    const maxValueOfY = Math.min(...this._points.map(point => point.y));
+    const highestPoint = this._points.find(point => point.y === maxValueOfY);
+    let currentOffSet = 0;
+    const spacing = 7;
+    currentOffSet = maxValueOfY - spacing;
+    super.classes.forEach(className => {
+      const topLeftX = highestPoint.x;
+      const topClassName = new paper.PointText({
+        fontSize: 7,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(2, 2),
+        content: className,
+      });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
+    });
+  }
+
   /**
    * @returns {string}
    */

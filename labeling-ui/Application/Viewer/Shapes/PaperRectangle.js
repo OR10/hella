@@ -53,6 +53,7 @@ class PaperRectangle extends PaperThingShape {
     this.removeChildren();
 
     const shape = this._createShape();
+    this._drawClasses()
     this.addChild(shape);
 
     if (this._isSelected && drawHandles) {
@@ -100,6 +101,28 @@ class PaperRectangle extends PaperThingShape {
     );
   }
 
+  _drawClasses() {
+    let currentOffSet = 0;
+    const spacing = 7;
+    const topPositionY = this._topLeft.y;
+    currentOffSet = topPositionY - spacing;
+    super.classes.forEach(className => {
+      const topLeftX = this._topLeft.x;
+      const topClassName = new paper.PointText({
+        fontSize: 7,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(2, 2),
+        content: className,
+      });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
+    });
+  }
   /**
    * Select the shape
    *
