@@ -12,6 +12,7 @@ import GroupNameService from './Services/GroupNameService';
 import DrawingContextServiceProvider from './Providers/DrawingContextServiceProvider';
 
 import 'jquery-mousewheel';
+import DrawClassShapeService from './Services/DrawClassShapeService';
 
 /**
  * @class MediaControls
@@ -28,6 +29,8 @@ export default class Viewer extends Module {
     this.module.service('labeledThingGroupService', LabeledThingGroupService);
     this.module.service('hierarchyCreationService', HierarchyCreationService);
     this.module.service('groupNameService', GroupNameService);
+    this.module.service('drawClassShapeService', DrawClassShapeService);
+
 
     this.module.provider('drawingContextService', DrawingContextServiceProvider);
   }

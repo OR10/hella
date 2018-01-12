@@ -101,6 +101,13 @@ class PaperThingShape extends PaperShape {
   playInFrameRange() {
     return true;
   }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return false;
+  }
 }
 
 export default PaperThingShape;

@@ -160,6 +160,11 @@ export default class LabelSelectorController {
     this.multiSelection = false;
 
     /**
+     * @type {boolean}
+     */
+    this.showClasses = false;
+
+    /**
      * @type {Object}
      */
     this.accordionControl = {};
@@ -783,6 +788,7 @@ export default class LabelSelectorController {
         this.accordionControl.expand(this.pages[index + 1].id);
       }
     }, 100);
+    this._$rootScope.$emit('action:redraw-shape-with-class', this.task, this.selectedPaperShape);
   }
 
   /**
@@ -948,6 +954,20 @@ export default class LabelSelectorController {
         resolve();
       });
     });
+  }
+
+  canShowClassesOnSelectedPaperShape() {
+    if (this.selectedPaperShape === null) {
+      return false;
+    }
+    return this.selectedPaperShape.canShowClasses();
+  }
+
+  handleShowClassesOnShapes() {
+    if (this.selectedPaperShape === null) {
+      return;
+    }
+    this._$rootScope.$emit('action:save-draw-classes');
   }
 }
 

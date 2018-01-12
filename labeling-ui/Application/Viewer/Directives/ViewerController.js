@@ -83,6 +83,7 @@ class ViewerController {
    * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    * @param {PouchDbContextService} pouchDbContextService
    * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
+   * @param {DrawClassShapeService} drawClassShapeService
    */
   constructor(
     $scope,
@@ -127,7 +128,8 @@ class ViewerController {
     pathCollisionService,
     labeledThingReferentialCheckService,
     pouchDbContextService,
-    rootScopeEventRegistrationService
+    rootScopeEventRegistrationService,
+    drawClassShapeService,
   ) {
     /**
      * Mouse cursor used while hovering the viewer set by position inside the viewer
@@ -413,6 +415,12 @@ class ViewerController {
      * @private
      */
     this._rootScopeEventRegistrationService = rootScopeEventRegistrationService;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
 
     const groupListener = (tool, labelStructureObject) => {
       if (this.readOnly) {
@@ -1043,7 +1051,8 @@ class ViewerController {
       this._groupSelectionDialogFactory,
       this._pathCollisionService,
       this._labeledThingReferentialCheckService,
-      this._rootScopeEventRegistrationService
+      this._rootScopeEventRegistrationService,
+      this._drawClassShapeService,
     );
 
     this.thingLayer.attachToDom(this._$element.find('.annotation-layer')[0]);
@@ -1051,7 +1060,6 @@ class ViewerController {
     this.thingLayer.on('thing:create', shape => this._onThingCreate(shape));
     this.thingLayer.on('thing:update', shape => {
       const frameIndex = this.framePosition.position;
-
       this._updateAllGroupDimensions();
 
       this._debouncedOnThingUpdate.debounce(shape, frameIndex);
@@ -1964,6 +1972,7 @@ ViewerController.$inject = [
   'labeledThingReferentialCheckService',
   'pouchDbContextService',
   'rootScopeEventRegistrationService',
+  'drawClassShapeService',
 ];
 
 export default ViewerController;

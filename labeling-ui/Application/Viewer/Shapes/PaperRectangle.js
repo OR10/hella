@@ -12,8 +12,9 @@ class PaperRectangle extends PaperThingShape {
    * @param {Point} topLeft
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
+   * @param {Boolean} drawClasses
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color) {
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClasses) {
     super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Point}
@@ -27,7 +28,7 @@ class PaperRectangle extends PaperThingShape {
      */
     this._bottomRight = bottomRight;
 
-    this._drawShape();
+    this._drawShape(drawClasses);
   }
 
   /**
@@ -44,25 +45,28 @@ class PaperRectangle extends PaperThingShape {
   }
 
   /**
+   * @param {Boolean} drawClasses
    * @param {Boolean} drawHandles
    * @private
    */
-  _drawShape(drawHandles = true) {
+  _drawShape(drawClasses, drawHandles = true) {
     super._drawShape(drawHandles);
 
     this.removeChildren();
 
     const shape = this._createShape();
-    this._drawClasses()
     this.addChild(shape);
 
     if (this._isSelected && drawHandles) {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
+    if (drawClasses) {
+      this._drawClasses();
+    }
   }
 
-  /**
+    /**
    * @returns {Rectangle}
    * @private
    */
@@ -329,6 +333,13 @@ class PaperRectangle extends PaperThingShape {
    */
   initialDragDistance() {
     return 4;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return true;
   }
 }
 

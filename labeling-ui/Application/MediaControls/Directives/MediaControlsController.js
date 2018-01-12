@@ -52,6 +52,11 @@ class MediaControlsController {
     /**
      * @type {angular.$rootScope}
      */
+    this._$scope = $scope;
+
+    /**
+     * @type {angular.$rootScope}
+     */
     this._$rootScope = $rootScope;
 
     /**
@@ -403,6 +408,15 @@ class MediaControlsController {
         // @TODO: Inform other parts of the application to reload LabeledThingsInFrame after interpolation is finished
       });
     }
+  }
+
+  canShowClassesOnSelectedPaperShape() {
+    const shapes = this._$scope.vm.paperThingShapes.filter(shape => shape.canShowClasses());
+    return shapes.length > 0;
+  }
+
+  handleShowClassesOnShapes() {
+    this._$rootScope.$emit('action:save-draw-classes');
   }
 
   handleDeleteSelectionClicked() {

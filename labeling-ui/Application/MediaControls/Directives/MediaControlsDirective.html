@@ -188,6 +188,14 @@
             </button>
         </div>
         <div class="grid-content noscroll">
+            <button id="toggle-shape-classes"
+                    ng-show="vm.canShowClassesOnSelectedPaperShape()"
+                    ng-click="vm.handleShowClassesOnShapes()"
+                    tooltip="Show classes of shape">
+                <i class="icon fa fa-sticky-note-o"></i>
+            </button>
+        </div>
+        <div class="grid-content noscroll">
             <button id="delete-shape-button"
                     ng-show="vm.canSelectedPaperShapeBeDeleted()"
                     ng-click="vm.handleDeleteSelectionClicked()"

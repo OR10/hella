@@ -9,10 +9,11 @@ class PaperPolyline extends PaperPath {
    * @param {string} shapeId
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
+   * @param {Boolean} drawClasses
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, drawClasses) {
     super(labeledThingInFrame, shapeId, points, color);
-    this._drawShape();
+    this._drawShape(drawClasses);
   }
 
   /**
@@ -32,9 +33,11 @@ class PaperPolyline extends PaperPath {
     });
   }
 
-  _drawShape() {
+  _drawShape(drawClasses) {
     super._drawShape();
-    this._drawClasses();
+    if (drawClasses) {
+      this._drawClasses();
+    }
   }
 
   _drawClasses() {
@@ -81,6 +84,13 @@ class PaperPolyline extends PaperPath {
       id: this._shapeId,
       points,
     };
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return true;
   }
 }
 

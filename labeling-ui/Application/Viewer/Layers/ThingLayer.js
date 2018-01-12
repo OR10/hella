@@ -44,6 +44,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
    * @param {PathCollisionService} pathCollisionService
    * @param {LabeledThingReferentialCheckService} labeledThingReferentialCheckService
    * @param {RootScopeEventRegistrationService} rootScopeEventRegistrationService
+   * @param {DrawClassShapeService} drawClassShapeService
    */
   constructor(
     width,
@@ -67,6 +68,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
     pathCollisionService,
     labeledThingReferentialCheckService,
     rootScopeEventRegistrationService,
+    drawClassShapeService,
   ) {
     super(width, height, $scope, drawingContext);
 
@@ -209,6 +211,12 @@ class ThingLayer extends PanAndZoomPaperLayer {
      * @private
      */
     this._labeledThingReferentialCheckService = labeledThingReferentialCheckService;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
 
     $scope.$watchCollection('vm.paperGroupShapes', (newPaperGroupShapes, oldPaperGroupShapes) => {
       const oldSet = new Set(oldPaperGroupShapes);
@@ -500,7 +508,36 @@ class ThingLayer extends PanAndZoomPaperLayer {
         }
       }
     );
+    this._rootScopeEventRegistrationService.register(
+      this,
+      'action:redraw-shape-with-class',
+      (event, task, shape) => {
+        if (shape.canShowClasses() && this._drawClassShapeService.drawClasses) {
+          this._context.withScope(scope => {
+            shape.redrawShape();
+            scope.view.update();
+          });
+        }
+      }
+    );
+
+    this._rootScopeEventRegistrationService.register(
+      this,
+      'action:save-draw-classes', () => {
+        this._drawClassShapeService.drawClasses = !this._drawClassShapeService.drawClasses;
+        this._context.withScope(scope => {
+          if (this._drawClassShapeService.drawClasses === true) {
+            const shapes = this._$scope.vm.paperThingShapes.filter(shape => shape.canShowClasses());
+            shapes.forEach(shape => shape.redrawShape());
+          } else {
+            this._$scope.vm.paperThingShapes.forEach(shape => shape.redrawShape());
+          }
+          scope.view.update();
+        });
+      }
+    );
   }
+
 
   /**
    * @param {PaperVirtualShape} shape
