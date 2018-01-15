@@ -9,11 +9,12 @@ class PaperPolyline extends PaperPath {
    * @param {string} shapeId
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
-   * @param {Boolean} drawClasses
+   * @param {DrawClassShapeService} drawClassShapeService
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, drawClasses) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService) {
     super(labeledThingInFrame, shapeId, points, color);
-    this._drawShape(drawClasses);
+    this._drawClassShapeService = drawClassShapeService;
+    this._drawShape();
   }
 
   /**
@@ -33,9 +34,9 @@ class PaperPolyline extends PaperPath {
     });
   }
 
-  _drawShape(drawClasses) {
+  _drawShape() {
     super._drawShape();
-    if (drawClasses) {
+    if (this._drawClassShapeService.drawClasses === true) {
       this._drawClasses();
     }
   }

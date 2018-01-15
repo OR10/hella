@@ -60,7 +60,7 @@ class PaperShapeFactory {
     const topLeft = new paper.Point(shape.topLeft.x, shape.topLeft.y);
     const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
 
-    return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color, this._drawClassShapeService.drawClasses);
+    return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color, this._drawClassShapeService);
   }
 
   /**
@@ -135,7 +135,7 @@ class PaperShapeFactory {
    * @private
    */
   _createPolyline(labeledThingInFrame, shape, color) {
-    return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color, this._drawClassShapeService.drawClasses);
+    return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color, this._drawClassShapeService);
   }
 
   /**
