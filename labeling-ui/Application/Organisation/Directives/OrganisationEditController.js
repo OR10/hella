@@ -3,8 +3,10 @@ class OrganisationEditController {
    * @param {$state} $state
    * @param {OrganisationGateway} organisationsGateway
    * @param {ModalService} modalService
+   * @param {UserGateway} userGateway
+   * @param {CurrentUserService} currentUserService
    */
-  constructor($state, organisationsGateway, modalService) {
+  constructor($state, organisationsGateway, modalService, userGateway, currentUserService) {
     /**
      * @type {$state}
      * @private
@@ -31,6 +33,18 @@ class OrganisationEditController {
      * @type {boolean}
      */
     this.loadingInProgress = false;
+
+    /**
+     * @type {UserGateway}
+     * @private
+     */
+    this._userGateway = userGateway;
+
+    /**
+     * @type {CurrentUserService}
+     * @private
+     */
+    this._currentUserService = currentUserService;
 
     this.userInput = '';
     this.unit = 'mb';
@@ -70,7 +84,14 @@ class OrganisationEditController {
       this.selectedOrganisation.userQuota = this.userQuota;
 
       this._organisationGateway.updateOrganisation(this.selectedOrganisation)
-          .then(() => this._goToOrganisationList());
+        .then(() => {
+          this._userGateway.getCurrentUserOrganisations().then(
+            userOrganisations => {
+              this._currentUserService.setOrganisations(userOrganisations);
+              this._goToOrganisationList();
+            }
+          );
+        });
     } else {
       this.loadingInProgress = false;
     }
@@ -99,7 +120,14 @@ class OrganisationEditController {
     const quota = this._calculateBytes(this.quota, this.unit);
 
     this._organisationGateway.createOrganisation(this.userInput, quota, this.userQuota)
-        .then(() => this._goToOrganisationList());
+      .then(() => {
+        this._userGateway.getCurrentUserOrganisations().then(
+          userOrganisations => {
+            this._currentUserService.setOrganisations(userOrganisations);
+            this._goToOrganisationList();
+          }
+        );
+      });
   }
 
   /**
@@ -144,6 +172,8 @@ OrganisationEditController.$inject = [
   '$state',
   'organisationGateway',
   'modalService',
+  'userGateway',
+  'currentUserService',
 ];
 
 export default OrganisationEditController;
