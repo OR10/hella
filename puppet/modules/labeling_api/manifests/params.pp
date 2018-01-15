@@ -14,8 +14,6 @@ class labeling_api::params(
   $database_password = 'null',
   $database_allowed_host = '127.0.0.1',
 
-  $requirements_xml_version = 'unknown',
-
   $couchdb_hosts = undef,
 
   $couchdb_host = '127.0.0.1',
