@@ -173,7 +173,7 @@ class CouchDbUsers
 
         $couchDbUsers = array_map(
             function ($user) {
-                preg_match('/^(org.couchdb.user:)(\w+)$/', $user['id'], $matches);
+                preg_match('/^(org.couchdb.user:)([\w\s]+)$/', $user['id'], $matches);
 
                 return $matches[2];
             },
