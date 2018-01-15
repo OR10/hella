@@ -957,7 +957,7 @@ export default class LabelSelectorController {
   }
 
   canShowClassesOnSelectedPaperShape() {
-    if (this.selectedPaperShape === null) {
+    if (this.selectedPaperShape === null || this.selectedPaperShape instanceof PaperGroupShape) {
       return false;
     }
     return this.selectedPaperShape.canShowClasses();
