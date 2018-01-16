@@ -327,6 +327,7 @@ class LabeledThingInFrameGateway {
               return this._couchDbModelDeserializer.deserializeLabeledThingInFrame(readDocument, labeledThingInFrame._labeledThing);
             })
             .then(deserializedLabeledThingInFrame => {
+              storedLabeledThingInFrame = deserializedLabeledThingInFrame;
               return this._labeledThingGateway.saveLabeledThingWithoutPackagingExecutor(deserializedLabeledThingInFrame.labeledThing);
             })
             .then(() => {
