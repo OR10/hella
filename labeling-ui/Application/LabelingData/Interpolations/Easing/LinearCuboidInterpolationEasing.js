@@ -33,8 +33,8 @@ class LinearCuboidInterpolationEasing extends InterpolationEasing {
     });
 
     // if you interpolate two 2d cuboids the steps will be made 3d again here
-    const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).vertices
-        .map(vertex => [vertex.x, vertex.y, vertex.z]);
+    const verticesWithPredictedVertices = Cuboid3d.createFromRawVertices(newCuboid3d).nonPredictedVertices
+      .map(vertex => vertex === null ? null : [vertex.x, vertex.y, vertex.z]);
 
     ghostShape.vehicleCoordinates = verticesWithPredictedVertices;
   }
