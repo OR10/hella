@@ -101,10 +101,10 @@ describe('LinearCuboidInterpolationEasing Test Suite', () => {
         [4.7, 5, 1],
         [4.7, 6, 1],
         [4.7, 7, 1],
-        [4.7, 5, 1],
-        [4.7, 5, 1],
-        [4.7, 6, 1],
-        [4.7, 7, 1],
+        null,
+        null,
+        null,
+        null,
       ];
       expect(ghost.shapes[0].vehicleCoordinates).toEqual(expectedStepCoordinates);
     });
