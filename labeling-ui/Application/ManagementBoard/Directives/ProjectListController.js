@@ -641,9 +641,24 @@ class ProjectListController {
   _buildColumns(row) {
     const columns = [];
 
+    let statusName;
+    switch (row.status) {
+      case 'todo':
+        statusName = 'Todo';
+        break;
+      case 'in_progress':
+        statusName = 'In Progress';
+        break;
+      case 'done':
+        statusName = 'Done';
+        break;
+      default:
+        statusName = row.status;
+    }
+
     const propertyToColumnMap = {
       'name': 'name',
-      'creationTimestampFormatted': 'created at',
+      'lastStatusChangeTimestampFormatted': statusName + ' at',
       'dueTimestampFormatted': 'deadline',
       'videosCount': 'media',
       'taskCount': 'jobs',
@@ -681,7 +696,7 @@ class ProjectListController {
         }
       },
       // TODO: This could be later use to calculate table process
-      'creationTimestampFormatted': project => project.creationTimestamp !== undefined ? moment.unix(project.creationTimestamp).format('DD.MM.YYYY') : null,
+      'lastStatusChangeTimestampFormatted': project => project.lastStatusChangeTimestamp !== undefined ? moment.unix(project.lastStatusChangeTimestamp).format('DD.MM.YYYY') : null,
       'dueTimestampFormatted': project => project.dueTimestamp !== undefined && project.dueTimestamp !== null ? moment.unix(project.dueTimestamp).format('DD.MM.YYYY') : 'not set',
       'finishedPercentageFormatted': project => project.finishedPercentage !== undefined ? `${project.finishedPercentage} %` : null,
       'totalLabelingTimeInSecondsFormatted': project => {

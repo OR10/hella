@@ -262,18 +262,19 @@ class Project extends Controller\Base
             }
 
             $responseProject               = array(
-                'id'                 => $project->getId(),
-                'userId'             => $project->getUserId(),
-                'name'               => $project->getName(),
-                'status'             => $project->getStatus(),
-                'labelingGroupId'    => $project->getLabelingGroupId(),
-                'finishedPercentage' => floor(
+                'id'                          => $project->getId(),
+                'userId'                      => $project->getUserId(),
+                'name'                        => $project->getName(),
+                'status'                      => $project->getStatus(),
+                'lastStatusChangeTimestamp'   => $project->getLastStateForStatus($project->getStatus()) === null ? null : $project->getLastStateForStatus($project->getStatus())['timestamp'],
+                'labelingGroupId'             => $project->getLabelingGroupId(),
+                'finishedPercentage'          => floor(
                     $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
-                'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
-                'diskUsage'                => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
-                'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
+                'creationTimestamp'           => $project->getCreationDate(),
+                'taskInPreProcessingCount'    => $sumOfPreProcessingTasks,
+                'diskUsage'                   => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
+                'campaigns'                   => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
             if ($this->userPermissions->hasPermission('canViewProjectManagementRelatedStatisticsColumn')) {
