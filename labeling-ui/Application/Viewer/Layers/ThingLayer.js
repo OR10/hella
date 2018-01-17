@@ -653,6 +653,11 @@ class ThingLayer extends PanAndZoomPaperLayer {
         this._isMousePressed = false;
         this._lastMouseDownEvent = null;
 
+        const selectedShape = this._shapeSelectionService.getSelectedShape();
+        if (selectedShape !== undefined && typeof selectedShape.fixOrientation !== 'undefined') {
+          selectedShape.fixOrientation();
+        }
+
         this._abortActiveTool();
       } else if (event.type === 'mouseenter') {
         this._invokeActiveTool();
