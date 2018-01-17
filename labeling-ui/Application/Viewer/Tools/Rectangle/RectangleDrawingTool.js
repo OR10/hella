@@ -19,8 +19,9 @@ class RectangleDrawingTool extends CreationTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {DrawClassShapeService} drawClassShapeService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -52,6 +53,12 @@ class RectangleDrawingTool extends CreationTool {
      * @private
      */
     this._creationHandle = null;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
   }
 
   /**
@@ -110,7 +117,8 @@ class RectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         from,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService
       );
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
@@ -145,7 +153,8 @@ class RectangleDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService
       );
     });
 
@@ -259,6 +268,7 @@ RectangleDrawingTool.$inject = [
   'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
+  'drawClassShapeService',
 ];
 
 export default RectangleDrawingTool;
