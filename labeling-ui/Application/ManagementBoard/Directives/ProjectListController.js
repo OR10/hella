@@ -188,9 +188,14 @@ class ProjectListController {
 
         this.projects = this._createViewData(response.result);
         this.columns = this._buildColumns(this.projects[0]);
+        this._updateProjectCreatorsForAllProjects(response);
+
+        this.loadingInProgress = false;
+/*
         this._getProjectCreatorsForAllProjects().then(() => {
           this.loadingInProgress = false;
         });
+*/
       });
   }
 
@@ -727,6 +732,14 @@ class ProjectListController {
   _projectOwnerIsCurrentUser(project) {
     const currentUserId = this.user.id;
     return currentUserId === project.userId;
+  }
+
+  _updateProjectCreatorsForAllProjects(result) {
+    this.projects.forEach(project => {
+      if (this.projectCreators.has(project.userId) === false) {
+        this.projectCreators.set(project.userId, result.allUsers[project.userId]);
+      }
+    });
   }
 
   /**
