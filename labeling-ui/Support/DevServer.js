@@ -38,8 +38,8 @@ export default class DevServer {
       bundleTargetUrl: '/labeling/Library/bundle.js',
       releaseConfigUrl: '/labeling/Library/release.config.json',
       proxy: {
-        protocol: 'https:',
-        host: '192.168.222.20',
+        protocol: 'http:',
+        host: 'hella.loc',
         pathname: '/',
         preserveHost: true,
         cookieRewrite: true,
@@ -88,7 +88,7 @@ export default class DevServer {
   notifyLiveReload(changedFiles) {
     const files = changedFiles.join(',');
     const {livereloadPort} = this.config;
-    return request(`http://localhost:${livereloadPort}/changed?files=${files}`);
+    return request(`http://hella.loc:${livereloadPort}/changed?files=${files}`);
   }
 
   initializeLiveReload(port = 35729, options = {}) {
