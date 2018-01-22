@@ -64,7 +64,13 @@ class PaperThingShape extends PaperShape {
    * @returns {Array<String>}
    */
   get classes() {
-    return this.labeledThingInFrame.classes;
+    if (this.labeledThingInFrame.classes.length > 0) {
+      return this.labeledThingInFrame.classes;
+    } else if (this.labeledThingInFrame.ghostClasses !== null && this.labeledThingInFrame.ghostClasses.length > 0) {
+      return this.labeledThingInFrame.ghostClasses;
+    }
+
+    return [];
   }
 
   /**
