@@ -13,8 +13,9 @@ class PaperRectangle extends PaperThingShape {
    * @param {Point} bottomRight
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
+   * @param {LabelStructureService} labelStructureService
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService) {
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService, labelStructureService) {
     super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Point}
@@ -33,7 +34,16 @@ class PaperRectangle extends PaperThingShape {
      * @private
      */
     this._drawClassShapeService = drawClassShapeService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
     this._drawShape();
+
+    this.classCache = [];
   }
 
   /**
@@ -68,6 +78,14 @@ class PaperRectangle extends PaperThingShape {
     if (this._drawClassShapeService.drawClasses) {
       this._drawClasses();
     }
+
+    this._labelStructureService.getClassesForLabeledThingInFrame(this.labeledThingInFrame).then(classes => {
+      classes.forEach(classObject => {
+        classObject.children.forEach(child => {
+          this.classCache.push({identifier: child.name, name: child.metadata.response});
+        });
+      });
+    });
   }
 
     /**
@@ -110,11 +128,22 @@ class PaperRectangle extends PaperThingShape {
   }
 
   _drawClasses() {
+    if (this.classCache === undefined) {
+      this.classCache = [];
+    }
     let currentOffSet = 0;
     const spacing = 8;
     const topPositionY = this._topLeft.y;
     currentOffSet = topPositionY - spacing;
-    super.classes.forEach(className => {
+    super.classes.forEach(classId => {
+      const classObject = this.classCache.filter(className => {
+        return className.identifier === classId;
+      });
+      let content = '';
+      if (classObject.length > 0) {
+        content = classObject[0].name;
+      }
+
       const topLeftX = this._topLeft.x;
       const topClassName = new paper.PointText({
         fontSize: 8,
@@ -125,7 +154,7 @@ class PaperRectangle extends PaperThingShape {
         shadowBlur: 2,
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
-        content: className,
+        content: content,
       });
       currentOffSet -= spacing;
       this.addChild(topClassName);

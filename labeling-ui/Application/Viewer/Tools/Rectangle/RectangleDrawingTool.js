@@ -20,8 +20,9 @@ class RectangleDrawingTool extends CreationTool {
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    * @param {DrawClassShapeService} drawClassShapeService
+   * @param {LabelStructureService} labelStructureService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService, labelStructureService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -59,6 +60,12 @@ class RectangleDrawingTool extends CreationTool {
      * @private
      */
     this._drawClassShapeService = drawClassShapeService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -118,7 +125,8 @@ class RectangleDrawingTool extends CreationTool {
         from,
         from,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        this._drawClassShapeService
+        this._drawClassShapeService,
+        this._labelStructureService
       );
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
@@ -154,7 +162,8 @@ class RectangleDrawingTool extends CreationTool {
         from,
         to,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-        this._drawClassShapeService
+        this._drawClassShapeService,
+        this._labelStructureService
       );
     });
 
@@ -269,6 +278,7 @@ RectangleDrawingTool.$inject = [
   'entityIdService',
   'entityColorService',
   'drawClassShapeService',
+  'labelStructureService',
 ];
 
 export default RectangleDrawingTool;
