@@ -21,10 +21,11 @@ class PathDrawingTool extends CreationTool {
    * @param {EntityColorService} entityColorService
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {string} pathIdentifier
+   * @param {DrawClassShapeService} drawClassShapeService
+   * @param {LabelStructureService} labelStructureService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, pathIdentifier) {
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, pathIdentifier, drawClassShapeService, labelStructureService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
-
     /**
      * @type {EntityIdService}
      * @private
@@ -60,6 +61,18 @@ class PathDrawingTool extends CreationTool {
      * @private
      */
     this._pathIdentifier = pathIdentifier;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
+
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -112,7 +125,10 @@ class PathDrawingTool extends CreationTool {
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             points,
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            this._drawClassShapeService,
+            this._labelStructureService,
+            this._context
           );
           break;
 
@@ -212,7 +228,10 @@ class PathDrawingTool extends CreationTool {
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             [from, to],
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            this._drawClassShapeService,
+            this._labelStructureService,
+            this._context
           );
           break;
         default:
@@ -302,6 +321,8 @@ PathDrawingTool.$inject = [
   'entityIdService',
   'entityColorService',
   'hierarchyCreationService',
+  'drawClassShapeService',
+  'labelStructureService',
 ];
 
 export default PathDrawingTool;

@@ -10,9 +10,23 @@ class PaperPolyline extends PaperPath {
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
+   * @param {LabelStructureService} labelStructureService
+   * @param {DrawingContext} thingLayerContext
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, labelStructureService, thingLayerContext) {
     super(labeledThingInFrame, shapeId, points, color);
+    /**
+     * @type {LabelStructureService}
+     * @private
+     */
+    this._labelStructureService = labelStructureService;
+
+    /**
+     * @type {DrawingContext}
+     * @private
+     */
+    this._context = thingLayerContext;
+
     this._drawClassShapeService = drawClassShapeService;
     this._drawShape();
   }
@@ -35,33 +49,80 @@ class PaperPolyline extends PaperPath {
   }
 
   _drawShape() {
+    console.error('_drawShape');
     super._drawShape();
-    if (this._drawClassShapeService.drawClasses === true) {
-      this._drawClasses();
+    return;
+
+
+    if (this.classCache === null || this.classCache === undefined) {
+      this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
+        this.classCache = [];
+        classes.forEach(classObject => {
+          this.classCache.push({
+            identifier: classObject.identifier,
+            name: classObject.name,
+            thingName: classObject.className,
+          });
+        });
+        if (this._drawClassShapeService.drawClasses) {
+          this._drawClasses();
+        }
+      });
+    } else {
+      if (this._drawClassShapeService.drawClasses) {
+        this._drawClasses();
+      }
     }
   }
 
   _drawClasses() {
     const maxValueOfY = Math.min(...this._points.map(point => point.y));
     const highestPoint = this._points.find(point => point.y === maxValueOfY);
+
     let currentOffSet = 0;
     const spacing = 8;
     currentOffSet = maxValueOfY - spacing;
-    super.classes.forEach(className => {
-      const topLeftX = highestPoint.x;
-      const topClassName = new paper.PointText({
-        fontSize: 8,
-        fontFamily: '"Lucida Console", Monaco, monospace',
-        point: new paper.Point(topLeftX, currentOffSet),
-        fillColor: this._color.primary,
-        shadowColor: new paper.Color(0, 0, 0),
-        shadowBlur: 2,
-        justification: 'left',
-        shadowOffset: new paper.Point(1, 1),
-        content: className,
+
+    if (this.classCache === null || this.classCache === undefined) {
+      this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
+        this.classCache = [];
+        classes.forEach(classObject => {
+          this.classCache.push({
+            identifier: classObject.identifier,
+            name: classObject.name,
+            thingName: classObject.className,
+          });
+        });
+
       });
-      currentOffSet -= spacing;
-      this.addChild(topClassName);
+    }
+
+    super.classes.forEach(classId => {
+      const classObject = this.classCache.filter(className => {
+        return className.identifier === classId;
+      });
+      let content = '';
+      if (classObject.length > 0) {
+        content = classObject[0].thingName + ': ' + classObject[0].name;
+      }
+
+      const topLeftX = highestPoint.x;
+      this._context.withScope(scope => {
+        const topClassName = new paper.PointText({
+          fontSize: 8,
+          fontFamily: '"Lucida Console", Monaco, monospace',
+          point: new paper.Point(topLeftX, currentOffSet),
+          fillColor: this._color.primary,
+          shadowColor: new paper.Color(0, 0, 0),
+          shadowBlur: 2,
+          justification: 'left',
+          shadowOffset: new paper.Point(1, 1),
+          content: content,
+        });
+        currentOffSet -= spacing;
+        this.addChild(topClassName);
+        scope.view.update();
+      });
     });
   }
 

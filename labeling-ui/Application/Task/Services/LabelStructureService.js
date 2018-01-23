@@ -94,6 +94,16 @@ class LabelStructureService {
   }
 
   /**
+   * @param task
+   * @returns {AbortablePromise}
+   */
+  getClassesForTask(task) {
+    return this.getLabelStructure(task).then(labelStructure => {
+      return labelStructure.getClasses();
+    });
+  }
+
+  /**
    * Get the classes from a given LabelStructure for a LabeledThingInFrame
    *
    * @private

@@ -243,11 +243,16 @@ class RequirementsLabelStructure extends LabelStructure {
     );
 
     for (let index = 0; index < classesSnapshot.snapshotLength; index++) {
-      const classElement = classesSnapshot.snapshotItem(index);
-      const identifier = classElement.attributes.id.value;
-      const name = classElement.attributes.name.value;
+      const valueElement = classesSnapshot.snapshotItem(index);
+      const identifier = valueElement.attributes.id.value;
+      const name = valueElement.attributes.name.value;
 
-      classes.push({identifier: identifier, name: name});
+      const searchNodePath = `//r:class[r:value[@id="${identifier}"]]`;
+      const searchSnapshot = this._evaluateXPath(searchNodePath, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+
+      const classElement = searchSnapshot.snapshotItem(0);
+
+      classes.push({identifier: identifier, name: name, className: classElement.attributes.name.value});
     }
 
     return classes;

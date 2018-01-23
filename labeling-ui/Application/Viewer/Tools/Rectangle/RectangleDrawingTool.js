@@ -126,7 +126,8 @@ class RectangleDrawingTool extends CreationTool {
         from,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         this._drawClassShapeService,
-        this._labelStructureService
+        this._labelStructureService,
+        this._context
       );
       this._creationHandle = this._getScaleAnchor(from);
       this._rect.resize(this._creationHandle, to, {width: 1, height: this._getMinimalHeight()});
@@ -163,7 +164,8 @@ class RectangleDrawingTool extends CreationTool {
         to,
         this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
         this._drawClassShapeService,
-        this._labelStructureService
+        this._labelStructureService,
+        this._context
       );
     });
 

@@ -16,9 +16,11 @@ class PolylineDrawingTool extends PathDrawingTool {
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
    * @param {HierarchyCreationService} hierarchyCreationService
+   * @param {DrawClassShapeService} drawClassShapeService
+   * @param {LabelStructureService} labelStructureService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolyline.getClass());
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, drawClassShapeService, labelStructureService) {
+    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolyline.getClass(), drawClassShapeService, labelStructureService);
   }
 }
 
@@ -81,6 +83,8 @@ PolylineDrawingTool.$inject = [
   'entityIdService',
   'entityColorService',
   'hierarchyCreationService',
+  'drawClassShapeService',
+  'labelStructureService',
 ];
 
 export default PolylineDrawingTool;

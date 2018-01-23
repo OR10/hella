@@ -14,8 +14,9 @@ class PaperRectangle extends PaperThingShape {
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
    * @param {LabelStructureService} labelStructureService
+   * @param {DrawingContext} thingLayerContext
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService, labelStructureService) {
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService, labelStructureService, thingLayerContext) {
     super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Point}
@@ -41,9 +42,15 @@ class PaperRectangle extends PaperThingShape {
      */
     this._labelStructureService = labelStructureService;
 
+    /**
+     * @type {DrawingContext}
+     * @private
+     */
+    this._context = thingLayerContext;
+
     this._drawShape();
 
-    this.classCache = [];
+    this.classCache = null;
   }
 
   /**
@@ -75,17 +82,26 @@ class PaperRectangle extends PaperThingShape {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
-    if (this._drawClassShapeService.drawClasses) {
-      this._drawClasses();
-    }
 
-    this._labelStructureService.getClassesForLabeledThingInFrame(this.labeledThingInFrame).then(classes => {
-      classes.forEach(classObject => {
-        classObject.children.forEach(child => {
-          this.classCache.push({identifier: child.name, name: child.metadata.response});
+    if (this.classCache === null || this.classCache === undefined) {
+      this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
+        this.classCache = [];
+        classes.forEach(classObject => {
+          this.classCache.push({
+            identifier: classObject.identifier,
+            name: classObject.name,
+            thingName: classObject.className,
+          });
         });
+        if (this._drawClassShapeService.drawClasses) {
+          this._drawClasses();
+        }
       });
-    });
+    } else {
+      if (this._drawClassShapeService.drawClasses) {
+        this._drawClasses();
+      }
+    }
   }
 
     /**
@@ -128,9 +144,6 @@ class PaperRectangle extends PaperThingShape {
   }
 
   _drawClasses() {
-    if (this.classCache === undefined) {
-      this.classCache = [];
-    }
     let currentOffSet = 0;
     const spacing = 8;
     const topPositionY = this._topLeft.y;
@@ -141,23 +154,26 @@ class PaperRectangle extends PaperThingShape {
       });
       let content = '';
       if (classObject.length > 0) {
-        content = classObject[0].name;
+        content = classObject[0].thingName + ': ' + classObject[0].name;
       }
 
       const topLeftX = this._topLeft.x;
-      const topClassName = new paper.PointText({
-        fontSize: 8,
-        fontFamily: '"Lucida Console", Monaco, monospace',
-        point: new paper.Point(topLeftX, currentOffSet),
-        fillColor: this._color.primary,
-        shadowColor: new paper.Color(0, 0, 0),
-        shadowBlur: 2,
-        justification: 'left',
-        shadowOffset: new paper.Point(1, 1),
-        content: content,
+      this._context.withScope(scope => {
+        const topClassName = new paper.PointText({
+          fontSize: 8,
+          fontFamily: '"Lucida Console", Monaco, monospace',
+          point: new paper.Point(topLeftX, currentOffSet),
+          fillColor: this._color.primary,
+          shadowColor: new paper.Color(0, 0, 0),
+          shadowBlur: 2,
+          justification: 'left',
+          shadowOffset: new paper.Point(1, 1),
+          content: content,
+        });
+        currentOffSet -= spacing;
+        this.addChild(topClassName);
+        scope.view.update();
       });
-      currentOffSet -= spacing;
-      this.addChild(topClassName);
     });
   }
   /**
