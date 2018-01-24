@@ -22,9 +22,8 @@ class PaperShapeFactory {
    * @param {LabeledThingGroupService} labeledThingGroupService
    * @param {GroupNameService} groupNameService
    * @param {DrawClassShapeService} drawClassShapeService
-   * @param {LabelStructureService} labelStructureService
    */
-  constructor(entityColorService, labeledThingGroupService, groupNameService, drawClassShapeService, labelStructureService) {
+  constructor(entityColorService, labeledThingGroupService, groupNameService, drawClassShapeService) {
     /**
      * @type {EntityColorService}
      * @private
@@ -48,12 +47,6 @@ class PaperShapeFactory {
      * @private
      */
     this._drawClassShapeService = drawClassShapeService;
-
-    /**
-     * @type {LabelStructureService}
-     * @private
-     */
-    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -219,7 +212,6 @@ PaperShapeFactory.$inject = [
   'labeledThingGroupService',
   'groupNameService',
   'drawClassShapeService',
-  'labelStructureService',
 ];
 
 export default PaperShapeFactory;
