@@ -119,7 +119,8 @@ class PathDrawingTool extends CreationTool {
             this._entityIdService.getUniqueId(),
             points,
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            this._drawClassShapeService
+            this._drawClassShapeService,
+            this._toolActionStruct.taskClasses
           );
           break;
 
@@ -220,7 +221,8 @@ class PathDrawingTool extends CreationTool {
             this._entityIdService.getUniqueId(),
             [from, to],
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            this._drawClassShapeService
+            this._drawClassShapeService,
+            this._toolActionStruct.taskClasses
           );
           break;
         default:

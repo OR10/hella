@@ -404,6 +404,7 @@ class MultiTool extends PaperTool {
           task,
           framePosition,
           requirementsThingOrGroupId,
+          this._toolActionStruct.taskClasses,
           drawLabeledThingGroupsInFrameAs
         );
         promise = tool.invokeShapeCreation(struct);
@@ -585,6 +586,7 @@ class MultiTool extends PaperTool {
       task,
       framePosition,
       requirementsThingOrGroupId,
+      this._toolActionStruct.taskClasses,
       drawLabeledThingGroupsInFrameAs
     );
 
