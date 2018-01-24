@@ -31,6 +31,7 @@ export default class ViewerDirective {
       frameSkip: '=',
       thingLayer: '=',
       readOnly: '@',
+      taskClasses: '=',
     };
 
     this.controller = ViewerController;

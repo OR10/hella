@@ -60,14 +60,16 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @param {String} color
+   * @param taskClasses
+   * @param thingLayerContext
    * @returns {PaperRectangle}
    * @private
    */
-  _createRectangle(labeledThingInFrame, shape, color, thingLayerContext) {
+  _createRectangle(labeledThingInFrame, shape, color, taskClasses, thingLayerContext) {
     const topLeft = new paper.Point(shape.topLeft.x, shape.topLeft.y);
     const bottomRight = new paper.Point(shape.bottomRight.x, shape.bottomRight.y);
 
-    return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color, this._drawClassShapeService, this._labelStructureService, thingLayerContext);
+    return new PaperRectangle(labeledThingInFrame, shape.id, topLeft, bottomRight, color, this._drawClassShapeService, taskClasses, thingLayerContext);
   }
 
   /**
@@ -138,11 +140,13 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @param {String} color
+   * @param taskClasses
+   * @param thingLayerContext
    * @returns {PaperPolyline}
    * @private
    */
-  _createPolyline(labeledThingInFrame, shape, color, thingLayerContext) {
-    return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color, this._drawClassShapeService, this._labelStructureService, thingLayerContext);
+  _createPolyline(labeledThingInFrame, shape, color, taskClasses, thingLayerContext) {
+    return new PaperPolyline(labeledThingInFrame, shape.id, shape.points, color, this._drawClassShapeService, taskClasses, thingLayerContext);
   }
 
   /**
@@ -162,13 +166,13 @@ class PaperShapeFactory {
    * @param {Video} video
    * @returns {PaperShape}
    */
-  createPaperThingShape(labeledThingInFrame, shape, thingLayerContext, video = null) {
+  createPaperThingShape(labeledThingInFrame, shape, thingLayerContext, taskClasses, video = null) {
     const color = this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor);
     let result;
 
     switch (shape.type) {
       case 'rectangle':
-        result = this._createRectangle(labeledThingInFrame, shape, color, thingLayerContext);
+        result = this._createRectangle(labeledThingInFrame, shape, color, taskClasses, thingLayerContext);
         break;
       case 'pedestrian':
         result = this._createPedestrian(labeledThingInFrame, shape, color);
@@ -183,7 +187,7 @@ class PaperShapeFactory {
         result = this._createPolygon(labeledThingInFrame, shape, color);
         break;
       case 'polyline':
-        result = this._createPolyline(labeledThingInFrame, shape, color, thingLayerContext);
+        result = this._createPolyline(labeledThingInFrame, shape, color, taskClasses, thingLayerContext);
         break;
       default:
         throw new Error(`Failed to construct shape of unknown type ${shape.type}.`);

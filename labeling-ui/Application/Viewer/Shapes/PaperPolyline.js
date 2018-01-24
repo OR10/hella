@@ -10,22 +10,18 @@ class PaperPolyline extends PaperPath {
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
-   * @param {LabelStructureService} labelStructureService
+   * @param {Array} taskClasses
    * @param {DrawingContext} thingLayerContext
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, labelStructureService, thingLayerContext) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, taskClasses, thingLayerContext) {
     super(labeledThingInFrame, shapeId, points, color);
-    /**
-     * @type {LabelStructureService}
-     * @private
-     */
-    this._labelStructureService = labelStructureService;
-
     /**
      * @type {DrawingContext}
      * @private
      */
     this._context = thingLayerContext;
+
+    this.taskClasses = taskClasses;
 
     this._drawClassShapeService = drawClassShapeService;
     this._drawShape();
@@ -51,24 +47,8 @@ class PaperPolyline extends PaperPath {
   _drawShape() {
     super._drawShape();
 
-    if (this.classCache === null || this.classCache === undefined) {
-      this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
-        this.classCache = [];
-        classes.forEach(classObject => {
-          this.classCache.push({
-            identifier: classObject.identifier,
-            name: classObject.name,
-            thingName: classObject.className,
-          });
-        });
-        if (this._drawClassShapeService.drawClasses) {
-          this._drawClasses();
-        }
-      });
-    } else {
-      if (this._drawClassShapeService.drawClasses) {
-        this._drawClasses();
-      }
+    if (this._drawClassShapeService.drawClasses) {
+      this._drawClasses();
     }
   }
 
@@ -81,12 +61,12 @@ class PaperPolyline extends PaperPath {
     currentOffSet = maxValueOfY - spacing;
 
     super.classes.forEach(classId => {
-      const classObject = this.classCache.filter(className => {
+      const classObject = this.taskClasses.filter(className => {
         return className.identifier === classId;
       });
       let content = '';
       if (classObject.length > 0) {
-        content = classObject[0].thingName + ': ' + classObject[0].name;
+        content = classObject[0].className + ': ' + classObject[0].name;
       }
 
       const topLeftX = highestPoint.x;

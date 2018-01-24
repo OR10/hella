@@ -45,6 +45,12 @@ class LabelStructureService {
      * @private
      */
     this._labelStructureCache = new Map();
+
+    /**
+     * @type {Map}
+     * @private
+     */
+    this._taskClassCache = new Map();
   }
 
   /**
@@ -98,8 +104,16 @@ class LabelStructureService {
    * @returns {AbortablePromise}
    */
   getClassesForTask(task) {
+    const cacheKey = `${task.id}`;
+    if (this._taskClassCache.has(cacheKey)) {
+      const taskClasses = this._taskClassCache.get(cacheKey);
+      return this._abortablePromise(this._$q.resolve(taskClasses));
+    }
+
     return this.getLabelStructure(task).then(labelStructure => {
-      return labelStructure.getClasses();
+      const taskClasses = labelStructure.getClasses();
+      this._taskClassCache.set(cacheKey, taskClasses);
+      return taskClasses;
     });
   }
 

@@ -10,7 +10,8 @@ export default [
   'organisationService',
   'frameIndexService',
   'modalService',
-  ($q, $rootScope, $stateParams, taskGateway, projectGateway, videoGateway, imagePreloader, taskReplicationService, organisationService, frameIndexService, modalService) => {
+  'labelStructureService',
+  ($q, $rootScope, $stateParams, taskGateway, projectGateway, videoGateway, imagePreloader, taskReplicationService, organisationService, frameIndexService, modalService, labelStructureService) => {
     organisationService.set($stateParams.organisationId);
 
     const resolverResult = {};
@@ -20,16 +21,18 @@ export default [
     const replicateTaskData = (project, task) => taskReplicationService.replicateTaskDataToLocalMachine(project, task);
     const loadVideo = task => videoGateway.getVideo(task.videoId);
     const preloadImages = task => imagePreloader.preloadImages(task, 50);
+    const loadTaskClasses = task => labelStructureService.getClassesForTask(task);
 
     return $q.resolve()
       .then(() => $q.all([loadProject(), loadTask()]))
       .then(([project, task]) => {
         resolverResult.task = task;
         frameIndexService.setTask(task);
-        return $q.all([loadVideo(task), replicateTaskData(project, task)]);
+        return $q.all([loadVideo(task), loadTaskClasses(task), replicateTaskData(project, task)]);
       })
-      .then(([video]) => {
+      .then(([video, taskClasses]) => {
         resolverResult.video = video;
+        resolverResult.taskClasses = taskClasses;
       })
       .then(() => {
         return preloadImages(resolverResult.task);

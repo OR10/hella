@@ -15,7 +15,7 @@ class TaskController {
    * @param {angular.Scope} $scope
    * @param {angular.$q} $q
    * @param {Object} $stateParams
-   * @param {{task: Task, video: Video}} initialData
+   * @param {{task: Task, video: Video, taskClasses: array}} initialData
    * @param {User} user
    * @param {Object} userPermissions
    * @param {$location} $location
@@ -84,6 +84,11 @@ class TaskController {
      * @type {Video}
      */
     this.video = initialData.video;
+
+    /**
+     * @type {array}
+     */
+    this.taskClasses = initialData.taskClasses;
 
     /**
      * @type {User}

@@ -23,6 +23,7 @@ import {difference} from 'lodash';
  * @property {string} activeTool
  * @property {Task} task
  * @property {Video} video
+ * @property {array} taskClasses
  * @property {FramePosition} framePosition
  * @property {Filters} filters
  * @property {boolean} playing
@@ -1315,7 +1316,7 @@ class ViewerController {
         return this._thingLayerContext.withScope(() => {
           let result;
           try {
-            result = this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this._thingLayerContext, this.video);
+            result = this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this._thingLayerContext, this.taskClasses, this.video);
           } catch (error) {
             if (error.message === 'Depth buffer needs to be bigger than 8192x8192 pixels. Most likely the cuboid definition or camera calibration is broken!') {
               this._labeledThingGateway.deleteLabeledThing(ltif.labeledThing)
@@ -1346,6 +1347,7 @@ class ViewerController {
           ghostedLabeledThingInFrame,
           ghostedLabeledThingInFrame.shapes[0],
           this._thingLayerContext,
+          this.taskClasses,
           this.video
         );
       });
