@@ -14,9 +14,11 @@ describe('Initial Task Data Resolver', () => {
   let videoGatewayMock;
   let imagePreloaderMock;
   let taskReplicationServiceMock;
+  let labelStructureServiceMock;
   let organisationServiceMock;
   let frameIndexServiceMock;
   let task;
+  let taskClasses;
   let project;
   let video;
 
@@ -32,7 +34,8 @@ describe('Initial Task Data Resolver', () => {
       imagePreloaderMock,
       taskReplicationServiceMock,
       organisationServiceMock,
-      frameIndexServiceMock
+      frameIndexServiceMock,
+      labelStructureServiceMock
     );
   }
 
@@ -45,6 +48,7 @@ describe('Initial Task Data Resolver', () => {
     task = taskFixture.clone();
     project = cloneDeep(projectFixture);
     video = cloneDeep(videoFixture);
+    taskClasses = [];
   });
 
   beforeEach(() => {
@@ -59,6 +63,7 @@ describe('Initial Task Data Resolver', () => {
     videoGatewayMock = jasmine.createSpyObj('VideoGateway', ['getVideo']);
     imagePreloaderMock = jasmine.createSpyObj('ImagePreloader', ['preloadImages']);
     taskReplicationServiceMock = jasmine.createSpyObj('TaskReplicationService', ['replicateTaskDataToLocalMachine']);
+    labelStructureServiceMock = jasmine.createSpyObj('LabelStructureService', ['getClassesForTask']);
     organisationServiceMock = jasmine.createSpyObj('OrganisationService', ['set']);
     frameIndexServiceMock = jasmine.createSpyObj('FrameIndexService', ['setTask', 'getFrameIndexLimits']);
   });
@@ -69,6 +74,7 @@ describe('Initial Task Data Resolver', () => {
     videoGatewayMock.getVideo.and.returnValue(angularQ.resolve(video));
     imagePreloaderMock.preloadImages.and.returnValue(angularQ.resolve([]));
     taskReplicationServiceMock.replicateTaskDataToLocalMachine.and.returnValue(angularQ.resolve());
+    labelStructureServiceMock.getClassesForTask.and.returnValue(angularQ.resolve([]));
   });
 
   it('should be callable', () => {
@@ -109,7 +115,7 @@ describe('Initial Task Data Resolver', () => {
     const resolveSpy = jasmine.createSpy('intialTaskResolver resolve');
     returnValue.then(resolveSpy);
     rootScope.$apply();
-    expect(resolveSpy).toHaveBeenCalledWith({task, video});
+    expect(resolveSpy).toHaveBeenCalledWith({task, taskClasses, video});
   });
 
   it('should initiate task data replication from couchdb to local pouchdb', () => {

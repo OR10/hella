@@ -9,9 +9,9 @@ export default [
   'taskReplicationService',
   'organisationService',
   'frameIndexService',
-  'modalService',
   'labelStructureService',
-  ($q, $rootScope, $stateParams, taskGateway, projectGateway, videoGateway, imagePreloader, taskReplicationService, organisationService, frameIndexService, modalService, labelStructureService) => {
+  'modalService',
+  ($q, $rootScope, $stateParams, taskGateway, projectGateway, videoGateway, imagePreloader, taskReplicationService, organisationService, frameIndexService, labelStructureService, modalService) => {
     organisationService.set($stateParams.organisationId);
 
     const resolverResult = {};
