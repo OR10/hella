@@ -49,10 +49,7 @@ class PaperPolyline extends PaperPath {
   }
 
   _drawShape() {
-    console.error('_drawShape');
     super._drawShape();
-    return;
-
 
     if (this.classCache === null || this.classCache === undefined) {
       this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
@@ -82,20 +79,6 @@ class PaperPolyline extends PaperPath {
     let currentOffSet = 0;
     const spacing = 8;
     currentOffSet = maxValueOfY - spacing;
-
-    if (this.classCache === null || this.classCache === undefined) {
-      this._labelStructureService.getClassesForTask(this.labeledThingInFrame.task).then(classes => {
-        this.classCache = [];
-        classes.forEach(classObject => {
-          this.classCache.push({
-            identifier: classObject.identifier,
-            name: classObject.name,
-            thingName: classObject.className,
-          });
-        });
-
-      });
-    }
 
     super.classes.forEach(classId => {
       const classObject = this.classCache.filter(className => {
