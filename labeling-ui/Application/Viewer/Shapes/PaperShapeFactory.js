@@ -93,11 +93,11 @@ class PaperShapeFactory {
    * @returns {PaperPedestrian}
    * @private
    */
-  _createPedestrian(labeledThingInFrame, shape, color) {
+  _createPedestrian(labeledThingInFrame, shape, color, taskClasses) {
     const topCenter = new paper.Point(shape.topCenter.x, shape.topCenter.y);
     const bottomCenter = new paper.Point(shape.bottomCenter.x, shape.bottomCenter.y);
 
-    return new PaperPedestrian(labeledThingInFrame, shape.id, topCenter, bottomCenter, color);
+    return new PaperPedestrian(labeledThingInFrame, shape.id, topCenter, bottomCenter, color, this._drawClassShapeService, taskClasses);
   }
 
   /**
@@ -167,7 +167,7 @@ class PaperShapeFactory {
         result = this._createRectangle(labeledThingInFrame, shape, color, taskClasses);
         break;
       case 'pedestrian':
-        result = this._createPedestrian(labeledThingInFrame, shape, color);
+        result = this._createPedestrian(labeledThingInFrame, shape, color, taskClasses);
         break;
       case 'point':
         result = this._createPoint(labeledThingInFrame, shape, color);

@@ -12,8 +12,10 @@ class PaperPedestrian extends PaperThingShape {
    * @param {Point} topCenter
    * @param {Point} bottomCenter
    * @param {{primary: string, secondary: string}} color
+   * @param {DrawClassShapeService} drawClassShapeService
+   * @param {Array} taskClasses
    */
-  constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color) {
+  constructor(labeledThingInFrame, shapeId, topCenter, bottomCenter, color, drawClassShapeService, taskClasses) {
     super(labeledThingInFrame, shapeId, color);
 
     /**
@@ -33,6 +35,14 @@ class PaperPedestrian extends PaperThingShape {
      */
     this._bottomCenter = bottomCenter;
 
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
+
+    this.taskClasses = taskClasses;
+
     this._drawShape();
   }
 
@@ -51,6 +61,41 @@ class PaperPedestrian extends PaperThingShape {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
+
+    if (this._drawClassShapeService.drawClasses) {
+      this._drawClasses();
+    }
+  }
+
+  _drawClasses() {
+    let currentOffSet = 0;
+    const spacing = 8;
+    const topPositionY = this._topCenter.y;
+    currentOffSet = topPositionY - spacing;
+    super.classes.forEach(classId => {
+      const classObject = this.taskClasses.filter(className => {
+        return className.identifier === classId;
+      });
+      let content = '';
+      if (classObject.length > 0) {
+        content = classObject[0].className + ': ' + classObject[0].name;
+      }
+
+      const topLeftX = this._topCenter.x;
+      const topClassName = new paper.PointText({
+        fontSize: 8,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(1, 1),
+        content: content,
+      });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
+    });
   }
 
   /**
@@ -283,6 +328,13 @@ class PaperPedestrian extends PaperThingShape {
       this._topCenter.x,
       (this._topCenter.y + this._bottomCenter.y) / 2
     );
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return true;
   }
 
   /**

@@ -18,8 +18,9 @@ class PedestrianDrawingTool extends CreationTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {DrawClassShapeService} drawClassShapeService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -51,6 +52,12 @@ class PedestrianDrawingTool extends CreationTool {
      * @private
      */
     this._creationHandle = null;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
   }
 
   /**
@@ -92,7 +99,9 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         from,
         to,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService,
+        this._toolActionStruct.taskClasses
       );
     });
 
@@ -178,7 +187,9 @@ class PedestrianDrawingTool extends CreationTool {
         this._entityIdService.getUniqueId(),
         topCenter,
         bottomCenter,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService,
+        this._toolActionStruct.taskClasses
       );
       this._creationHandle = this._getScaleAnchor(to);
       this._pedestrian.resize(this._creationHandle, to, this._getMinimalHeight());
@@ -267,6 +278,7 @@ PedestrianDrawingTool.$inject = [
   'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
+  'drawClassShapeService',
 ];
 
 export default PedestrianDrawingTool;
