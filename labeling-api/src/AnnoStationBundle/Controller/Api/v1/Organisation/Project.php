@@ -235,6 +235,7 @@ class Project extends Controller\Base
         );
 
         $users                                  = [];
+        $users_ids                              = [];
         $sumOfTasksForProjects                  = $this->getSumOfTasksForProjects($projects);
         $sumOfCompletedTasksForProjects         = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects(
             $projects
@@ -312,12 +313,14 @@ class Project extends Controller\Base
 
             if ($this->userPermissions->hasPermission('canViewProjectsAssignedLabelManager')) {
                 $responseProject['labelManager'] = $project->getLatestAssignedLabelManagerUserId();
-                if ($project->getLatestAssignedLabelManagerUserId() !== null) {
-                    $users[] = $this->userFacade->getUserById($project->getLatestAssignedLabelManagerUserId());
+                if ($responseProject['labelManager'] !== null) {
+                    $users_ids[] = $responseProject['labelManager'];
+                    $users[] = $this->userFacade->getUserById($responseProject['labelManager']);
                 }
             }
 
             $result[$project->getStatus()][] = $responseProject;
+            $users_ids[] = $project->getUserId();
         }
 
         if (!$this->userPermissions->hasPermission('canViewProjectsCreationTimestamp')) {
@@ -334,6 +337,22 @@ class Project extends Controller\Base
         }
 
         $users = new Response\SimpleUsers($users);
+        $allUsers = array();
+        foreach($this->userFacade->getUserByIds(array_unique($users_ids)) as $user) {
+            $allUsers[$user->getId()] = array(
+                'id'                => $user->getId(),
+                'email'             => $user->getEmail(),
+                'enabled'           => $user->isEnabled(),
+                'expired'           => $user->isExpired(),
+                'expiresAt'         => $user->getExpiresAt(),
+                'lastLogin'         => $user->getLastLogin(),
+                'locked'            => $user->isLocked(),
+                'organisations'     => $user->getOrganisations(),
+                'password'          => null, // for compability
+                'roles'             => $user->getRoles(),
+                'username'          => $user->getUsername()
+            );
+        }
 
         return new View\View(
             [
@@ -346,6 +365,7 @@ class Project extends Controller\Base
                     $result[null] //@TODO remove this later
                 ),
                 'users' => $users->getResult(),
+                'allUsers' => $allUsers
             ]
         );
     }
