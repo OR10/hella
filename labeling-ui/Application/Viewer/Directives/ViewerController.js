@@ -1316,7 +1316,7 @@ class ViewerController {
         return this._thingLayerContext.withScope(() => {
           let result;
           try {
-            result = this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this._thingLayerContext, this.taskClasses, this.video);
+            result = this._paperShapeFactory.createPaperThingShape(ltif, ltif.shapes[0], this.taskClasses, this.video);
           } catch (error) {
             if (error.message === 'Depth buffer needs to be bigger than 8192x8192 pixels. Most likely the cuboid definition or camera calibration is broken!') {
               this._labeledThingGateway.deleteLabeledThing(ltif.labeledThing)
@@ -1346,7 +1346,6 @@ class ViewerController {
         ghostedPaperShape = this._paperShapeFactory.createPaperThingShape(
           ghostedLabeledThingInFrame,
           ghostedLabeledThingInFrame.shapes[0],
-          this._thingLayerContext,
           this.taskClasses,
           this.video
         );

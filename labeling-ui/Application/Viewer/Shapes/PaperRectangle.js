@@ -14,9 +14,8 @@ class PaperRectangle extends PaperThingShape {
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
    * @param {Array} taskClasses
-   * @param {DrawingContext} thingLayerContext
    */
-  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService, taskClasses, thingLayerContext) {
+  constructor(labeledThingInFrame, shapeId, topLeft, bottomRight, color, drawClassShapeService, taskClasses) {
     super(labeledThingInFrame, shapeId, color);
     /**
      * @type {Point}
@@ -35,12 +34,6 @@ class PaperRectangle extends PaperThingShape {
      * @private
      */
     this._drawClassShapeService = drawClassShapeService;
-
-    /**
-     * @type {DrawingContext}
-     * @private
-     */
-    this._context = thingLayerContext;
 
     this.taskClasses = taskClasses;
 
@@ -138,22 +131,19 @@ class PaperRectangle extends PaperThingShape {
       }
 
       const topLeftX = this._topLeft.x;
-      this._context.withScope(scope => {
-        const topClassName = new paper.PointText({
-          fontSize: 8,
-          fontFamily: '"Lucida Console", Monaco, monospace',
-          point: new paper.Point(topLeftX, currentOffSet),
-          fillColor: this._color.primary,
-          shadowColor: new paper.Color(0, 0, 0),
-          shadowBlur: 2,
-          justification: 'left',
-          shadowOffset: new paper.Point(1, 1),
-          content: content,
-        });
-        currentOffSet -= spacing;
-        this.addChild(topClassName);
-        scope.view.update();
+      const topClassName = new paper.PointText({
+        fontSize: 8,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(1, 1),
+        content: content,
       });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
     });
   }
   /**

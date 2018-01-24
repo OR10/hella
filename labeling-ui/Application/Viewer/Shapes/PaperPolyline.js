@@ -11,16 +11,9 @@ class PaperPolyline extends PaperPath {
    * @param {{primary: string, secondary: string}} color
    * @param {DrawClassShapeService} drawClassShapeService
    * @param {Array} taskClasses
-   * @param {DrawingContext} thingLayerContext
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, taskClasses, thingLayerContext) {
+  constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, taskClasses) {
     super(labeledThingInFrame, shapeId, points, color);
-    /**
-     * @type {DrawingContext}
-     * @private
-     */
-    this._context = thingLayerContext;
-
     this.taskClasses = taskClasses;
 
     this._drawClassShapeService = drawClassShapeService;
@@ -70,22 +63,19 @@ class PaperPolyline extends PaperPath {
       }
 
       const topLeftX = highestPoint.x;
-      this._context.withScope(scope => {
-        const topClassName = new paper.PointText({
-          fontSize: 8,
-          fontFamily: '"Lucida Console", Monaco, monospace',
-          point: new paper.Point(topLeftX, currentOffSet),
-          fillColor: this._color.primary,
-          shadowColor: new paper.Color(0, 0, 0),
-          shadowBlur: 2,
-          justification: 'left',
-          shadowOffset: new paper.Point(1, 1),
-          content: content,
-        });
-        currentOffSet -= spacing;
-        this.addChild(topClassName);
-        scope.view.update();
+      const topClassName = new paper.PointText({
+        fontSize: 8,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topLeftX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(1, 1),
+        content: content,
       });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
     });
   }
 
