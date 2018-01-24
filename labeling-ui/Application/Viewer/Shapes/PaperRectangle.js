@@ -38,8 +38,6 @@ class PaperRectangle extends PaperThingShape {
     this.taskClasses = taskClasses;
 
     this._drawShape();
-
-    this.classCache = null;
   }
 
   /**
