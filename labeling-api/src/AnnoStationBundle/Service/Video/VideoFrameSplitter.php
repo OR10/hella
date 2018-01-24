@@ -66,53 +66,26 @@ class VideoFrameSplitter
      */
     public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
     {
-        $tempDir = $this->getTempDirectory($type);
 
-        try {
-            $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
-            $command         = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
-            $process = new Process($command);
-            $process->setTimeout(self::TIMEOUT);
-            $process->run();
+        $request = 'http://hella_processing.loc/?videoId='.$video->getId().
+            '&sourceFileFilename='.$sourceFileFilename.
+            '&type='.$type->getName();
 
-            if (!$process->isSuccessful()) {
-                throw new \RuntimeException($process->getErrorOutput());
-            }
 
-            $files = array_filter(
-                $this->fileSystem->listContents($tempDir),
-                function ($file) use ($type) {
-                    if ($file['extension'] === $type->getExtension()) {
-                        return true;
-                    }
+        $ctx = stream_context_create(array('http'=>
+            array(
+                'timeout' => self::TIMEOUT,
+            )
+        ));
 
-                    return false;
-                }
-            );
+        $result = file_get_contents($request, false, $ctx);
 
-            $this->frameCdn->beginBatchTransaction($video);
-            $frameSizesInBytes = [];
-            foreach ($files as $file) {
-                $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
-                    $this->fileSystem->read($file['path'])
-                );
-                $cdnPath                                   = $this->frameCdn->save(
-                    $video,
-                    $type,
-                    (int) $file['basename'],
-                    $this->fileSystem->read($file['path'])
-                );
-                $frameSizesInBytes[$cdnPath]               = $this->fileSystem->getSize($file['path']);
-            }
-            $this->frameCdn->commit();
+        $result = json_decode($result, true);
+        $this->imageSizes = $result['image'];
 
-            return $frameSizesInBytes;
-        } finally {
-            if (!$this->fileSystem->deleteDir($tempDir)) {
-                throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
-            }
-        }
+        return $result['frame'];
+
     }
 
     /**
