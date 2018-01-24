@@ -41,6 +41,11 @@ class VideoFrameSplitter
     private $imageSizes = array();
 
     /**
+     * @var string
+     */
+    private $processingHost;
+
+    /**
      * FrameCdnSplitter constructor.
      *
      * @param Service\FrameCdn     $frameCdn
@@ -50,11 +55,13 @@ class VideoFrameSplitter
     public function __construct(
         Service\FrameCdn $frameCdn,
         $ffmpegExecutable,
-        Flysystem\Filesystem $fileSystem
+        Flysystem\Filesystem $fileSystem,
+        string $processingHost
     ) {
         $this->ffmpegExecutable = $ffmpegExecutable;
         $this->frameCdn         = $frameCdn;
         $this->fileSystem       = $fileSystem;
+        $this->processingHost   = $processingHost;
     }
 
     /**
@@ -68,7 +75,7 @@ class VideoFrameSplitter
     {
 
 
-        $request = 'http://hella_processing.loc/?videoId='.$video->getId().
+        $request = $this->processingHost.'?videoId='.$video->getId().
             '&sourceFileFilename='.$sourceFileFilename.
             '&type='.$type->getName();
 
