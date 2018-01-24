@@ -134,16 +134,18 @@ class CouchDbUsers
         if ($password !== null) {
             $json['password'] = $password;
         }
-
+        $params = [
+                'json'    => $json,
+            ];
+        if(!is_null($revision)) {
+            $params['headers'] = [
+                    'If-Match' => $revision,
+                ];
+        }
         $this->guzzleClient->request(
             'PUT',
             $this->generateCouchDbUrl($username),
-            [
-                'headers' => [
-                    'If-Match' => $revision,
-                ],
-                'json'    => $json,
-            ]
+            $params
         );
     }
 
