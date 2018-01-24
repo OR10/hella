@@ -91,6 +91,11 @@ class Cmd
         $this->hostBucket                  = $hostBucket;
     }
 
+    /**
+     * @param string $sourceDirectory
+     * @param string $targetDirectoryOnS3
+     * @param string $acl
+     */
     public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3, $acl = 'private')
     {
         $configFile = $this->generateConfigfile(
@@ -117,6 +122,11 @@ class Cmd
         }
     }
 
+    /**
+     * @param string $sourceFile
+     * @param string $targetFileOnS3
+     * @param string string $acl
+     */
     public function uploadFile($sourceFile, $targetFileOnS3, $acl = 'private')
     {
         $configFile = $this->generateConfigfile(
@@ -143,6 +153,10 @@ class Cmd
         }
     }
 
+    /**
+     * @param string $filePath
+     * @return string
+     */
     public function getFile($filePath)
     {
         $configFile = $this->generateConfigfile(
@@ -179,7 +193,7 @@ class Cmd
     }
 
     /**
-     * @param $filePath
+     * @param string $filePath
      */
     public function deleteObject($filePath)
     {
@@ -207,6 +221,11 @@ class Cmd
         }
     }
 
+    /**
+     * @param string $configFile
+     * @param string $filePath
+     * @return Process\Process
+     */
     private function getObjectDeleteProcess($configFile, $filePath)
     {
         $builder = new Process\ProcessBuilder();
@@ -229,6 +248,12 @@ class Cmd
         return $process;
     }
 
+    /**
+     * @param string $configFile
+     * @param string $filePath
+     * @param string $destinationPath
+     * @return Process\Process
+     */
     private function getFileDownloadProcess($configFile, $filePath, $destinationPath)
     {
         $builder = new Process\ProcessBuilder();
@@ -254,6 +279,13 @@ class Cmd
         return $process;
     }
 
+    /**
+     * @param string $configFile
+     * @param string $sourceDirectory
+     * @param string $targetDirectoryOnS3
+     * @param string $acl
+     * @return Process\Process
+     */
     private function getUploadProcess($configFile, $sourceDirectory, $targetDirectoryOnS3, $acl)
     {
         $builder = new Process\ProcessBuilder();
@@ -279,6 +311,13 @@ class Cmd
         return $process;
     }
 
+    /**
+     * @param string $configFile
+     * @param string $sourceFile
+     * @param string $targetFileOnS3
+     * @param string $acl
+     * @return Process\Process
+     */
     private function getUploadProcessForSingleFile($configFile, $sourceFile, $targetFileOnS3, $acl)
     {
         $builder = new Process\ProcessBuilder();
@@ -304,6 +343,10 @@ class Cmd
         return $process;
     }
 
+    /**
+     * @param string $targetDirectory
+     * @return string
+     */
     private function getS3Uri($targetDirectory = '')
     {
         $sanitizedTargetDirectory = preg_replace('(/+)', '/', $targetDirectory);
@@ -319,6 +362,10 @@ class Cmd
         );
     }
 
+    /**
+     * @param string $sourceDirectory
+     * @return string
+     */
     private function getRelativeUploadFileList($sourceDirectory)
     {
         $iterator = new \CallbackFilterIterator(
@@ -379,6 +426,9 @@ class Cmd
         return $tempFile;
     }
 
+    /**
+     * @return string
+     */
     private function getConfigfileTemplate()
     {
         return <<<EOF
@@ -393,6 +443,10 @@ check_ssl_hostname = %s
 EOF;
     }
 
+    /**
+     * @param bool $boolean
+     * @return string
+     */
     private function convertBooleanToConfigString($boolean)
     {
         return $boolean === true ? 'True' : 'False';

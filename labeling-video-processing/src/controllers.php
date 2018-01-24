@@ -14,10 +14,10 @@ $app->get('/', function (Request $request) use ($app) {
     );
     $imageSizes = $app['VideoFrameSplitter']->getImageSizes();
 
-    $frameSizesInBytes = json_encode(array(
+    $frameSizesInBytes = array(
         'frame' => $frameSizesInBytes,
         'image' => $imageSizes
-    ));
+    );
 
 
     return new JsonResponse($frameSizesInBytes);

@@ -58,13 +58,13 @@ class VideoFrameSplitter
     }
 
     /**
-     * @param int    $videoId
-     * @param                $sourceFileFilename
-     * @param Model\ImageType $type
+     * @param int     $videoId
+     * @param string  $sourceFileFilename
+     * @param string  $type
      *
      * @return array
      */
-    public function splitVideoInFrames(int $videoId, $sourceFileFilename, string $type)
+    public function splitVideoInFrames(int $videoId, string $sourceFileFilename, string $type)
     {
         $type = Model\ImageType::create($type);
         $tempDir = $this->getTempDirectory($type);
@@ -72,7 +72,7 @@ class VideoFrameSplitter
         try {
 
             $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
-            $command         = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
+            $command = $this->getCommand($sourceFileFilename, $type, $prefixedTempDir);
 
             // place to call api
             $process = new Process($command);
@@ -100,13 +100,13 @@ class VideoFrameSplitter
                 $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
                     $this->fileSystem->read($file['path'])
                 );
-                $cdnPath                                   = $this->frameCdn->save(
+                $cdnPath = $this->frameCdn->save(
                     $videoId,
                     $type,
                     (int) $file['basename'],
                     $this->fileSystem->read($file['path'])
                 );
-                $frameSizesInBytes[$cdnPath]               = $this->fileSystem->getSize($file['path']);
+                $frameSizesInBytes[$cdnPath] = $this->fileSystem->getSize($file['path']);
             }
             $this->frameCdn->commit();
 

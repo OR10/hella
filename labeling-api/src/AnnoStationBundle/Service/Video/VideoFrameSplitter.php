@@ -51,6 +51,7 @@ class VideoFrameSplitter
      * @param Service\FrameCdn     $frameCdn
      * @param string               $ffmpegExecutable
      * @param Flysystem\Filesystem $fileSystem
+     * @param string               $processingHost
      */
     public function __construct(
         Service\FrameCdn $frameCdn,
@@ -80,13 +81,13 @@ class VideoFrameSplitter
             '&type='.$type->getName();
 
 
-        $ctx = stream_context_create(array('http'=>
+        $context = stream_context_create(array('http'=>
             array(
                 'timeout' => self::TIMEOUT,
             )
         ));
 
-        $result = file_get_contents($request, false, $ctx);
+        $result = file_get_contents($request, false, $context);
 
         $result = json_decode($result, true);
         $this->imageSizes = $result['image'];
