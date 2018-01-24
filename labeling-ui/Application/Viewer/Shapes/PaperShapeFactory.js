@@ -108,13 +108,13 @@ class PaperShapeFactory {
    * @returns {PaperCuboid}
    * @private
    */
-  _createCuboid(labeledThingInFrame, shape, color, video) {
+  _createCuboid(labeledThingInFrame, shape, color, video, taskClasses) {
     const projection2d = new DepthBufferProjection2d(
       new PlainProjection2d(video.calibration)
     );
     const projection3d = new FlatWorld(video.calibration);
 
-    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, projection3d, shape.vehicleCoordinates, color);
+    return new PaperCuboid(labeledThingInFrame, shape.id, projection2d, projection3d, shape.vehicleCoordinates, color, this._drawClassShapeService, taskClasses);
   }
 
   /**
@@ -154,6 +154,7 @@ class PaperShapeFactory {
   /**
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
+   * @param taskClasses
    * @param {Video} video
    * @returns {PaperShape}
    */
@@ -172,7 +173,7 @@ class PaperShapeFactory {
         result = this._createPoint(labeledThingInFrame, shape, color);
         break;
       case 'cuboid3d':
-        result = this._createCuboid(labeledThingInFrame, shape, color, video);
+        result = this._createCuboid(labeledThingInFrame, shape, color, video, taskClasses);
         break;
       case 'polygon':
         result = this._createPolygon(labeledThingInFrame, shape, color);

@@ -22,8 +22,9 @@ class CuboidDrawingTool extends CreationTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
    * @param {EntityColorService} entityColorService
+   * @param {DrawClassShapeService} drawClassShapeService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -95,6 +96,12 @@ class CuboidDrawingTool extends CreationTool {
      * @private
      */
     this._startCreation = false;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
   }
 
   /**
@@ -177,7 +184,9 @@ class CuboidDrawingTool extends CreationTool {
         this._projection2d,
         this._projection3d,
         points,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService,
+        this._toolActionStruct.taskClasses
       );
     });
 
@@ -316,7 +325,9 @@ class CuboidDrawingTool extends CreationTool {
           this._projection2d,
           this._projection3d,
           points,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+          this._drawClassShapeService,
+          this._toolActionStruct.taskClasses
         );
       });
 
@@ -518,6 +529,7 @@ CuboidDrawingTool.$inject = [
   'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
+  'drawClassShapeService',
 ];
 
 export default CuboidDrawingTool;

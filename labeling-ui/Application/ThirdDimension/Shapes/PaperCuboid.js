@@ -16,8 +16,10 @@ class PaperCuboid extends PaperThingShape {
    * @param {Projection3d} projection3d
    * @param {Array} cuboid3dPoints
    * @param {{primary: string, secondary: string}} color
+   * @param {DrawClassShapeService} drawClassShapeService
+   * @param {Array} taskClasses
    */
-  constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color) {
+  constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, drawClassShapeService, taskClasses) {
     super(labeledThingInFrame, shapeId, color);
 
     /**
@@ -62,6 +64,14 @@ class PaperCuboid extends PaperThingShape {
      */
     this._cuboidInteractionResolver = new ManualUpdateCuboidInteractionResolver(this._cuboid3d);
 
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
+
+    this.taskClasses = taskClasses;
+
     this._drawShape();
   }
 
@@ -89,6 +99,49 @@ class PaperCuboid extends PaperThingShape {
       const handles = this._createHandles();
       this.addChildren(handles);
     }
+
+    if (this._drawClassShapeService.drawClasses) {
+      this._drawClasses();
+    }
+  }
+
+  _drawClasses() {
+    let topX = null;
+    let topY = null;
+    Array.from(Array(7).keys()).forEach(index => {
+      const position = this._projection2d.projectCuboidTo2d(this._cuboid3d).vertices[index];
+      if (topY === null || position.y < topY) {
+        topX = position.x;
+        topY = position.y;
+      }
+    });
+
+    let currentOffSet = 0;
+    const spacing = 8;
+    currentOffSet = topY - spacing;
+    super.classes.forEach(classId => {
+      const classObject = this.taskClasses.filter(className => {
+        return className.identifier === classId;
+      });
+      let content = '';
+      if (classObject.length > 0) {
+        content = classObject[0].className + ': ' + classObject[0].name;
+      }
+
+      const topClassName = new paper.PointText({
+        fontSize: 8,
+        fontFamily: '"Lucida Console", Monaco, monospace',
+        point: new paper.Point(topX, currentOffSet),
+        fillColor: this._color.primary,
+        shadowColor: new paper.Color(0, 0, 0),
+        shadowBlur: 2,
+        justification: 'left',
+        shadowOffset: new paper.Point(1, 1),
+        content: content,
+      });
+      currentOffSet -= spacing;
+      this.addChild(topClassName);
+    });
   }
 
   /**
@@ -928,6 +981,13 @@ class PaperCuboid extends PaperThingShape {
     const height3d = this._cuboid3d.vertices[topCornerIndex].z;
 
     return {height2d, height3d};
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return true;
   }
 
   /**
