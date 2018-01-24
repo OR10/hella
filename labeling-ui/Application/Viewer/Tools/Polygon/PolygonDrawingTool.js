@@ -17,10 +17,9 @@ class PolygonDrawingTool extends PathDrawingTool {
    * @param {EntityColorService} entityColorService
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {DrawClassShapeService} drawClassShapeService
-   * @param {LabelStructureService} labelStructureService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, drawClassShapeService, labelStructureService) {
-    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolygon.getClass(), drawClassShapeService, labelStructureService);
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, drawClassShapeService) {
+    super(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, PaperPolygon.getClass(), drawClassShapeService);
   }
 }
 
@@ -84,7 +83,6 @@ PolygonDrawingTool.$inject = [
   'entityColorService',
   'hierarchyCreationService',
   'drawClassShapeService',
-  'labelStructureService',
 ];
 
 export default PolygonDrawingTool;

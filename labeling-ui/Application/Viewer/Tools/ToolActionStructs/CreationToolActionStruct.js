@@ -8,9 +8,10 @@ class CreationToolActionStruct extends ToolActionStruct {
    * @param {Task} task
    * @param {FramePosition} framePosition
    * @param {string} requirementsThingOrGroupId
+   * @param {Array} taskClasses
    * @param {string} drawLabeledThingGroupsInFrameAs
    */
-  constructor(options, viewport, video, task, framePosition, requirementsThingOrGroupId, drawLabeledThingGroupsInFrameAs = 'rectangle') {
+  constructor(options, viewport, video, task, framePosition, requirementsThingOrGroupId, taskClasses, drawLabeledThingGroupsInFrameAs = 'rectangle') {
     super(options, viewport);
 
     /**
@@ -22,6 +23,11 @@ class CreationToolActionStruct extends ToolActionStruct {
      * @type {Task}
      */
     this.task = task;
+
+    /**
+     * @type {Array}
+     */
+    this.taskClasses = taskClasses;
 
     /**
      * @type {FramePosition}

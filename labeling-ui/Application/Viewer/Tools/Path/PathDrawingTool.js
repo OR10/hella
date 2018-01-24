@@ -22,9 +22,8 @@ class PathDrawingTool extends CreationTool {
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {string} pathIdentifier
    * @param {DrawClassShapeService} drawClassShapeService
-   * @param {LabelStructureService} labelStructureService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, pathIdentifier, drawClassShapeService, labelStructureService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, entityIdService, entityColorService, hierarchyCreationService, pathIdentifier, drawClassShapeService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
     /**
      * @type {EntityIdService}
@@ -67,12 +66,6 @@ class PathDrawingTool extends CreationTool {
      * @private
      */
     this._drawClassShapeService = drawClassShapeService;
-
-    /**
-     * @type {LabelStructureService}
-     * @private
-     */
-    this._labelStructureService = labelStructureService;
   }
 
   /**
@@ -126,9 +119,7 @@ class PathDrawingTool extends CreationTool {
             this._entityIdService.getUniqueId(),
             points,
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            this._drawClassShapeService,
-            this._labelStructureService,
-            this._context
+            this._drawClassShapeService
           );
           break;
 
@@ -229,9 +220,7 @@ class PathDrawingTool extends CreationTool {
             this._entityIdService.getUniqueId(),
             [from, to],
             this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
-            this._drawClassShapeService,
-            this._labelStructureService,
-            this._context
+            this._drawClassShapeService
           );
           break;
         default:
@@ -322,7 +311,6 @@ PathDrawingTool.$inject = [
   'entityColorService',
   'hierarchyCreationService',
   'drawClassShapeService',
-  'labelStructureService',
 ];
 
 export default PathDrawingTool;

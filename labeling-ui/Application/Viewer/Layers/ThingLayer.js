@@ -733,6 +733,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       task,
       framePosition,
       this._selectedLabelStructureObject.id,
+      this._$scope.vm.taskClasses,
       this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     tool.invokeDefaultShapeCreation(creationToolStruct)
@@ -835,6 +836,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this._selectedLabelStructureObject.id,
       this._selectedLabelStructureObject.shape,
       selectedPaperShape,
+      this._$scope.vm.taskClasses,
       this._$scope.vm.drawLabeledThingGroupsInFrameAs
     );
     this._activeTool.invoke(struct)
