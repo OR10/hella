@@ -124,8 +124,8 @@ class PaperShapeFactory {
    * @returns {PaperPolygon}
    * @private
    */
-  _createPolygon(labeledThingInFrame, shape, color) {
-    return new PaperPolygon(labeledThingInFrame, shape.id, shape.points, color);
+  _createPolygon(labeledThingInFrame, shape, color, taskClasses) {
+    return new PaperPolygon(labeledThingInFrame, shape.id, shape.points, color, this._drawClassShapeService, taskClasses);
   }
 
   /**
@@ -176,7 +176,7 @@ class PaperShapeFactory {
         result = this._createCuboid(labeledThingInFrame, shape, color, video, taskClasses);
         break;
       case 'polygon':
-        result = this._createPolygon(labeledThingInFrame, shape, color);
+        result = this._createPolygon(labeledThingInFrame, shape, color, taskClasses);
         break;
       case 'polyline':
         result = this._createPolyline(labeledThingInFrame, shape, color, taskClasses);

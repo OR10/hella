@@ -109,7 +109,9 @@ class PathDrawingTool extends CreationTool {
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             points,
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            this._drawClassShapeService,
+            this._toolActionStruct.taskClasses
           );
           break;
 
@@ -212,7 +214,9 @@ class PathDrawingTool extends CreationTool {
             labeledThingInFrame,
             this._entityIdService.getUniqueId(),
             [from, to],
-            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+            this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+            this._drawClassShapeService,
+            this._toolActionStruct.taskClasses
           );
           break;
         case PaperPolyline.getClass():
