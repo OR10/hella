@@ -191,11 +191,6 @@ class ProjectListController {
         this._updateProjectCreatorsForAllProjects(response);
 
         this.loadingInProgress = false;
-/*
-        this._getProjectCreatorsForAllProjects().then(() => {
-          this.loadingInProgress = false;
-        });
-*/
       });
   }
 
