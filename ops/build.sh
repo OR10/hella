@@ -3,7 +3,12 @@ set -e
 
 rm -rf /run/shm/labeling_api/cache/*
 rm -rf /var/cache/labeling_api/*
-cd /var/www/hella/labeling-api/ && composer install
+cd /var/www/hella/labeling-api/
+composer install
+
+
+cd /var/www/hella/labeling-video-processing/
+composer install
 
 
 cd ../labeling-ui
