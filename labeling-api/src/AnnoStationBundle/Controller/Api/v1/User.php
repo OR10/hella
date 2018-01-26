@@ -296,7 +296,7 @@ class User extends Controller\Base
         if ($user->getUsername() === $loginUser->getUsername()) {
             $this->tokenStorage->setToken(null);
 
-            return View\View::createRedirect('fos_user_security_logout');
+            return View\View::createRouteRedirect('annostation_index_index');
         }
 
         return View\View::create()->setData(
