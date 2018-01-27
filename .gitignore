@@ -91,6 +91,9 @@ cmake-build-debug/
 # IntelliJ
 out/
 
+# Netbeans
+nbproject/
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
