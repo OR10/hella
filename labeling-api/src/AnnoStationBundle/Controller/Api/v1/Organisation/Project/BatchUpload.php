@@ -160,6 +160,7 @@ class BatchUpload extends Controller\Base
             throw new ProjectException\StorageLimitExceeded($organisation);
         }
 
+
         /** @var Model\User $user */
         $user                  = $this->tokenStorage->getToken()->getUser();
 
@@ -297,6 +298,10 @@ class BatchUpload extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
+
+        if ($this->organisationFacade->isQuoteExceeded($organisation)) {
+            return new View\View(['result' => ['error' => ['message' => 'Organization storage quote limit exceed']]]);
+        }
 
         clearstatcache();
 
