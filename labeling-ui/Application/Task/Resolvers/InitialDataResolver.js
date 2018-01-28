@@ -19,7 +19,7 @@ export default [
     const loadTask = () => taskGateway.getTask($stateParams.taskId);
     const replicateTaskData = (project, task) => taskReplicationService.replicateTaskDataToLocalMachine(project, task);
     const loadVideo = task => videoGateway.getVideo(task.videoId);
-    const preloadImages = task => imagePreloader.preloadImages(task, 50);
+    const preloadImages = task => imagePreloader.preloadImages(task, 10);
 
     return $q.resolve()
       .then(() => $q.all([loadProject(), loadTask()]))
