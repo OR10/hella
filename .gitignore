@@ -1,6 +1,7 @@
 # Custom ignores
 node_modules
 .vagrant*
+./ops/build.tgz
 npm-debug.log
 .DS_Store
 *.log
