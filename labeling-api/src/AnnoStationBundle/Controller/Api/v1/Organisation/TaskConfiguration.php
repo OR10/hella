@@ -232,7 +232,10 @@ class TaskConfiguration extends Controller\Base
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        if (!$request->files->has('file') || !$request->get('name')) {
+        if (!$request->files->has('file')
+            || !$request->get('name')
+            || $request->files->get('file')->getClientOriginalExtension() !== 'xml'
+        ) {
             return View\View::create()
                 ->setData(['error' => 'Invalid data'])
                 ->setStatusCode(400);
