@@ -38,6 +38,25 @@ class UploadService {
 
     return completedFiles === allFiles;
   }
+
+  getFileErrorsList() {
+    let _errors = {}, msg;
+
+    // Make all errors unique. If all files has the same error - show only 1st
+    this._files.forEach(file => {
+      msg = file.errorMessage && file.errorMessage.message;
+      if (msg && !_errors[msg]) {
+        _errors[msg] = file.name;
+      }
+    });
+
+    // attach file name for error
+    let _errorsList = [];
+    for(let msg in _errors) {
+      _errorsList.push(`${msg} (File: ${_errors[msg]})`);
+    }
+    return _errorsList;
+  }
 }
 
 export default UploadService;
