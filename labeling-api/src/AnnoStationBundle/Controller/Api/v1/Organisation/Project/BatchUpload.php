@@ -161,7 +161,7 @@ class BatchUpload extends Controller\Base
         }
 
         /** @var Model\User $user */
-        $user                  = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user->getId() !== $project->getUserId()) {
             throw new HttpKernel\Exception\AccessDeniedHttpException('You are not allowed to upload videos here');
@@ -297,6 +297,11 @@ class BatchUpload extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotWritable($project);
         $this->denyIfProjectIsNotTodo($project);
+
+        // show quote exceed error for all files
+        if ($this->organisationFacade->isQuoteExceeded($organisation)) {
+            return new View\View(['result' => ['error' => ['message' => 'Organization storage quote limit exceed']]]);
+        }
 
         clearstatcache();
 
