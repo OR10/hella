@@ -214,7 +214,7 @@ class ImagePreloader {
       return this._$q.resolve(this._locations.get(task));
     }
 
-    const imageTypePreferences = [['source', 'sourceJpg'], ['thumbnail']];
+    const imageTypePreferences = [['source', 'thumbnail'], ['sourceJpg']];
     const imageTypes = imageTypePreferences
     // Remove all types not available for this task
       .map(typeList => typeList.filter(

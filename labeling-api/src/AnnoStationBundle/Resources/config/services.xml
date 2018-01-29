@@ -246,6 +246,7 @@
             <argument type="service" id="annostation.labeling_api.service.frame_cdn.selected-alias"/>
             <argument>%ffmpeg_executable%</argument>
             <argument type="service" id="oneup_flysystem.cache_filesystem"/>
+            <argument>%video_processing_host%</argument>
         </service>
 
         <service id="annostation.labeling_api.view.serialization_listener"

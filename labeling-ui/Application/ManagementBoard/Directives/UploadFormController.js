@@ -135,7 +135,14 @@ class UploadFormController {
           if (result.error !== undefined) {
             this._showErrorsModal(result.error.message);
           } else if (this._hasFilesWithError()) {
-            this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData);
+            let errorsList = this._uploadService.getFileErrorsList();
+            if (errorsList.length) {
+              let msg = 'Some errors occurred during your upload. Please check the file list for errors and act accordingly.'
+              this._showCompletedWithErrorsModal(errorsList, msg);
+            } else {
+              let msg = 'Some of the uploaded videos are missing calibration data. Please upload the calibration data for the following videos:';
+              this._showCompletedWithErrorsModal(result.missing3dVideoCalibrationData, msg);
+            }
           } else {
             this._showCompletedModal(result.missing3dVideoCalibrationData);
           }
@@ -157,15 +164,14 @@ class UploadFormController {
       .reduce((before, file) => before || file.hasUploadError(), false);
   }
 
-  _showCompletedWithErrorsModal(incompleteVideos) {
-    if (incompleteVideos.length > 1) {
+  _showCompletedWithErrorsModal(incompleteVideos, msg) {
+    if (incompleteVideos.length >= 1) {
       this._modalService.show(
         new this._ListDialog(
           {
             title: 'Upload completed with errors',
             headline: 'Your upload is complete, but errors occured.',
-            message: 'Some errors occurred during your upload. Please check the file list for errors and act accordingly. ' +
-            'Some of the uploaded videos are missing calibration data. Please upload the calibration data for the following videos:',
+            message: msg,
             confirmButtonText: 'Understood',
             data: incompleteVideos,
           },
