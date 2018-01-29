@@ -160,7 +160,6 @@ class BatchUpload extends Controller\Base
             throw new ProjectException\StorageLimitExceeded($organisation);
         }
 
-
         /** @var Model\User $user */
         $user                  = $this->tokenStorage->getToken()->getUser();
 
