@@ -1,5 +1,5 @@
 {
-    "name": "labeling.api",
+    "name": "labeling/api",
     "autoload": {
         "psr-4": {
             "": "src/",
