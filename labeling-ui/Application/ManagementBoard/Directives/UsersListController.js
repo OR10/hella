@@ -66,6 +66,12 @@ class UsersListController {
       });
   }
 
+  canDeleteUser(user) {
+  // this.user, this.userPermissions
+    console.log('canDeleteUser', user, this.user, this.userPermissions.canDeleteUser, this.userPermissions.canDeleteUser, user.username !== this.user.username);
+    return this.userPermissions.canDeleteUser && user.username !== this.user.username;
+  }
+
   /**
    * Delete a certain User
    *

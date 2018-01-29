@@ -10,6 +10,7 @@ class UsersListDirective {
   constructor() {
     this.scope = {
       userPermissions: '=',
+      user: '='
     };
 
     this.template = usersListTemplate;
