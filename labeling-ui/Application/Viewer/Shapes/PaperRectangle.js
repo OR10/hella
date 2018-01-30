@@ -119,15 +119,11 @@ class PaperRectangle extends PaperThingShape {
     const spacing = 8;
     const topPositionY = this._topLeft.y;
     currentOffSet = topPositionY - spacing;
-    super.classes.forEach(classId => {
-      const classObject = this.taskClasses.filter(className => {
-        return className.identifier === classId;
-      });
-      let content = '';
-      if (classObject.length > 0) {
-        content = classObject[0].name;
-      }
-
+    const sortedClasses = this.taskClasses.filter(classObject => {
+      return super.classes.indexOf(classObject.identifier) !== -1;
+    });
+    sortedClasses.reverse();
+    sortedClasses.forEach(sortedClass => {
       const topLeftX = this._topLeft.x;
       const topClassName = new paper.PointText({
         fontSize: 8,
@@ -138,7 +134,7 @@ class PaperRectangle extends PaperThingShape {
         shadowBlur: 2,
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
-        content: content,
+        content: sortedClass.identifier,
       });
       currentOffSet -= spacing;
       this.addChild(topClassName);

@@ -119,15 +119,11 @@ class PaperCuboid extends PaperThingShape {
     let currentOffSet = 0;
     const spacing = 8;
     currentOffSet = topY - spacing;
-    super.classes.forEach(classId => {
-      const classObject = this.taskClasses.filter(className => {
-        return className.identifier === classId;
-      });
-      let content = '';
-      if (classObject.length > 0) {
-        content = classObject[0].name;
-      }
-
+    const sortedClasses = this.taskClasses.filter(classObject => {
+      return super.classes.indexOf(classObject.identifier) !== -1;
+    });
+    sortedClasses.reverse();
+    sortedClasses.forEach(sortedClass => {
       const topClassName = new paper.PointText({
         fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
@@ -137,7 +133,7 @@ class PaperCuboid extends PaperThingShape {
         shadowBlur: 2,
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
-        content: content,
+        content: sortedClass.name,
       });
       currentOffSet -= spacing;
       this.addChild(topClassName);
