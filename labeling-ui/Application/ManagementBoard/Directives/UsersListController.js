@@ -66,6 +66,10 @@ class UsersListController {
       });
   }
 
+  canDeleteUser(user) {
+    return this.userPermissions.canDeleteUser && user.username !== this.user.username;
+  }
+
   /**
    * Delete a certain User
    *
