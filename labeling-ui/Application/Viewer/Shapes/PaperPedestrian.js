@@ -78,7 +78,7 @@ class PaperPedestrian extends PaperThingShape {
       });
       let content = '';
       if (classObject.length > 0) {
-        content = classObject[0].className + ': ' + classObject[0].name;
+        content = classObject[0].name;
       }
 
       const topLeftX = this._topCenter.x;
