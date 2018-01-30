@@ -1,8 +1,0 @@
-{
-  "_id": "LABELED-THING-ID-1",
-  "projectId": "{{:--project-id}}",
-  "taskId": "{{:--task-id}}",
-  "_rev": "{{:--revision}}",
-  "createdAt": "{{:--created-at}}",
-  "lastModifiedAt": "{{:--last-modified-at}}"
-}

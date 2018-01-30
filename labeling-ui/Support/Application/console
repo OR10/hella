@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-// Allow transparent ES6 loading
-require('babel/register');
-require('../Console/Application');
