@@ -245,8 +245,8 @@ describe('RequirementsLabelStructure', () => {
     });
 
     it('should return the required class to delete list', () => {
-      const expectedRequiredClasses = ['inside-city-yes', 'inside-city-no', 'speed-30'];
-      const classes = structure.getRequiredValuesForValueToRemove('speed-30');
+      const expectedRequiredClasses = ['white', 'orange', 'neon'];
+      const classes = structure.getRequiredValuesForValueToRemove('neon');
 
       expect(classes).toEqual(expectedRequiredClasses);
     });

@@ -735,6 +735,7 @@ class RequirementsLabelStructure extends LabelStructure {
 
         for (let refIndex = 0; refIndex < refSearchSnapshot.snapshotLength; refIndex++) {
           const refXmlClass = new XMLClassElement(refSearchSnapshot.snapshotItem(refIndex), 1);
+          nextValues.push(refXmlClass.element.attributes.id.value);
           nextValues = nextValues.concat(this._getNextValues(refXmlClass.element.attributes.id.value));
         }
       }
