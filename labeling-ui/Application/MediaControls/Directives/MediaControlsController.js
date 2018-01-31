@@ -133,7 +133,7 @@ class MediaControlsController {
     /**
      * @type {string}
      */
-    this.popupPanelState = 'zoom';
+    this.popupPanelState = '';
 
     /**
      * @type {boolean}
