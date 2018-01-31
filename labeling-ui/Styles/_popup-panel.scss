@@ -26,6 +26,10 @@ div.popup-panel {
         overflow: hidden;
       }
     }
+
+    .icon {
+      color: $color-ut-lightgrey-1;
+    }
   }
 
   .settings {
@@ -37,6 +41,12 @@ div.popup-panel {
       .grid-content {
         overflow: hidden;
       }
+    }
+
+    .fps-input,
+    .frameskip-input {
+      color: $color-ut-lightgrey-1 !important;
+      border: 1px solid $color-ut-lightgrey-4;
     }
   }
 
