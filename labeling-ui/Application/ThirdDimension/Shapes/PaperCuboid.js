@@ -80,6 +80,8 @@ class PaperCuboid extends PaperThingShape {
      */
     this._topClassNamesPoint = null;
 
+    this._currentZoomLevel = null;
+
     this.view.on('zoom', event => this._onViewZoomChange(event));
 
     this._drawShape();
@@ -118,17 +120,22 @@ class PaperCuboid extends PaperThingShape {
   }
 
   _onViewZoomChange(event) {
-    if (this._topClassNamesPoint === null) {
+    this._currentZoomLevel = event.zoom;
+    this._applyScaleFactor();
+  }
+
+  _applyScaleFactor() {
+    if (this._topClassNamesPoint === null || this._currentZoomLevel === null) {
       return;
     }
     let currentOffSet = 0;
-    const spacing = 8 / event.zoom;
+    const spacing = 8 / this._currentZoomLevel;
     currentOffSet = this._topClassNamesPoint.y - spacing;
     this._topClassNames.forEach(topClassName => {
       const oldPoint = topClassName.point;
       oldPoint.y = currentOffSet;
       topClassName.matrix.reset();
-      topClassName.scale(1 / event.zoom);
+      topClassName.scale(1 / this._currentZoomLevel);
       topClassName.point = oldPoint;
       currentOffSet -= spacing;
     });
@@ -173,6 +180,7 @@ class PaperCuboid extends PaperThingShape {
       this._topClassNames.push(topClassName);
       this.addChild(topClassName);
     });
+    this._applyScaleFactor();
   }
 
   /**

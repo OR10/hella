@@ -79,6 +79,7 @@ class PaperPolyline extends PaperPath {
       this._topClassNames.push(topClassName);
       this.addChild(topClassName);
     });
+    this._applyScaleFactor();
   }
 
   /**
