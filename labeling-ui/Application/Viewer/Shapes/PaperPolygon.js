@@ -52,6 +52,9 @@ class PaperPolygon extends PaperPath {
     });
     sortedClasses.reverse();
     sortedClasses.forEach(sortedClass => {
+      if (this._topClassNamesPoint === null) {
+        this._topClassNamesPoint = new paper.Point(topX, topY);
+      }
       const topClassName = new paper.PointText({
         fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
@@ -62,8 +65,10 @@ class PaperPolygon extends PaperPath {
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
         content: sortedClass.identifier,
+        applyMatrix: false,
       });
       currentOffSet -= spacing;
+      this._topClassNames.push(topClassName);
       this.addChild(topClassName);
     });
   }

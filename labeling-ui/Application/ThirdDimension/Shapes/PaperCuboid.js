@@ -72,6 +72,16 @@ class PaperCuboid extends PaperThingShape {
 
     this.taskClasses = taskClasses;
 
+    this._topClassNames = [];
+
+    /**
+     * @type {paper.Point}
+     * @protected
+     */
+    this._topClassNamesPoint = null;
+
+    this.view.on('zoom', event => this._onViewZoomChange(event));
+
     this._drawShape();
   }
 
@@ -85,6 +95,8 @@ class PaperCuboid extends PaperThingShape {
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
+    this._topClassNames = [];
+    this._topClassNamesPoint = null;
 
     const planes = this._createPlanes();
     this.addChildren(planes);
@@ -103,6 +115,23 @@ class PaperCuboid extends PaperThingShape {
     if (this._drawClassShapeService.drawClasses) {
       this._drawClasses();
     }
+  }
+
+  _onViewZoomChange(event) {
+    if (this._topClassNamesPoint === null) {
+      return;
+    }
+    let currentOffSet = 0;
+    const spacing = 8 / event.zoom;
+    currentOffSet = this._topClassNamesPoint.y - spacing;
+    this._topClassNames.forEach(topClassName => {
+      const oldPoint = topClassName.point;
+      oldPoint.y = currentOffSet;
+      topClassName.matrix.reset();
+      topClassName.scale(1 / event.zoom);
+      topClassName.point = oldPoint;
+      currentOffSet -= spacing;
+    });
   }
 
   _drawClasses() {
@@ -124,6 +153,9 @@ class PaperCuboid extends PaperThingShape {
     });
     sortedClasses.reverse();
     sortedClasses.forEach(sortedClass => {
+      if (this._topClassNamesPoint === null) {
+        this._topClassNamesPoint = new paper.Point(topX, topY);
+      }
       const topClassName = new paper.PointText({
         fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
@@ -134,8 +166,11 @@ class PaperCuboid extends PaperThingShape {
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
         content: sortedClass.name,
+        applyMatrix: false,
       });
+
       currentOffSet -= spacing;
+      this._topClassNames.push(topClassName);
       this.addChild(topClassName);
     });
   }

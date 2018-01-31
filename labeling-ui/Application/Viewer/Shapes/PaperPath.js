@@ -19,6 +19,33 @@ class PaperPath extends PaperThingShape {
      * @private
      */
     this._points = points;
+
+    /**
+     * @type {paper.Point}
+     * @protected
+     */
+    this._topClassNamesPoint = null;
+
+    this._topClassNames = [];
+
+    this.view.on('zoom', event => this._onViewZoomChange(event));
+  }
+
+  _onViewZoomChange(event) {
+    if (this._topClassNamesPoint === null) {
+      return;
+    }
+    let currentOffSet = 0;
+    const spacing = 8 / event.zoom;
+    currentOffSet = this._topClassNamesPoint.y - spacing;
+    this._topClassNames.forEach(topClassName => {
+      const oldPoint = topClassName.point;
+      oldPoint.y = currentOffSet;
+      topClassName.matrix.reset();
+      topClassName.scale(1 / event.zoom);
+      topClassName.point = oldPoint;
+      currentOffSet -= spacing;
+    });
   }
 
   /**
@@ -62,6 +89,8 @@ class PaperPath extends PaperThingShape {
    */
   _renderShape(shape, drawHandles = true) {
     this.removeChildren();
+    this._topClassNames = [];
+    this._topClassNamesPoint = null;
 
     this.addChild(shape);
 

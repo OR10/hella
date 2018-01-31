@@ -59,6 +59,10 @@ class PaperPolyline extends PaperPath {
     sortedClasses.reverse();
     sortedClasses.forEach(sortedClass => {
       const topLeftX = highestPoint.x;
+      const topLeftY = highestPoint.y;
+      if (this._topClassNamesPoint === null) {
+        this._topClassNamesPoint = new paper.Point(topLeftX, topLeftY);
+      }
       const topClassName = new paper.PointText({
         fontSize: 8,
         fontFamily: '"Lucida Console", Monaco, monospace',
@@ -69,8 +73,10 @@ class PaperPolyline extends PaperPath {
         justification: 'left',
         shadowOffset: new paper.Point(1, 1),
         content: sortedClass.identifier,
+        applyMatrix: false,
       });
       currentOffSet -= spacing;
+      this._topClassNames.push(topClassName);
       this.addChild(topClassName);
     });
   }
