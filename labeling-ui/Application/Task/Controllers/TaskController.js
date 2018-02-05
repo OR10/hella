@@ -374,7 +374,8 @@ class TaskController {
     $scope.$watch(() => $location.hash(), (newHash, oldHash) => {
       if (newHash !== oldHash) {
         this.framePosition.goto(this._getFrameIndexFromUrl());
-        this._selectLabeledThingInFrameFromUrl();
+        const setHashProgrammatic = true;
+        this._selectLabeledThingInFrameFromUrl(setHashProgrammatic);
       }
     });
 
@@ -465,7 +466,7 @@ class TaskController {
     this.$scope.$broadcast('sidebar.resized');
   }
 
-  _selectLabeledThingInFrameFromUrl() {
+  _selectLabeledThingInFrameFromUrl(setHashProgrammatic = false) {
     const hash = this._$location.hash();
     const match = hash.split('/')[1];
 
@@ -481,7 +482,7 @@ class TaskController {
         return match === element.labeledThingGroupInFrame.id;
       });
 
-      if (shape) {
+      if (shape && !setHashProgrammatic) {
         this.selectedPaperShape = shape;
         this.thingLayer.update();
       } else if (group) {
