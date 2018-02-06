@@ -20,9 +20,10 @@ class PointDrawingTool extends CreationTool {
    * @param {LoggerService} loggerService
    * @param {HierarchyCreationService} hierarchyCreationService
    * @param {EntityIdService} entityIdService
-   * @param {EntityColorService} entityColorService
+   * @param {EntityColorService} entityColorService,
+   * @param {DrawClassShapeService} drawClassShapeService
    */
-  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService) {
+  constructor(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService, entityIdService, entityColorService, drawClassShapeService) {
     super(drawingContext, $rootScope, $q, loggerService, hierarchyCreationService);
 
     /**
@@ -54,6 +55,12 @@ class PointDrawingTool extends CreationTool {
      * @private
      */
     this._creationHandle = null;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
   }
 
   /**
@@ -85,7 +92,9 @@ class PointDrawingTool extends CreationTool {
         labeledThingInFrame,
         this._entityIdService.getUniqueId(),
         center,
-        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+        this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+        this._drawClassShapeService,
+        this._toolActionStruct.taskClasses
       );
     });
 
@@ -156,7 +165,9 @@ class PointDrawingTool extends CreationTool {
           labeledThingInFrame,
           this._entityIdService.getUniqueId(),
           to,
-          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor)
+          this._entityColorService.getColorById(labeledThingInFrame.labeledThing.lineColor),
+          this._drawClassShapeService,
+          this._toolActionStruct.taskClasses
       );
       this._creationHandle = this._getScaleAnchor(to);
       this._pointShape.moveTo(to);
@@ -232,6 +243,7 @@ PointDrawingTool.$inject = [
   'hierarchyCreationService',
   'entityIdService',
   'entityColorService',
+  'drawClassShapeService',
 ];
 
 export default PointDrawingTool;

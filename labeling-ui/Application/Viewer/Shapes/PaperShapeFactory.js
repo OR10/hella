@@ -144,11 +144,12 @@ class PaperShapeFactory {
    * @param {LabeledThingInFrame} labeledThingInFrame
    * @param {Object} shape
    * @param {String} color
+   * @param taskClasses
    * @returns {PaperPoint}
    * @private
    */
-  _createPoint(labeledThingInFrame, shape, color) {
-    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, color);
+  _createPoint(labeledThingInFrame, shape, color, taskClasses) {
+    return new PaperPoint(labeledThingInFrame, shape.id, shape.point, color, this._drawClassShapeService, taskClasses);
   }
 
   /**
@@ -170,7 +171,7 @@ class PaperShapeFactory {
         result = this._createPedestrian(labeledThingInFrame, shape, color, taskClasses);
         break;
       case 'point':
-        result = this._createPoint(labeledThingInFrame, shape, color);
+        result = this._createPoint(labeledThingInFrame, shape, color, taskClasses);
         break;
       case 'cuboid3d':
         result = this._createCuboid(labeledThingInFrame, shape, color, video, taskClasses);

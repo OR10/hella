@@ -20,7 +20,7 @@ class PaperCuboid extends PaperThingShape {
    * @param {Array} taskClasses
    */
   constructor(labeledThingInFrame, shapeId, projection2d, projection3d, cuboid3dPoints, color, drawClassShapeService, taskClasses) {
-    super(labeledThingInFrame, shapeId, color);
+    super(labeledThingInFrame, shapeId, color, taskClasses);
 
     /**
      * @type {boolean}
@@ -70,16 +70,6 @@ class PaperCuboid extends PaperThingShape {
      */
     this._drawClassShapeService = drawClassShapeService;
 
-    this.taskClasses = taskClasses;
-
-    this._topClassNames = [];
-
-    /**
-     * @type {paper.Point}
-     * @protected
-     */
-    this._topClassNamesPoint = null;
-
     this.view.on('zoom', event => this._onViewZoomChange(event));
 
     this._drawShape();
@@ -95,8 +85,6 @@ class PaperCuboid extends PaperThingShape {
     this._projectedCuboid = this._projection2d.projectCuboidTo2d(this._cuboid3d);
 
     this.removeChildren();
-    this._topClassNames = [];
-    this._topClassNamesPoint = null;
 
     const planes = this._createPlanes();
     this.addChildren(planes);
@@ -121,23 +109,6 @@ class PaperCuboid extends PaperThingShape {
     this._applyScaleFactor();
   }
 
-  _applyScaleFactor() {
-    if (this._topClassNamesPoint === null) {
-      return;
-    }
-    let currentOffSet = 0;
-    const spacing = 8 / this.view.zoom;
-    currentOffSet = this._topClassNamesPoint.y - spacing;
-    this._topClassNames.forEach(topClassName => {
-      const oldPoint = topClassName.point;
-      oldPoint.y = currentOffSet;
-      topClassName.matrix.reset();
-      topClassName.scale(1 / this.view.zoom);
-      topClassName.point = oldPoint;
-      currentOffSet -= spacing;
-    });
-  }
-
   _drawClasses() {
     let topX = null;
     let topY = null;
@@ -149,34 +120,8 @@ class PaperCuboid extends PaperThingShape {
       }
     });
 
-    let currentOffSet = 0;
-    const spacing = 8;
-    currentOffSet = topY - spacing;
-    const sortedClasses = this.taskClasses.filter(classObject => {
-      return super.classes.indexOf(classObject.identifier) !== -1;
-    });
-    sortedClasses.reverse();
-    sortedClasses.forEach(sortedClass => {
-      if (this._topClassNamesPoint === null) {
-        this._topClassNamesPoint = new paper.Point(topX, topY);
-      }
-      const topClassName = new paper.PointText({
-        fontSize: 8,
-        fontFamily: '"Lucida Console", Monaco, monospace',
-        point: new paper.Point(topX, currentOffSet),
-        fillColor: this._color.primary,
-        shadowColor: new paper.Color(0, 0, 0),
-        shadowBlur: 2,
-        justification: 'left',
-        shadowOffset: new paper.Point(1, 1),
-        content: sortedClass.name,
-        applyMatrix: false,
-      });
+    super._drawClasses(topX, topY);
 
-      currentOffSet -= spacing;
-      this._topClassNames.push(topClassName);
-      this.addChild(topClassName);
-    });
     this._applyScaleFactor();
   }
 

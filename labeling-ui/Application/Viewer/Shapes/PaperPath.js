@@ -11,45 +11,21 @@ class PaperPath extends PaperThingShape {
    * @param {string} shapeId
    * @param {Array.<Point>} points
    * @param {{primary: string, secondary: string}} color
+   * @param {Array} taskClasses
    */
-  constructor(labeledThingInFrame, shapeId, points = [], color) {
-    super(labeledThingInFrame, shapeId, color);
+  constructor(labeledThingInFrame, shapeId, points = [], color, taskClasses) {
+    super(labeledThingInFrame, shapeId, color, taskClasses);
     /**
      * @type {Array.<Point>}
      * @private
      */
     this._points = points;
 
-    /**
-     * @type {paper.Point}
-     * @protected
-     */
-    this._topClassNamesPoint = null;
-
-    this._topClassNames = [];
-
     this.view.on('zoom', event => this._onViewZoomChange(event));
   }
 
   _onViewZoomChange() {
     this._applyScaleFactor();
-  }
-
-  _applyScaleFactor() {
-    if (this._topClassNamesPoint === null) {
-      return;
-    }
-    let currentOffSet = 0;
-    const spacing = 8 / this.view.zoom;
-    currentOffSet = this._topClassNamesPoint.y - spacing;
-    this._topClassNames.forEach(topClassName => {
-      const oldPoint = topClassName.point;
-      oldPoint.y = currentOffSet;
-      topClassName.matrix.reset();
-      topClassName.scale(1 / this.view.zoom);
-      topClassName.point = oldPoint;
-      currentOffSet -= spacing;
-    });
   }
 
   /**
@@ -93,8 +69,6 @@ class PaperPath extends PaperThingShape {
    */
   _renderShape(shape, drawHandles = true) {
     this.removeChildren();
-    this._topClassNames = [];
-    this._topClassNamesPoint = null;
 
     this.addChild(shape);
 

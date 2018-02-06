@@ -14,9 +14,11 @@ class PaperPoint extends PaperThingShape {
    * @param {string} shapeId
    * @param {Point} centerPoint
    * @param {{primary: string, secondary: string}} color
+   * @param {DrawClassShapeService} drawClassShapeService
+   * @param {Array} taskClasses
    */
-  constructor(labeledThingInFrame, shapeId, centerPoint, color) {
-    super(labeledThingInFrame, shapeId, color);
+  constructor(labeledThingInFrame, shapeId, centerPoint, color, drawClassShapeService, taskClasses) {
+    super(labeledThingInFrame, shapeId, color, taskClasses);
 
     this.applyMatrix = false;
     /**
@@ -29,6 +31,12 @@ class PaperPoint extends PaperThingShape {
      * @private
      */
     this._centerPoint = centerPoint;
+
+    /**
+     * @type {DrawClassShapeService}
+     * @private
+     */
+    this._drawClassShapeService = drawClassShapeService;
 
     this._drawShape();
     // this._drawDebugRectangle(labeledThingInFrame, shapeId, color);
@@ -52,6 +60,16 @@ class PaperPoint extends PaperThingShape {
     lines.forEach(line => this.addChild(line));
 
     this._onViewZoomChange({zoom: this.view.zoom, center: this.view.center});
+
+    if (this._drawClassShapeService.drawClasses) {
+      this._drawClasses();
+    }
+  }
+
+  _drawClasses() {
+    super._drawClasses(this._centerPoint.x, this._centerPoint.y - 10);
+
+    this._applyScaleFactor();
   }
 
   _onViewZoomChange(event) {
@@ -240,6 +258,13 @@ class PaperPoint extends PaperThingShape {
    */
   getClass() {
     return PaperPoint.getClass();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canShowClasses() {
+    return true;
   }
 
   /**

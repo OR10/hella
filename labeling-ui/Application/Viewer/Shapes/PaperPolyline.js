@@ -13,8 +13,7 @@ class PaperPolyline extends PaperPath {
    * @param {Array} taskClasses
    */
   constructor(labeledThingInFrame, shapeId, points = [], color, drawClassShapeService, taskClasses) {
-    super(labeledThingInFrame, shapeId, points, color);
-    this.taskClasses = taskClasses;
+    super(labeledThingInFrame, shapeId, points, color, taskClasses);
 
     this._drawClassShapeService = drawClassShapeService;
     this._drawShape();
@@ -49,36 +48,8 @@ class PaperPolyline extends PaperPath {
     const maxValueOfY = Math.min(...this._points.map(point => point.y));
     const highestPoint = this._points.find(point => point.y === maxValueOfY);
 
-    let currentOffSet = 0;
-    const spacing = 8;
-    currentOffSet = maxValueOfY - spacing;
+    super._drawClasses(highestPoint.x, highestPoint.y);
 
-    const sortedClasses = this.taskClasses.filter(classObject => {
-      return super.classes.indexOf(classObject.identifier) !== -1;
-    });
-    sortedClasses.reverse();
-    sortedClasses.forEach(sortedClass => {
-      const topLeftX = highestPoint.x;
-      const topLeftY = highestPoint.y;
-      if (this._topClassNamesPoint === null) {
-        this._topClassNamesPoint = new paper.Point(topLeftX, topLeftY);
-      }
-      const topClassName = new paper.PointText({
-        fontSize: 8,
-        fontFamily: '"Lucida Console", Monaco, monospace',
-        point: new paper.Point(topLeftX, currentOffSet),
-        fillColor: this._color.primary,
-        shadowColor: new paper.Color(0, 0, 0),
-        shadowBlur: 2,
-        justification: 'left',
-        shadowOffset: new paper.Point(1, 1),
-        content: sortedClass.identifier,
-        applyMatrix: false,
-      });
-      currentOffSet -= spacing;
-      this._topClassNames.push(topClassName);
-      this.addChild(topClassName);
-    });
     this._applyScaleFactor();
   }
 

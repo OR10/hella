@@ -512,7 +512,7 @@ class ThingLayer extends PanAndZoomPaperLayer {
       this,
       'action:redraw-shape-with-class',
       (event, task, shape) => {
-        if (shape.canShowClasses() && this._drawClassShapeService.drawClasses) {
+        if (shape.canShowClasses() && this._drawClassShapeService.drawClasses !== false) {
           this._context.withScope(scope => {
             shape.redrawShape();
             scope.view.update();
@@ -524,9 +524,9 @@ class ThingLayer extends PanAndZoomPaperLayer {
     this._rootScopeEventRegistrationService.register(
       this,
       'action:save-draw-classes', () => {
-        this._drawClassShapeService.drawClasses = !this._drawClassShapeService.drawClasses;
+        this._drawClassShapeService.toggleDrawingClasses();
         this._context.withScope(scope => {
-          if (this._drawClassShapeService.drawClasses === true) {
+          if (this._drawClassShapeService.drawClasses !== false) {
             const shapes = this._$scope.vm.paperThingShapes.filter(shape => shape.canShowClasses());
             shapes.forEach(shape => shape.redrawShape());
           } else {
