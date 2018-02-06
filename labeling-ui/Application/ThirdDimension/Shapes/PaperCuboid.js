@@ -110,17 +110,23 @@ class PaperCuboid extends PaperThingShape {
   }
 
   _drawClasses() {
-    let topX = null;
     let topY = null;
+    let minX = null;
+    let maxX = null;
     Array.from(Array(7).keys()).forEach(index => {
       const position = this._projection2d.projectCuboidTo2d(this._cuboid3d).vertices[index];
+      if (minX === null || position.x < minX) {
+        minX = position.x;
+      }
+      if (maxX === null || position.x > maxX) {
+        maxX = position.x;
+      }
       if (topY === null || position.y < topY) {
-        topX = position.x;
         topY = position.y;
       }
     });
 
-    super._drawClasses(topX, topY);
+    super._drawClasses(minX + ((maxX - minX) / 2), topY);
 
     this._applyScaleFactor();
   }

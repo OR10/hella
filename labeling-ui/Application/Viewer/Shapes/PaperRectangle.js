@@ -129,7 +129,7 @@ class PaperRectangle extends PaperThingShape {
   }
 
   _drawClasses() {
-    super._drawClasses(this._topLeft.x, this._topLeft.y);
+    super._drawClasses(this._topLeft.x + ((this._bottomRight.x - this._topLeft.x) / 2), this._topLeft.y);
 
     this._applyScaleFactor();
   }

@@ -157,7 +157,7 @@ class PaperThingShape extends PaperShape {
         fillColor: fillcolor,
         shadowColor: new paper.Color(0, 0, 0),
         shadowBlur: shadowBlur,
-        justification: 'left',
+        justification: 'center',
         shadowOffset: new paper.Point(1, 1),
         content: sortedClass.identifier,
         applyMatrix: false,
