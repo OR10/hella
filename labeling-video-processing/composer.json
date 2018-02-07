@@ -1,10 +1,10 @@
 {
-    "name": "labeling.video-processing",
+    "name": "labeling/video-processing",
     "description": "AnnoStation Video Processing",
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.1.2",
         "silex/silex": "~2.0",
         "silex/web-profiler": "~2.0",
         "symfony/class-loader": "~2.8|^3.0",

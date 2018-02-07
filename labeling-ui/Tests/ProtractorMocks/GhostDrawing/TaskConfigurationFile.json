@@ -1,9 +1,0 @@
-{
-  "request": {
-    "path": "/api/v1/organisation/ORGANISATION-ID-1/taskConfiguration/TASKCONFIGURATIONID-TASKCONFIGURATIONID/file",
-    "method": "GET"
-  },
-  "response": {
-    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><requirements xmlns=\"http://weblabel.hella-aglaia.com/schema/requirements\"><thing id=\"rectangle\" shape=\"rectangle\" name=\"Rectangle\"></thing><thing id=\"pedestrian\" shape=\"pedestrian\" name=\"Pedestrian\"></thing><thing id=\"point\" shape=\"point\" name=\"Point\"></thing><thing id=\"polygon\" shape=\"polygon\" name=\"Polygon\"></thing><thing id=\"polyline\" shape=\"polyline\" name=\"Polyline\"></thing><thing id=\"cuboid\" shape=\"cuboid\" name=\"Cuboid\"></thing></requirements>"
-  }
-}
