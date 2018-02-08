@@ -1,0 +1,209 @@
+# This file is auto-generated during the composer install
+parameters:
+    video_processing_host: video_nginx
+    cache_dir: /var/cache/labeling_api
+
+    database_name: labeling_api
+    database_name_read_only: labeling_api
+
+    couchdb_host: api_couchdb
+    couchdb_host_external: hella.loc
+    couchdb_port: 5984
+    couchdb_port_external: 80
+    couchdb_user: admin
+    couchdb_password: admin
+    couchdb_user_read_only: admin
+    couchdb_password_read_only: admin
+    couchdb_external_url: http://softeq:hella@hella.loc/couch
+    couchdb_path_external: couch
+    couchdb_monitoring_database_name: monitoring
+
+#    couchdb_host: 127.0.0.1
+#    couchdb_host_external: hella.loc
+#    couchdb_port: 5984
+#    couchdb_port_external: 80
+#    couchdb_user: softeq
+#    couchdb_password: hella
+#    couchdb_user_read_only: softeq
+#    couchdb_password_read_only: hella
+#    couchdb_external_url: http://softeq:hella@hella.loc/couch
+#    couchdb_path_external: couch
+#    couchdb_monitoring_database_name: monitoring
+
+    fos_user_bundle_to_couchdb_sync_enabled: true
+
+    facade_factory_type: taskDatabase
+
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    mailer_from: no-reply@hella-aglaia.de
+
+    secret: qweqweqweqweqweqwe
+
+    ffmpeg_executable: avconv
+    ffprobe_executable: avprobe
+
+    frame_cdn_dir: /tmp
+    video_cdn_dir: /tmp
+#    frame_cdn_dir: /var/www/frame_cdn
+#    video_cdn_dir: /var/www/video_cdn
+
+    frame_cdn_s3_base_url: https://s3.eu-central-1.amazonaws.com
+    frame_cdn_s3_region: ~
+    frame_cdn_s3_bucket: hella-frame-cdn
+    frame_cdn_s3_key: AKIAJBJFNWIUTN5B2S2A
+    frame_cdn_s3_secret: 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
+
+
+
+    video_cdn_s3_base_url: https://s3.eu-central-1.amazonaws.com
+    video_cdn_s3_region: ~
+    video_cdn_s3_bucket: hella-video-cdn
+    video_cdn_s3_key: AKIAJBJFNWIUTN5B2S2A
+    video_cdn_s3_secret: 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
+
+
+    s3cmd_executable: s3cmd
+    parallel_executable: parallel
+
+    deleted_objects_dir: /var/labeling_api_deleted_objects
+
+    frame_cdn_s3_parallel_uploads_per_worker: 10
+    frame_cdn_s3_host_base: s3.eu-central-1.amazonaws.com
+    frame_cdn_s3_host_bucket: s3.eu-central-1.amazonaws.com
+
+
+    video_cdn_s3_parallel_uploads_per_worker: 10
+    video_cdn_s3_host_base: s3.eu-central-1.amazonaws.com
+    video_cdn_s3_host_bucket: s3.eu-central-1.amazonaws.com
+
+
+    frame_cdn_base_url: http://hella.loc/s3
+
+    user_password: password
+
+
+    rabbitmq_host: rmq
+    rabbitmq_port: 5672
+    rabbitmq_vhost: /
+    rabbitmq_user: admin
+    rabbitmq_password: admin
+    rabbitmq_use_alternate_exchange: true
+    rabbitmq_use_dead_letter_exchange: true
+    rabbitmq_management_port: 15672
+
+    redis_host: api_redis
+    redis_port: 6379
+
+oneup_flysystem:
+    adapters:
+        frame_cdn_dir_adapter:
+            local:
+                directory: %frame_cdn_dir%
+
+
+        video_cdn_dir_adapter:
+            local:
+                directory: %video_cdn_dir%
+
+
+        # frame_cdn_dir_adapter:
+        #     awss3v3:
+        #         client: frame_cdn.s3_client
+        #         bucket: "%frame_cdn_s3_bucket%"
+
+        # video_cdn_dir_adapter:
+        #     awss3v3:
+        #         client: video_cdn.s3_client
+        #         bucket: "%video_cdn_s3_bucket%"
+
+
+services:
+
+    annostation.labeling_api.service.s3_cmd_frame_cdn:
+        class: AnnoStationBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%frame_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%frame_cdn_s3_bucket%'
+            - '%frame_cdn_s3_key%'
+            - '%frame_cdn_s3_secret%'
+            - '%frame_cdn_s3_host_base%'
+            - '%frame_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.frame_cdn.s3_cmd:
+        class: AnnoStationBundle\Service\FrameCdn\S3Cmd
+        arguments:
+            - '%frame_cdn_base_url%'
+            - '%cache_dir%'
+            - '@annostation.labeling_api.service.s3_cmd_frame_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.frame_cdn.selected-alias:
+            alias: annostation.labeling_api.service.frame_cdn.s3_cmd
+
+    annostation.labeling_api.service.s3_cmd_video_cdn:
+        class: AnnoStationBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%video_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%video_cdn_s3_bucket%'
+            - '%video_cdn_s3_key%'
+            - '%video_cdn_s3_secret%'
+            - '%video_cdn_s3_host_base%'
+            - '%video_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.video_cdn.s3_cmd:
+        class: AnnoStationBundle\Service\VideoCdn\S3Cmd
+        arguments:
+            - '@annostation.labeling_api.service.s3_cmd_video_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.video_cdn.selected-alias:
+        alias: annostation.labeling_api.service.video_cdn.s3_cmd
+
+
+
+#     frame_cdn.s3_client:
+#         class: Aws\S3\S3Client
+#         arguments:
+#             -
+#                 version: 'latest'
+#                 region: "%frame_cdn_s3_region%"
+#                 endpoint: '%frame_cdn_s3_base_url%'
+#                 validate: false
+#                 bucket_endpoint: true
+#                 credentials:
+#                     key: "%frame_cdn_s3_key%"
+#                     secret: "%frame_cdn_s3_secret%"
+#     video_cdn.s3_client:
+#         class: Aws\S3\S3Client
+#         arguments:
+#             -
+#                 version: 'latest'
+#                 region: "%video_cdn_s3_region%"
+#                 endpoint: '%video_cdn_s3_base_url%'
+#                 validate: false
+#                 bucket_endpoint: true
+#                 credentials:
+#                     key: "%video_cdn_s3_key%"
+#                     secret: "%video_cdn_s3_secret%"
+
+
+    annostation.labeling_api.database.facade.user.selected-alias:
+        alias: annostation.labeling_api.database.facade.user_with_couch_db_sync
+
+
+liip_monitor:
+    checks:
+        groups:
+            default:
+                guzzle_http_service:
+                    couch_db:
+                        options:
+                            auth:
+                                - %couchdb_user%
+                                - %couchdb_password%
+

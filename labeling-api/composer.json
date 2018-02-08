@@ -97,7 +97,6 @@
     },
     "extra": {
         "symfony-app-dir": "app/AnnoStation",
-        "symfony-web-dir": "web/AnnoStation",
-        "symfony-assets-install": "relative"
+        "symfony-web-dir": "web/AnnoStation"
     }
 }

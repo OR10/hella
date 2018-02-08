@@ -1,0 +1,18 @@
+version: "3.5"
+
+services:
+  maintenance_composer:
+#    image: annostation-registry:5000/maintenance-composer
+    build:
+      dockerfile: 'ops/docker/maintenance/composer/Dockerfile'
+      context: ../../../../
+#    volumes:
+#      - ../../../../labeling-ui:/code:Z
+
+  maintenance_node:
+#    image: annostation-registry:5000/maintenance-node
+    build:
+      dockerfile: 'ops/docker/maintenance/node/Dockerfile'
+      context: ../../../../
+    volumes:
+      - ../../../../labeling-ui:/code:Z

@@ -1,0 +1,53 @@
+version: "3.5"
+
+services:
+
+  proxy:
+#    image: annostation-registry:5000/proxy
+    build:
+      dockerfile: 'ops/docker/proxy/Dockerfile'
+      context: ../../../../
+    depends_on:
+      - api_nginx
+      - front
+
+  front:
+#    image: annostation-registry:5000/front
+    build:
+      dockerfile: 'ops/docker/front/Dockerfile'
+      context: ../../../../
+
+  rmq:
+    image: rabbitmq:management
+#    hostname: rmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    restart: always
+    healthcheck:
+      test: "rrabbitmqctl status || exit 1"
+#      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 5s
+      timeout: 10s
+      retries: 6
+#      start_period: 2s
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rmq_data:/var/lib/rabbitmq
+
+#  visualizer:
+#    image: dockersamples/visualizer:stable
+#    ports:
+#      - "8888:8080"
+##    volumes:
+##      - "/var/run/docker.sock:/var/run/docker.sock"
+##    deploy:
+##      placement:
+##        constraints: [node.role == manager]
+#
+
+volumes:
+  rmq_data:
+    driver: local

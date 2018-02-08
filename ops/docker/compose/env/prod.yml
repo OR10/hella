@@ -1,0 +1,7 @@
+version: "3.5"
+
+services:
+  proxy:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}/proxy:${DOCKER_TAG}
+    ports:
+      - 80:80

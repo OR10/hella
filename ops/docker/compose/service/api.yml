@@ -1,0 +1,102 @@
+version: "3.5"
+
+services:
+  api_nginx:
+#    image: annostation-registry:5000/api_nginx
+    build:
+      dockerfile: 'ops/docker/api/nginx/Dockerfile'
+      context: ../../../../
+    depends_on:
+        - api_fpm
+
+  api_fpm:
+#    image: annostation-registry:5000/api_fpm
+    build:
+      dockerfile: 'ops/docker/api/fpm/Dockerfile'
+      context: ../../../../
+#    environment:
+#      - SYMFONY_ENV=prod
+    depends_on:
+      - api_couchdb
+      - api_redis
+      - rmq
+
+  api_workerpool_low:
+#    image: annostation-registry:5000/api_cli
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: always
+    command: app/AnnoStation/console annostation:workerpool:starter low
+    depends_on:
+      - api_couchdb
+      - rmq
+
+  api_workerpool_normallow:
+#    image: annostation-registry:5000/api_cli
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: always
+    command: app/AnnoStation/console annostation:workerpool:starter normal low
+    depends_on:
+      - api_couchdb
+      - rmq
+
+  api_workerpool_normal:
+#    image: annostation-registry:5000/api_cli
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: always
+    command: app/AnnoStation/console annostation:workerpool:starter normal
+    depends_on:
+      - api_couchdb
+      - rmq
+
+  api_workerpool_high:
+#    image: annostation-registry:5000/api_cli
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: always
+    command: app/AnnoStation/console annostation:workerpool:starter high
+    depends_on:
+      - api_couchdb
+      - rmq
+
+  api_cron:
+#    image: annostation-registry:5000/api_cron
+    build:
+      dockerfile: 'ops/docker/api/cron/Dockerfile'
+      context: ../../../../
+    restart: always
+    depends_on:
+      - api_couchdb
+      - rmq
+
+  api_couchdb:
+    image: couchdb:1.7
+    environment:
+      - COUCHDB_USER=${COUCHDB_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
+    healthcheck:
+      test: "CMD curl -f -s http://localhost:5984/_users || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 6
+#      start_period: 2s
+    restart: always
+    ports:
+      - 5984:5984
+    volumes:
+      - api_couchdb_dbdata:/opt/couchdb/data
+
+  api_redis:
+    image: redis
+    restart: always
+
+
+volumes:
+    api_couchdb_dbdata:
+      driver: local

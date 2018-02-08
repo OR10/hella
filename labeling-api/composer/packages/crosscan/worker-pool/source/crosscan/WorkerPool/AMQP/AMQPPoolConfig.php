@@ -26,15 +26,15 @@ class AMQPPoolConfig
     public $numberOfHighNormalWorkers = 8;
     public $numberOfLowNormalWorkers  = 2;
 
-    public $host       = '127.0.0.1';
+    public $host       = 'rmq';
     public $port       = 5672;
     public $vhost      = '/';
     public $webApiPort = 15672;
 
     public $heartBeatSeconds = 15;
 
-    private $username = 'guest';
-    private $password = 'guest';
+    private $username = 'admin';
+    private $password = 'admin';
 
     public $useAlternateExchange  = true;
     public $useDeadLetterExchange = true;
