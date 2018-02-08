@@ -8,12 +8,12 @@
 * \+ data volumes
 * \+ health checks
 * \+ separate FE and BE
+* \+ ENV variables
+* \+ use based on SYMFONY_ENV app.php instead of app_dev.php and app.php
 
-* ENV variables 
 
 #### Medium priority
 * cron <%= @_couchdb_url_hotstandby %>
-* configure virtualhosts
 
 #### Low priority
 * base nginx adn php and other images
@@ -25,13 +25,13 @@
 * gzip static files
 * phpunit fix
 * For updating php up to 7.2 first update Guzzle
-* Check configure params for ffmpeg
+* Check --configure params for ffmpeg
 
 
 #Subtasks
 
-* Containers configuration for API and maintenance
-* Containers configuration for video processing 
+* \+ Containers configuration for API and maintenance
+* \+ Containers configuration for video processing 
 * Building
 * Deployment
 * Optimization

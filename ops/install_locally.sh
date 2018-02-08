@@ -39,3 +39,5 @@ docker-compose run --rm maintenance_node gulp
 
 #Create symlinc for nginx
 cd labeling-ui && ln -sf Distribution labeling && cd ..
+
+docker-composs stop

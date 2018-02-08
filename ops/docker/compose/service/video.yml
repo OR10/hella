@@ -12,3 +12,12 @@ services:
     build:
       dockerfile: 'ops/docker/video/fpm/Dockerfile'
       context: ../../../../
+    environment:
+      - APP_ENV
+      - S3_BASE_URL
+      - S3_HOST
+      - S3_KEY
+      - S3_SECRET
+      - S3_BUCKET_FRAME
+      - S3_BUCKET_VIDEO
+

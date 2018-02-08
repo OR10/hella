@@ -70,6 +70,9 @@ class AMQPPoolConfig
 
     public function __construct()
     {
+        $this->username = getenv('SYMFONY__RABBITMQ__USER');
+        $this->password = getenv('SYMFONY__RABBITMQ__PASS');
+
         ini_set('amqp.auto_ack', 0);
         ini_set('amqp.min_messages', 0);
         ini_set('amqp.max_messages', 1);

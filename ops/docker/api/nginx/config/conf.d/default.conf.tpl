@@ -4,7 +4,7 @@ server {
 
     client_max_body_size 512M;
 
-    index  app_dev.php;
+    index  app.php;
 
     access_log            /var/log/nginx/default.access.log combined;
     error_log             /var/log/nginx/default.error.log debug;
@@ -17,8 +17,8 @@ server {
 
     location / {
         root      /code/web/AnnoStation;
-        index     app_dev.php;
-        try_files $uri  /app_dev.php$is_args$args;
+        index     app.php;
+        try_files $uri  /app.php$is_args$args;
     }
 
     location ~ \.php(/|$) {
@@ -39,7 +39,7 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 3600;
 
-        rewrite /api/v(\d+)/ /app_dev.php?version=v$1&;
+        rewrite /api/v(\d+)/ /app.php?version=v$1&;
         rewrite_log on;
     }
 }

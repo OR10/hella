@@ -9,11 +9,11 @@ server {
 
     rewrite_log on;
 
-    #location /s3 {
-    #    proxy_pass       https://s3.eu-central-1.amazonaws.com/hella-frame-cdn;
-    #    #    proxy_set_header Host      $host;
-    #    proxy_set_header X-Real-IP $remote_addr;
-    #}
+    location /s3 {
+        proxy_pass       https://s3.eu-central-1.amazonaws.com/hella-frame-cdn;
+        #    proxy_set_header Host      $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
 
     #location /couch/ {
     #    proxy_pass       http://127.0.0.1:5984/;

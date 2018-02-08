@@ -3,8 +3,17 @@
 
 ## Init project
 
+* Configure your virtual host (e.g. /etc/hosts)
+```
+    127.0.0.1 hella.loc
+```
+
+* Clone BE repository
+ 
+* Init project
+
 ```bash
-$ ops/init.sh
+$ ops/install_locally.sh
 ```
 
 ## Start project
@@ -16,9 +25,11 @@ $ docker-compose up
 ### TROUBLESHUTTING
 
 ### Selinux
+
 ```bash
 $ chcon -Rt svirt_sandbox_file_t .
 ```
+
 also stop firewalld for fedora or centOS
 
 ### API
