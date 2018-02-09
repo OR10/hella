@@ -1,19 +1,29 @@
 FROM php:7.1-cli
-
 # based on oficial image
 
-#tini zlib-dev bash
 #TODO: optimize it
-RUN apt-get update
-RUN apt-get install -y git subversion ssh openssl mercurial zlib1g-dev
-#RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y git subversion ssh openssl mercurial zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    echo "memory_limit=-1" > "$PHP_INI_DIR/conf.d/memory-limit.ini" && \
+    echo "date.timezone=${PHP_TIMEZONE:-UTC}" > "$PHP_INI_DIR/conf.d/date_timezone.ini"
 
-RUN echo "memory_limit=-1" > "$PHP_INI_DIR/conf.d/memory-limit.ini" \
- && echo "date.timezone=${PHP_TIMEZONE:-UTC}" > "$PHP_INI_DIR/conf.d/date_timezone.ini"
+RUN apt-get update && \
+    apt-get install libcurl4-gnutls-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install libcurl4-gnutls-dev
-RUN docker-php-ext-install curl
-RUN docker-php-ext-install zip
+RUN apt-get update && \
+    apt-get install libcurl4-gnutls-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+
+    docker-php-ext-install \
+        pcntl \
+        bcmath \
+        curl \
+        zip
+
+RUN mkdir /code
+WORKDIR /code
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /tmp
@@ -32,8 +42,3 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
  && composer --ansi --version --no-interaction \
  && rm -rf /tmp/* /tmp/.htaccess \
  && composer global require hirak/prestissimo
-
-RUN docker-php-ext-install bcmath
-
-RUN mkdir /code
-WORKDIR /code

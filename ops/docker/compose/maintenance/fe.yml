@@ -1,0 +1,9 @@
+version: "3.5"
+
+services:
+  maintenance_node:
+    build:
+      dockerfile: 'ops/docker/maintenance/node/Dockerfile'
+      context: ../../../../
+    volumes:
+      - ../../../../labeling-ui:/code:Z

@@ -1,5 +1,4 @@
-
-## How to docker
+# How to docker
 
 ## Init project
 
@@ -32,7 +31,12 @@ $ chcon -Rt svirt_sandbox_file_t .
 
 also stop firewalld for fedora or centOS
 
-### API
+Who is listening a port
+```bash
+sudo netstat -nlp | grep 
+```
+
+## Backend
 
 ### how to run composer
 
@@ -48,7 +52,6 @@ $ docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance
 Init project
 ```bash
 $ docker-compose run --rm api_cron app/AnnoStation/console annostation:init -v
-#docker-compose run --rm -v $PWD/labeling-api/:/code:Z maintenance_composer ex
 ```
 
 Init queue
@@ -62,9 +65,9 @@ $ docker-compose exec api_workerpool_high app/AnnoStation/console annostation:wo
 ```
 
 
-### Front
+## Front
 
-#### How to build front
+### How to build front
 
 Build yarn
 ```bash
@@ -80,3 +83,15 @@ Or just run bash in container if you need some else
 ```bash
 $ docker-compose run --rm maintenance_node bash
 ```
+
+## Build and deploy
+
+### Build BE
+
+### Build FE
+
+```bash
+$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/build_fe.sh
+```
+
+### Deployment

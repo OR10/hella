@@ -14,9 +14,12 @@
 
 #### Medium priority
 * cron <%= @_couchdb_url_hotstandby %>
+* logs
+* monitoring
+
 
 #### Low priority
-* base nginx adn php and other images
+* base nginx and php and other images
 * RUN set -x for console output
 * containers optimization
 * REMOVE DEPRECATED PROVISIONING

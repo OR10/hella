@@ -1,3 +1,0 @@
-annostation_base::nodejs: true
-annostation_base::docker: true
-labeling_api::run_composer_install: true

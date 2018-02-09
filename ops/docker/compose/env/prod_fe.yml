@@ -1,0 +1,8 @@
+version: "3.5"
+
+services:
+  front:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/front:${DOCKER_FE_TAG}
+
+  maintenance_node:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/maintenance_node:${DOCKER_FE_TAG}

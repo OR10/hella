@@ -1,2 +1,0 @@
-30 3 * * * <%= @_symfonyUser %> node <%= @symfonyRoot %>/scripts/CouchDB/Migration/TriggerCompactionForEachTaskDb.js "<%= @_couchdb_url %>" > /dev/null 2>&1
-<% if @_couchdb_url_hotstandby %>30 4 * * * <%= @_symfonyUser %> node <%= @symfonyRoot %>/scripts/CouchDB/Migration/TriggerCompactionForEachTaskDb.js "<%= @_couchdb_url_hotstandby %>" > /dev/null 2>&1<% end %>

@@ -9,8 +9,7 @@ RUN docker-php-ext-install \
         bcmath \
         mbstring \
 #        zip \
-        opcache \
-        pdo pdo_mysql
+        opcache
 
 COPY ops/docker/video/fpm/boot.sh /usr/local/bin/boot.sh
 COPY ops/docker/video/fpm/config/fpm_www.conf /usr/local/etc/php-fpm.d/www.conf
@@ -79,21 +78,10 @@ RUN mkdir /tmp/software && \
     echo "include /usr/local/lib/" >> /etc/ld.so.conf && \
     ldconfig
 
-#RUN apt-get update -y && \
-#    apt-get install -y wget && \
-#    wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | apt-key add - && \
-#    wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list && \
-#    apt-get update -y && \
-#    apt-get install -y \
-#        s3cmd && \
-#    rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update -y && \
     apt-get install -y \
         python-pip && \
     pip install s3cmd && \
-#    apt-get remove -y python-pip && \
     apt-get --purge autoremove -y python-pip && \
     rm -rf /var/lib/apt/lists/*
-
-

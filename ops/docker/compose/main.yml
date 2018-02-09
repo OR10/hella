@@ -10,11 +10,6 @@ services:
       - api_nginx
       - front
 
-  front:
-    build:
-      dockerfile: 'ops/docker/front/Dockerfile'
-      context: ../../../../
-
   rmq:
     image: rabbitmq:management
     environment:
@@ -22,7 +17,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     restart: always
     healthcheck:
-      test: "rrabbitmqctl status || exit 1"
+      test: "rabbitmqctl status || exit 1"
       interval: 5s
       timeout: 10s
       retries: 6

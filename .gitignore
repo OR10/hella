@@ -1,16 +1,10 @@
 # Custom ignores
 node_modules
-.vagrant*
-./ops/build.tgz
 npm-debug.log
 .DS_Store
 *.log
 *.mo
 *.pot
-
-/packer/*/build/
-/packer/*/output/
-/packer/*/packer_cache/
 
 /labeling-api/data
 /labeling-api/app/cache/
@@ -24,13 +18,10 @@ npm-debug.log
 !/labeling-api/app/logs/.gitkeep
 /labeling-api/app/phpunit.xml
 /labeling-api/bin/
-/labeling-api/build/
-/labeling-api/composer.phar
 /labeling-api/doc/annostation/html/
 /labeling-api/vendor/
 /labeling-api/web/AnnoStation/bundles/*
 /labeling-api/web/bundles/
-/labeling-api/archive.tar.gz
 
 /labeling-ui/
 
@@ -97,12 +88,4 @@ atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
 .idea/replstate.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-
 .idea
