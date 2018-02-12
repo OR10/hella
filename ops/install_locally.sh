@@ -10,7 +10,7 @@ if [ ! -d labeling-ui ]; then
     git clone ssh://git@stash.softeq.com:7999/hellaas/hagl_annostation_ui.git labeling-ui
 
     #build docker containers
-#    docker-compose build
+    docker-compose build
 fi
 
 ##### BACKEND
@@ -40,4 +40,4 @@ docker-compose run --rm maintenance_node gulp
 #Create symlinc for nginx
 cd labeling-ui && ln -sf Distribution labeling && cd ..
 
-docker-composs stop
+docker-compose stop
