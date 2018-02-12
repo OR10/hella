@@ -37,6 +37,11 @@
             <element name="r:export-postfix">
                 <text/>
             </element>
+            <optional>
+                <element name="r:xml-version">
+                    <text/>
+                </element>
+            </optional>
         </element>
     </define>
     <define name="Options">
