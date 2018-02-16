@@ -2,6 +2,43 @@ version: "3.5"
 
 services:
   proxy:
-    image: ${REGISTRY_URL}/${COMPANY_NAME}/proxy:${DOCKER_FE_TAG}
+    # ADD image option like this for pushing image to registry or docker hub
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/proxy:${DOCKER_BE_TAG}
     ports:
       - 80:80
+
+  ############# API SECTION BEGIN #############
+
+  api_nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_nginx:${DOCKER_BE_TAG}
+
+  api_fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_fpm:${DOCKER_BE_TAG}
+
+  api_workerpool_low:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api_workerpool_normallow:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api_workerpool_normal:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api_workerpool_high:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api_cron:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cron:${DOCKER_BE_TAG}
+
+  ############# API SECTION END #############
+
+
+  ############# VIDEO PROCESSING SECTION BEGIN #############
+
+  video_nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_nginx:${DOCKER_BE_TAG}
+
+  video_fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_fpm:${DOCKER_BE_TAG}
+
+  ############# VIDEO PROCESSING SECTION END #############

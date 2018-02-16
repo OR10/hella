@@ -28,6 +28,6 @@ docker-compose build front
 
 
 docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD
-docker-compose push
+docker-compose push front
 
 echo -e "\033[0;32mDone well\033[0m\n"

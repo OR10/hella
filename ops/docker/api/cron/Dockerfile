@@ -20,8 +20,6 @@ RUN apt-get update && \
 RUN mkdir /code
 WORKDIR /code
 
-COPY ./labeling-api /code
-
 #cron
 RUN apt-get update && \
     apt-get -y install cron && \
@@ -32,3 +30,5 @@ ADD ./ops/docker/api/cron/crontab /etc/cron.d/republisher-cron
 RUN chmod 0644 /etc/cron.d/republisher-cron
 
 CMD service cron start
+
+COPY ./labeling-api /code

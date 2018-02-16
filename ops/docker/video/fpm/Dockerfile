@@ -19,7 +19,6 @@ WORKDIR /code
 
 CMD ["bash", "/usr/local/bin/boot.sh"]
 
-COPY ./labeling-video-processing /code
 
 RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
@@ -85,3 +84,5 @@ RUN apt-get update -y && \
     pip install s3cmd && \
     apt-get --purge autoremove -y python-pip && \
     rm -rf /var/lib/apt/lists/*
+
+COPY ./labeling-video-processing /code

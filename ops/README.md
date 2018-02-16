@@ -23,7 +23,7 @@ $ docker-compose up
 
 ### TROUBLESHUTTING
 
-### Selinux
+#### Selinux
 
 ```bash
 $ chcon -Rt svirt_sandbox_file_t .
@@ -33,7 +33,12 @@ also stop firewalld for fedora or centOS
 
 Who is listening a port
 ```bash
-sudo netstat -nlp | grep 
+sudo netstat -nlp | grep 8080 
+```
+
+#### Composer symlinks  
+```bash
+unlink labeling-api/bin/phpcs
 ```
 
 ## Backend
@@ -87,6 +92,12 @@ $ docker-compose run --rm maintenance_node bash
 ## Build and deploy
 
 ### Build BE
+```bash
+$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_BE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/build_be.sh
+```
+
+E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`    
+
 
 ### Build FE
 

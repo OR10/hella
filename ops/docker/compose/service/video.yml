@@ -14,6 +14,7 @@ services:
       context: ../../../../
     environment:
       - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
       - S3_BASE_URL
       - S3_HOST
       - S3_KEY

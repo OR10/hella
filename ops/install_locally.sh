@@ -16,10 +16,10 @@ fi
 ##### BACKEND
 
 #Install vendors for api
-docker-compose run --rm -v $PWD/labeling-api/:/code:Z maintenance_composer composer install -v
+docker-compose run --rm -v $PWD/labeling-api/:/code:Z maintenance_composer composer install -vvv --no-dev
 
 #Install vendors for video processing
-docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance_composer composer install -v
+docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance_composer composer install -vvv --no-dev
 
 #TODO: remove sleep. use healthcheck
 #Init project

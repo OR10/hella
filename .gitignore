@@ -12,7 +12,7 @@ npm-debug.log
 /labeling-api/app/config/parameters_test.yml
 /labeling-api/app/AnnoStation/bootstrap.php.cache
 /labeling-api/app/AnnoStation/config/parameters_test.yml
-/labeling-api/app/AnnoStation/cache/prod/
+/labeling-api/app/AnnoStation/cache/**/
 /labeling-api/app/AnnoStation/logs
 /labeling-api/app/logs/
 !/labeling-api/app/logs/.gitkeep

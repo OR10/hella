@@ -26,7 +26,7 @@ require_once __DIR__ . '/../../app/AnnoStation/AnnoStationKernel.php';
 //require_once __DIR__.'/../app/AppCache.php';
 
 
-$kernel = new AnnoStationKernel(ENV_NAME_PROD, $notProd);
+$kernel = new AnnoStationKernel($env, $notProd);
 $kernel->loadClassCache();
 
 // When using the HttpCache, you need to call the method in your front controller instead of relying on the configuration parameter

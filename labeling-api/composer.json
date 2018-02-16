@@ -26,6 +26,7 @@
         "oneup/flysystem-bundle": "@stable",
         "crosscan/worker-pool": "@dev",
         "mlehner/gelf-php": "dev-master",
+        "sensio/generator-bundle": "~2.3",
         "crosscan/logger": "@dev",
         "crosscan/php-stdlib": "@dev",
         "qafoolabs/profiler": "dev-master",
@@ -45,7 +46,6 @@
         "beberlei/assert": "^2.7"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "~5",
         "toolphar/phpcs": "2.0.0RC1",
         "phpmd/phpmd": "~1.5",

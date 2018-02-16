@@ -19,8 +19,6 @@ WORKDIR /code
 
 CMD ["bash", "/usr/local/bin/boot.sh"]
 
-COPY ./labeling-api /code
-
 RUN apt-get update -y && \
     apt-get install -y \
         libav-tools \
@@ -28,3 +26,6 @@ RUN apt-get update -y && \
     pip install s3cmd && \
     apt-get --purge autoremove -y python-pip && \
     rm -rf /var/lib/apt/lists/*
+
+
+COPY ./labeling-api /code

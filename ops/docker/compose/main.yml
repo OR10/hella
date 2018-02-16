@@ -8,7 +8,7 @@ services:
       context: ../../../../
     depends_on:
       - api_nginx
-      - front
+#      - front disabled for separate BE and FE build
 
   rmq:
     image: rabbitmq:management
