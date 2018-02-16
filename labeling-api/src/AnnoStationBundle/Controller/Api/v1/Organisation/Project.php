@@ -399,14 +399,18 @@ class Project extends Controller\Base
      *
      * @return array
      */
-    private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds)
-    {
-        if ($campaignIds === null || count(array_filter($campaignIds)<1)) {
+    private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds) {
+        /** TODO
+         * Will be better for the future prevent empty elements.
+         */
+        if ($campaignIds === null || count(array_filter($campaignIds) < 1)) {
             return [];
         }
+
         return array_map(
             function ($id) {
                 $campaign = $this->campaignFacade->find($id);
+
                 return [
                     'id'   => $campaign->getId(),
                     'name' => $campaign->getName(),
