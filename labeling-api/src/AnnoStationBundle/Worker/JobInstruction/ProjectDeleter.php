@@ -44,7 +44,9 @@ class ProjectDeleter extends WorkerPoolBundle\JobInstruction
     protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $loggerFacade)
     {
         $project = $this->projectFacade->find($job->getProjectId());
-
+        if(!$project) {
+            return true;
+        }
         if ($project->getStatus() !== Model\Project::STATUS_DELETED) {
             $loggerFacade->logString(
                 sprintf('Project %s not deleted yet.', $project->getId()),
