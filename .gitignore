@@ -5,6 +5,7 @@ npm-debug.log
 *.log
 *.mo
 *.pot
+tmp.yml
 
 /labeling-api/data
 /labeling-api/app/cache/

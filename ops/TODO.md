@@ -10,19 +10,19 @@
 * \+ separate FE and BE
 * \+ ENV variables
 * \+ use based on SYMFONY_ENV app.php instead of app_dev.php and app.php
-
+* Video processing configuration
 
 #### Medium priority
 * cron <%= @_couchdb_url_hotstandby %>
 * logs
 * monitoring
-
+* migrations after deployment
 
 #### Low priority
 * base nginx and php and other images
 * RUN set -x for console output
 * containers optimization
-* REMOVE DEPRECATED PROVISIONING
+* \+ REMOVE DEPRECATED PROVISIONING
 * XDebug configuration
 * couchdb replication ?
 * gzip static files
@@ -35,8 +35,8 @@
 
 * \+ Containers configuration for API and maintenance
 * \+ Containers configuration for video processing 
-* Building
-* Deployment
+* \+ Building
+* \+ Deployment
 * Optimization
  
 

@@ -106,3 +106,55 @@ $ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or 
 ```
 
 ### Deployment
+
+Deployment configured with docker `swarm` [https://docs.docker.com/get-started/part4/]
+
+Visualizer uses port 8888 
+
+#### Before deployment you must prepare swarm cluster
+
+Example:
+
+Create docker machines
+```bash
+$ docker-machine create --swarm-experimental --driver virtualbox myvm1
+$ docker-machine create --swarm-experimental --driver virtualbox myvm2
+``` 
+
+Init swarm
+```bash
+$ docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.101"
+$ docker-machine ssh myvm2 "docker swarm join --token <token> <ip>:2377"
+```
+
+Label images
+```bash
+$ docker-machine ssh myvm1 "docker node update --label-add proxy=1 --label-add rmq=1 --label-add front=1 --label-add api_redis=1 --label-add api_db=1 --label-add api_cron=1 --label-add api_worker=1 --label-add api=1 myvm1"
+$ docker-machine ssh myvm1 "docker node update --label-add video=1 myvm2"
+```
+
+#### How to deploy
+
+```bash
+$ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/deploy.sh
+```
+
+#### Run once only after first deployment
+
+
+#### How to do something on swarm
+
+First connect to docker node
+```bash
+$ docker-machine ssh myvm1
+```
+
+Show logs
+```bash
+docker logs $(docker ps -a -f name=api_cron -q)
+```
+
+Run some command 
+```bash
+docker exec -it $(docker ps -a -f name=api_fpm -q) bash
+```
