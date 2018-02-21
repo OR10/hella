@@ -2,7 +2,7 @@
 
 namespace Service;
 
-class FrameCdn extends S3Cmd
+class VideoCdn extends S3Cmd
 {
     /**
      * @var bool
@@ -24,13 +24,11 @@ class FrameCdn extends S3Cmd
     public function beginBatchTransaction(string $videoId)
     {
         if ($this->transactionInProgress === true) {
-            throw new \RuntimeException('A frame cdn storage transaction is already in progress');
+            throw new \RuntimeException('A video cdn storage transaction is already in progress');
         }
 
         $this->transactionInProgress = true;
         $this->transactionVideo      = $videoId;
-
-        parent::beginBatchTransaction($videoId);
     }
 
     /**
@@ -41,13 +39,11 @@ class FrameCdn extends S3Cmd
     public function commit()
     {
         if ($this->transactionInProgress === false) {
-            throw new \RuntimeException('No frame cdn storage transaction in progress.');
+            throw new \RuntimeException('No video cdn storage transaction in progress.');
         }
 
         $this->transactionInProgress = false;
         $this->transactionVideo      = null;
-
-        parent::commit();
     }
 
 }
