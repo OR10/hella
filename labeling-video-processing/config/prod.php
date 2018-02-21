@@ -9,6 +9,7 @@ $app['parallelExecutable'] = 'parallel';
 $app['numberOfParallelConnections'] = 10;
 $app['cacheDirectory'] = '/var/cache/labeling_api';
 $app['bucket'] = 'hella-frame-cdn';
+$app['videoBucket'] = 'hella-video-cdn';
 $app['accessKey'] = 'AKIAJBJFNWIUTN5B2S2A';
 $app['secretKey'] = '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';
 $app['hostBase'] = 's3.eu-central-1.amazonaws.com';

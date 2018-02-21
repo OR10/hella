@@ -6,7 +6,7 @@ use Model;
 use League\Flysystem\Adapter;
 use League\Flysystem\Filesystem;
 
-class S3Cmd extends FrameCdn
+class S3Cmd
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ class S3Cmd extends FrameCdn
     /**
      * @var Cmd
      */
-    private $s3CmdFrameCdn;
+    private $s3CmdCdn;
 
     /**
      * @var Filesystem
@@ -34,22 +34,21 @@ class S3Cmd extends FrameCdn
     private $cacheDirectory;
 
     /**
-     * FrameCdn constructor.
+     * Cdn constructor.
      *
      * @param string        $frameCdnBaseUrl
      * @param string        $cacheDirectory
-     * @param Cmd $s3CmdFrameCdn
+     * @param Cmd $s3CmdCdn
      * @param \cscntLogger  $logger
      */
     public function __construct(
         $frameCdnBaseUrl,
         $cacheDirectory,
-        Cmd $s3CmdFrameCdn
+        Cmd $s3CmdCdn
     ) {
-        parent::__construct();
 
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
-        $this->s3CmdFrameCdn   = $s3CmdFrameCdn;
+        $this->s3CmdCdn        = $s3CmdCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
 
@@ -58,21 +57,33 @@ class S3Cmd extends FrameCdn
         $this->currentBatchDirectory = null;
     }
 
-    public function beginBatchTransaction(int $video)
+    /**
+     * @param string $filePath
+     * @return string
+     */
+    public function getFile(string $fileSourcePath)
     {
-        parent::beginBatchTransaction($video);
+        return $this->s3CmdCdn->getFile($fileSourcePath);
+    }
+    
+    /**
+     * 
+     * @param string $videoId
+     */
+    public function beginBatchTransaction(string $videoId)
+    {
         $this->currentBatchDirectory = $this->getTemporaryDirectory();
     }
 
     /**
-     * @param int    $video
+     * @param string    $videoId
      * @param Model\ImageType $imageType
      * @param int            $frameIndex
      * @param string         $imageData
      *
      * @return string
      */
-    public function save(int $videoId, Model\ImageType $imageType, int $frameIndex, string $imageData)
+    public function save(string $videoId, Model\ImageType $imageType, int $frameIndex, string $imageData)
     {
         $cdnPath  = sprintf(
             '%s/%s/%s',
@@ -101,12 +112,16 @@ class S3Cmd extends FrameCdn
         );
     }
 
+    /**
+     * 
+     * @throws \RuntimeException
+     */
     public function commit()
     {
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->s3CmdFrameCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
+            $this->s3CmdCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
@@ -114,8 +129,6 @@ class S3Cmd extends FrameCdn
         }
 
         $this->currentBatchDirectory = null;
-
-        parent::commit();
     }
 
     /**

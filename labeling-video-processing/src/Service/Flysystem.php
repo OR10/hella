@@ -33,14 +33,14 @@ class Flysystem extends Service\FrameCdn
     }
 
     /**
-     * @param int    $videoId
+     * @param string    $videoId
      * @param Model\ImageType $imageType
      * @param int            $frameIndex
      * @param string         $imageData
      *
      * @return string
      */
-    public function save(int $videoId, Model\ImageType $imageType, int $frameIndex, string $imageData)
+    public function save(string $videoId, Model\ImageType $imageType, int $frameIndex, string $imageData)
     {
         $cdnPath  = sprintf('%s/%s', $videoId, $imageType->getName());
         $filePath = sprintf('%s/%s.%s', $cdnPath, $frameIndex, $imageType->getExtension());

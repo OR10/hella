@@ -72,11 +72,10 @@ class VideoFrameSplitter
      *
      * @return array
      */
-    public function splitVideoInFrames(Model\Video $video, $sourceFileFilename, ImageType\Base $type)
+    public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
     {
-
-
         $request = $this->processingHost.'?videoId='.$video->getId().
+            '&videoName='.$video->getName().
             '&sourceFileFilename='.$sourceFileFilename.
             '&type='.$type->getName();
 
