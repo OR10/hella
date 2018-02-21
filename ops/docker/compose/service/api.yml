@@ -231,6 +231,7 @@ services:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
     restart: on-failure
+    command: bash -c "service cron start && tail -f /dev/null"
     depends_on:
       - api_couchdb
       - rmq
