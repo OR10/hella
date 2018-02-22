@@ -82,7 +82,7 @@ RUN apt-get update -y && \
     apt-get install -y \
         python-pip && \
     pip install s3cmd && \
-    apt-get --purge autoremove -y python-pip && \
     rm -rf /var/lib/apt/lists/*
+#Do not remove pip. It will break s3cmd
 
 COPY ./labeling-video-processing /code
