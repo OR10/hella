@@ -13,15 +13,14 @@
 * Video processing configuration
 
 #### Medium priority
+* \+ monitoring
 * cron <%= @_couchdb_url_hotstandby %>
-* logs
-* monitoring
+* logs (syslog + ELK)?
 * migrations after deployment
 * users and privilegies on controllers (how to run as host user)
 
 #### Low priority
 * base nginx and php and other images
-* RUN set -x for console output
 * containers optimization
 * \+ REMOVE DEPRECATED PROVISIONING
 * XDebug configuration
@@ -44,8 +43,7 @@
 #Questions
 
 * Build (secure parameters)
-* How to deploy containers by swarm
-* How to works queue (workers pool abstraction)? 
+* \+ How to deploy containers by swarm
+* \+- How to works queue (workers pool abstraction)? 
 * configuration management / credentials
 * move data from 1.5 to 1.7
-
