@@ -2,6 +2,11 @@
 
 set -ex
 
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+echo $SCRIPTPATH
+cd $SCRIPTPATH"/.."
+
 docker-compose stop
 
 #If labeling_ui exist it means containers are built and UI is cloned
@@ -35,7 +40,7 @@ docker-compose run --rm maintenance_node yarn
 docker-compose run --rm maintenance_node gulp
 
 #Create symlinc for nginx
-cd labeling-ui && ln -sf Distribution labeling && cd ..
+cd $SCRIPTPATH"../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/.."
 
 docker-compose stop
 
