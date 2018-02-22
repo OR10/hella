@@ -1,14 +1,20 @@
+.dockerignore
+.env
 **/.*
 **/LICENSE
 **/composer.json
-#**/*.git*
-#**/*.idea
-#**/.htaccess
+**/*.git*
+**/*.idea
+**/.htaccess
 **/*.log
 **/tests
 **/Tests
 **/vendor/**/docs
 **/vendor/**/*.md
+
+labeling-api/app/AnnoStation/cache
+!labeling-api/app/AnnoStation/cache/prod
+!labeling-api/app/AnnoStation/logs/*
 
 labeling-ui
 labeling-video-processing/cache
@@ -16,3 +22,5 @@ labeling-video-processing/cache
 labeling-video-processing/var/logs/*
 !labeling-ui/Distribution
 !labeling-ui/labeling
+
+tmp.yml

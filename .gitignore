@@ -31,6 +31,8 @@ tmp.yml
 /electron/Packages/
 
 /labeling-video-processing/var/
+!/labeling-video-processing/var/cache/labeling_api/.gitkeep
+!/labeling-video-processing/var/logs/.gitkeep
 
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

@@ -5,11 +5,10 @@ use Symfony\Component\Debug\Debug;
 const ENV_NAME_DEV = 'dev';
 const ENV_NAME_PROD = 'prod';
 
-ini_set('display_errors',1);
-
 $env = getenv('APP_ENV') ?: ENV_NAME_PROD;
 
 if ($notProd = ENV_NAME_PROD !== $env) {
+    ini_set('display_errors',1);
     //TODO: use more environments
     $env = ENV_NAME_DEV;
 }
