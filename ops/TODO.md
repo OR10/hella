@@ -17,6 +17,7 @@
 * logs
 * monitoring
 * migrations after deployment
+* users and privilegies on controllers (how to run as host user)
 
 #### Low priority
 * base nginx and php and other images

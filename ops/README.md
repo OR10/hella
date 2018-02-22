@@ -76,12 +76,12 @@ $ docker-compose exec api_workerpool_high app/AnnoStation/console annostation:wo
 
 Build yarn
 ```bash
-$ docker-compose run --rm maintenance_node yarn
+$ docker-compose run --user $(id -u) --rm maintenance_node yarn
 ```
 
 Build gulp
 ```bash
-$ docker-compose run --rm maintenance_node gulp
+$ docker-compose run --user $(id -u) --rm maintenance_node gulp
 ```
 
 Or just run bash in container if you need some else

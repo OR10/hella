@@ -7,6 +7,8 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 echo $SCRIPTPATH
 cd $SCRIPTPATH"/.."
 
+echo $SCRIPTPATH"/../labeling-ui"
+
 docker-compose stop
 
 #If labeling_ui exist it means containers are built and UI is cloned
@@ -34,13 +36,13 @@ docker-compose run --rm api_cron bash -c "sleep 7 &&  app/AnnoStation/console ha
 ##### FRONTEND
 
 #Build yarn
-docker-compose run --rm maintenance_node yarn
+docker-compose run --user $(id -u) --rm maintenance_node yarn
 
 #Build gulp
-docker-compose run --rm maintenance_node gulp
+docker-compose run --user $(id -u) --rm maintenance_node gulp
 
 #Create symlinc for nginx
-cd $SCRIPTPATH"../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/.."
+cd $SCRIPTPATH"/../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/.."
 
 docker-compose stop
 
