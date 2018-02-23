@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Service;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Process;
 
-class S3Cmd
+class S3Cmd implements StorageInterface
 {
     /**
      * Timeout of the upload process

@@ -42,7 +42,8 @@
         "ruflin/elastica": "3.2.3",
         "maennchen/zipstream-php": "^0.4.1",
         "mtdowling/cron-expression": "^1.2",
-        "beberlei/assert": "^2.7"
+        "beberlei/assert": "^2.7",
+        "microsoft/azure-storage-blob": "*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",
