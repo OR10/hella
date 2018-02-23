@@ -224,7 +224,7 @@ class TaskConfiguration extends Controller\Base
      * @param HttpFoundation\Request              $request
      * @param AnnoStationBundleModel\Organisation $organisation
      *
-     * @return \FOS\RestBundle\View\View
+     * @return View\View
      */
     public function uploadRequirementsXmlFileAction(
         HttpFoundation\Request $request,
@@ -237,8 +237,11 @@ class TaskConfiguration extends Controller\Base
             || $request->files->get('file')->getClientOriginalExtension() !== 'xml'
         ) {
             return View\View::create()
-                ->setData(['error' => 'Invalid data'])
-                ->setStatusCode(400);
+                ->setData([
+                    'headline' => 'Invalid file extension',
+                    'error' => 'Only XML files can be uploaded'
+                ])
+                ->setStatusCode(406);
         }
 
         $user = $this->tokenStorage->getToken()->getUser();
