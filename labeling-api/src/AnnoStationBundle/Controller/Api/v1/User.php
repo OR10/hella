@@ -293,12 +293,6 @@ class User extends Controller\Base
         $this->userFacade->updateUser($user);
         $this->userRolesRebuilderService->rebuildForUser($user);
 
-        if ($user->getUsername() === $loginUser->getUsername()) {
-            $this->tokenStorage->setToken(null);
-
-            return View\View::createRouteRedirect('annostation_index_index');
-        }
-
         return View\View::create()->setData(
             [
                 'result' =>
