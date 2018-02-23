@@ -15,10 +15,10 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    #location /couch/ {
-    #    proxy_pass       http://127.0.0.1:5984/;
-    #    proxy_set_header X-Real-IP $remote_addr;
-    #}
+    location /couch/ {
+        proxy_pass       http://api_couchdb:5984/;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
 
     ######## FE Angular start ########
     location /labeling {

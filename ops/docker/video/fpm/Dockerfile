@@ -80,6 +80,7 @@ RUN mkdir /tmp/software && \
 
 RUN apt-get update -y && \
     apt-get install -y \
+        parallel \
         python-pip && \
     pip install s3cmd && \
     rm -rf /var/lib/apt/lists/*
