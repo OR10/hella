@@ -430,5 +430,11 @@
                  class="AnnoStationBundle\Service\Project\ProjectService">
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
         </service>
+
+        <service id="annostation.labeling_api.service.project.batch_upload"
+                 class="AnnoStationBundle\Service\Project\BatchUploadService">
+            <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+        </service>
     </services>
 </container>

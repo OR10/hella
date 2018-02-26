@@ -80,10 +80,16 @@ class BatchUpload extends Controller\Base
      * @var Facade\Organisation
      */
     private $organisationFacade;
+
     /**
      * @var AMQP\FacadeAMQP
      */
     private $amqpFacade;
+
+    /**
+     * @var Service\Project\BatchUploadService
+     */
+    private $batchService;
 
     /**
      * @param Storage\TokenStorage  $tokenStorage
@@ -109,7 +115,8 @@ class BatchUpload extends Controller\Base
         Service\TaskCreator $taskCreator,
         string $cacheDirectory,
         \cscntLogger $logger,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Service\Project\BatchUploadService $batchService
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectFacade        = $projectFacade;
@@ -122,6 +129,7 @@ class BatchUpload extends Controller\Base
         $this->authorizationService = $authorizationService;
         $this->organisationFacade   = $organisationFacade;
         $this->amqpFacade           = $amqpFacade;
+        $this->batchService         = $batchService;
 
         clearstatcache();
 
@@ -166,112 +174,8 @@ class BatchUpload extends Controller\Base
         if ($user->getId() !== $project->getUserId()) {
             throw new HttpKernel\Exception\AccessDeniedHttpException('You are not allowed to upload videos here');
         }
-
-        $projectCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $project->getId()]);
-        $chunkDirectory        = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
-
-        $this->ensureDirectoryExists($projectCacheDirectory);
-        $this->ensureDirectoryExists($chunkDirectory);
-
-        /** @var HttpFoundation\File\UploadedFile $uploadedFileChunk */
-        $uploadedFileChunk = $request->files->get('file');
-        $flowRequest       = new Flow\Request(
-            $request->request->all(),
-            [
-                'error'    => $uploadedFileChunk->getError(),
-                'name'     => $uploadedFileChunk->getClientOriginalName(),
-                'type'     => $uploadedFileChunk->getClientMimeType(),
-                'tmp_name' => $uploadedFileChunk->getPathname(),
-                'size'     => $uploadedFileChunk->getSize(),
-            ]
-        );
-        $config            = new Flow\Config(['tempDir' => $chunkDirectory]);
-        $file              = new Flow\File($config, $flowRequest);
-        $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $flowRequest->getFileName()]);
-
-        if (!$file->validateChunk()) {
-            throw new HttpKernel\Exception\BadRequestHttpException();
-        }
-
-        // There are some situations where the same previous request is aborted and send again from the ui.
-        // However, the started php process will not be aborted which means the file may already be merged
-        // and we have to check if the request may be a duplicate
-        clearstatcache();
-
-        if ($this->isVideoFile($flowRequest->getFileName())) {
-            if ($project->hasVideo($flowRequest->getFileName())) {
-                throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('Video already exists in project: %s', $flowRequest->getFileName())
-                );
-            }
-        } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
-            if ($project->hasAdditionalFrameNumberMapping($flowRequest->getFileName())) {
-                throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('FrameMapping data already exists in project: %s', $flowRequest->getFileName())
-                );
-            }
-        } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-            if ($project->hasCalibrationData($flowRequest->getFileName())) {
-                throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('Calibration data already exists in project: %s', $flowRequest->getFileName())
-                );
-            }
-        } elseif ($this->isImageFile($flowRequest->getFileName())) {
-            if ($project->hasVideo($flowRequest->getFileName())) {
-                throw new HttpKernel\Exception\ConflictHttpException(
-                    sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
-                );
-            }
-        } else {
-            throw new HttpKernel\Exception\BadRequestHttpException(
-                sprintf('Invalid file: %s', $flowRequest->getFileName())
-            );
-        }
-
-        $file->saveChunk();
-
-        if ($file->validateFile()) {
-            try {
-                $file->save($targetPath);
-
-                if ($this->isVideoFile($flowRequest->getFileName())) {
-                    // for now, we always use compressed images
-                    $this->videoImporter->importVideo(
-                        $organisation,
-                        $project,
-                        basename($targetPath),
-                        $targetPath,
-                        false
-                    );
-                } elseif ($this->isImageFile($flowRequest->getFileName())) {
-                    // Image compression is determined by their input image type
-                    // PNG -> lossless, jpeg -> compressed.
-                    $this->videoImporter->importImage(
-                        $organisation,
-                        $project,
-                        basename($targetPath),
-                        $targetPath
-                    );
-                } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
-                    $this->videoImporter->importAdditionalFrameNumberMapping(
-                        $organisation,
-                        $project,
-                        $targetPath
-                    );
-                } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-                    $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
-                } else {
-                    throw new HttpKernel\Exception\BadRequestHttpException(
-                        sprintf('Invalid file: %s', $flowRequest->getFileName())
-                    );
-                }
-            } catch (\InvalidArgumentException $exception) {
-                throw new HttpKernel\Exception\ConflictHttpException($exception->getMessage(), $exception);
-            } finally {
-                // we ignore errors here since this directory will be cleaned up periodically anyway
-                @unlink($targetPath);
-            }
-        }
+        //uploading file
+        $this->batchService->uploadFile($request, $organisation, $user, $project);
 
         return new View\View(['result' => []]);
     }
@@ -356,61 +260,6 @@ class BatchUpload extends Controller\Base
                 ],
             ]
         );
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return bool
-     */
-    private function isVideoFile(string $filename)
-    {
-        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['avi', 'mpg', 'mpeg', 'mp4']);
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return bool
-     */
-    private function isCalibrationFile(string $filename)
-    {
-        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['csv']);
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return bool
-     */
-    private function isAdditionalFrameNumberMappingFile(string $filename)
-    {
-        preg_match('/\.(frame-index\.csv)$/', $filename, $matches);
-
-        return !empty($matches);
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return bool
-     */
-    private function isImageFile(string $filename): bool
-    {
-        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['jpg', 'png']);
-    }
-
-    /**
-     * @param string $directory
-     */
-    private function ensureDirectoryExists(string $directory)
-    {
-        clearstatcache();
-        if (!is_dir($directory) && !@mkdir($directory, 0777, true)) {
-            if (!is_dir($directory)) {
-                throw new \RuntimeException(sprintf('Failed to create directory: %s', $directory));
-            }
-        }
     }
 
     /**
