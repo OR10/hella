@@ -444,6 +444,8 @@ class Project extends Controller\Base
         $campaigns        = $request->request->get('campaigns', []);
         $dueDate          = $request->request->get('dueDate');
 
+        $campaigns = array_filter($campaigns);
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
