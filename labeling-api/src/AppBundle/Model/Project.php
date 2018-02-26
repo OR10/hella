@@ -149,6 +149,7 @@ class Project extends Base
     protected $organisationId;
 
     /**
+     * @var string[]
      * @CouchDB\Field(type="mixed")
      */
     protected $campaigns;
@@ -946,7 +947,7 @@ class Project extends Base
     }
 
     /**
-     * @param mixed $campaigns
+     * @param string[] $campaigns
      */
     public function setCampaigns($campaigns)
     {
