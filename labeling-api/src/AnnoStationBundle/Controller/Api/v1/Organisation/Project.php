@@ -117,20 +117,21 @@ class Project extends Controller\Base
     /**
      * Project constructor.
      *
-     * @param ProjectFacadeFactory $projectFacade
-     * @param LabelingTaskFacadeFactory $labelingTaskFacade
-     * @param Facade\Organisation $organisationFacade
-     * @param Facade\Campaign $campaignFacade
-     * @param Facade\TaskConfiguration $taskConfigurationFacade
-     * @param Facade\Project\FacadeInterface $projectFacadeFactory
-     * @param Facade\LabelingTask\FacadeInterface $labelingTaskFacadeFactory
-     * @param Facade\LabeledThingInFrame\FacadeInterface $labeledThingInFrameFacadeFactory
-     * @param Storage\TokenStorage $tokenStorage
-     * @param AppFacade\User $userFacade
-     * @param Service\Authorization $authorizationService
+     * @param ProjectFacadeFactory                          $projectFacade
+     * @param LabelingTaskFacadeFactory                     $labelingTaskFacade
+     * @param Facade\Organisation                           $organisationFacade
+     * @param Facade\Campaign                               $campaignFacade
+     * @param Facade\TaskConfiguration                      $taskConfigurationFacade
+     * @param Facade\Project\FacadeInterface                $projectFacadeFactory
+     * @param Facade\LabelingTask\FacadeInterface           $labelingTaskFacadeFactory
+     * @param Facade\LabeledThingInFrame\FacadeInterface    $labeledThingInFrameFacadeFactory
+     * @param Storage\TokenStorage                          $tokenStorage
+     * @param AppFacade\User                                $userFacade
+     * @param Service\Authorization                         $authorizationService
      * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
-     * @param AMQP\FacadeAMQP $amqpFacade
-     * @param Authentication\UserPermissions $userPermissions
+     * @param AMQP\FacadeAMQP                               $amqpFacade
+     * @param Authentication\UserPermissions                $userPermissions
+     * @param Service\Project\ProjectService                $projectService
      */
     public function __construct(
         Facade\Project $projectFacade,
