@@ -1,0 +1,5 @@
+version: "3.1"
+
+services:
+  front:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/front:${DOCKER_FE_TAG}

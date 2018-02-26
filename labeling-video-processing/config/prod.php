@@ -1,22 +1,18 @@
 <?php
 
 // configure your app for the production environment
-$app['twig.path'] = array(__DIR__.'/../templates');
-$app['twig.options'] = array('cache' => __DIR__.'/../var/cache/twig');
-
 $app['s3CmdExecutable'] = 's3cmd';
 $app['parallelExecutable'] = 'parallel';
 $app['numberOfParallelConnections'] = 10;
-$app['cacheDirectory'] = '/var/cache/labeling_api';
-$app['bucket'] = 'hella-frame-cdn';
-$app['videoBucket'] = 'hella-video-cdn';
-$app['accessKey'] = 'AKIAJBJFNWIUTN5B2S2A';
-$app['secretKey'] = '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';
-$app['hostBase'] = 's3.eu-central-1.amazonaws.com';
-$app['hostBucket'] = 's3.eu-central-1.amazonaws.com';
+$app['cacheDirectory'] = '/code/var/cache/labeling_api';
+$app['bucket'] = getenv('S3_BUCKET_FRAME');
+$app['videoBucket'] = getenv('S3_BUCKET_VIDEO');
+$app['accessKey'] = getenv('S3_KEY');
+$app['secretKey'] = getenv('S3_SECRET');
+$app['hostBase'] = getenv('S3_HOST');
+$app['hostBucket'] = getenv('S3_HOST');
 
-$app['base_url'] = 'https://s3.eu-central-1.amazonaws.com';
-$app['cacheDir'] = '/var/cache/labeling_api';
-
+$app['base_url'] = getenv('S3_BASE_URL');
+$app['cacheDir'] = '/code/var/cache/labeling_api';
 
 $app['ffmpeg_executable'] = 'avconv';

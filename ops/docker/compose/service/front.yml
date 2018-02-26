@@ -1,0 +1,13 @@
+version: "3.1"
+
+services:
+  front:
+    build:
+      dockerfile: 'ops/docker/front/Dockerfile'
+      context: ../../../../
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.front == 1

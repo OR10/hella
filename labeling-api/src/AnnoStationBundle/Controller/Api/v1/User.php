@@ -142,7 +142,7 @@ class User extends Controller\Base
                 'email' => $user->getEmail(),
                 'enabled' => $user->isEnabled(),
                 'lastLogin' => $user->getLastLogin(),
-                'locked' => $user->isLocked(),
+                'locked' => !$user->isAccountNonLocked(),
                 'roles' => $user->getRoles(),
             );
         }, $users);
@@ -316,9 +316,9 @@ class User extends Controller\Base
             'email'         => $user->getEmail(),
             'enabled'       => $user->isEnabled(),
             'lastLogin'     => $user->getLastLogin(),
-            'locked'        => $user->isLocked(),
+            'locked'        => !$user->isAccountNonLocked(),
             'roles'         => $user->getRoles(),
-            'expired'       => $user->isExpired(),
+            'expired'       => !$user->isAccountNonExpired(),
             'expiresAt'     => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             'organisations' => [],
         );
