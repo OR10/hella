@@ -87,22 +87,25 @@ class BatchUpload extends Controller\Base
     private $amqpFacade;
 
     /**
-     * @var Service\Project\BatchUploadService
+     * @var Service\v1\Project\BatchUploadService
      */
     private $batchService;
 
     /**
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Facade\Project        $projectFacade
-     * @param Facade\Video          $videoFacade
-     * @param Facade\LabelingTask   $taskFacade
-     * @param Facade\Organisation   $organisationFacade
-     * @param AMQP\FacadeAMQP       $amqpFacade
-     * @param Service\VideoImporter $videoImporter
-     * @param Service\TaskCreator   $taskCreator
-     * @param string                $cacheDirectory
-     * @param \cscntLogger          $logger
-     * @param Service\Authorization $authorizationService
+     * BatchUpload constructor.
+     *
+     * @param Storage\TokenStorage                  $tokenStorage
+     * @param Facade\Project                        $projectFacade
+     * @param Facade\Video                          $videoFacade
+     * @param Facade\LabelingTask                   $taskFacade
+     * @param Facade\Organisation                   $organisationFacade
+     * @param AMQP\FacadeAMQP                       $amqpFacade
+     * @param Service\VideoImporter                 $videoImporter
+     * @param Service\TaskCreator                   $taskCreator
+     * @param string                                $cacheDirectory
+     * @param \cscntLogger                          $logger
+     * @param Service\Authorization                 $authorizationService
+     * @param Service\v1\Project\BatchUploadService $batchService
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -116,7 +119,7 @@ class BatchUpload extends Controller\Base
         string $cacheDirectory,
         \cscntLogger $logger,
         Service\Authorization $authorizationService,
-        Service\Project\BatchUploadService $batchService
+        Service\v1\Project\BatchUploadService $batchService
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectFacade        = $projectFacade;

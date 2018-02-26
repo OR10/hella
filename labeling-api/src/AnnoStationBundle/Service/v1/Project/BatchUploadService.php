@@ -1,6 +1,6 @@
 <?php
 
-namespace AnnoStationBundle\Service\Project;
+namespace AnnoStationBundle\Service\v1\Project;
 
 use AnnoStationBundle\Service\VideoImporter;
 use Flow\Config;

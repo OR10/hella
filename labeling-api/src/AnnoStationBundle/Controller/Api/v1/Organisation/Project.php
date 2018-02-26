@@ -110,7 +110,7 @@ class Project extends Controller\Base
     private $projectFacadeReadOnly;
 
     /**
-     * @var Service\Project\ProjectService
+     * @var Service\v1\Project\ProjectService
      */
     private $projectService;
 
@@ -131,7 +131,7 @@ class Project extends Controller\Base
      * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
      * @param AMQP\FacadeAMQP                               $amqpFacade
      * @param Authentication\UserPermissions                $userPermissions
-     * @param Service\Project\ProjectService                $projectService
+     * @param Service\v1\Project\ProjectService             $projectService
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -148,7 +148,7 @@ class Project extends Controller\Base
         Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions,
-        Service\Project\ProjectService $projectService
+        Service\v1\Project\ProjectService $projectService
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
