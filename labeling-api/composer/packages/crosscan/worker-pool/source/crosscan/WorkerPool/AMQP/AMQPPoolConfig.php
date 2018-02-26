@@ -33,8 +33,8 @@ class AMQPPoolConfig
 
     public $heartBeatSeconds = 15;
 
-    private $username = 'admin';
-    private $password = 'admin';
+    private $username;
+    private $password;
 
     public $useAlternateExchange  = true;
     public $useDeadLetterExchange = true;
