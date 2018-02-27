@@ -275,7 +275,7 @@ services:
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
     healthcheck:
       test: "curl -f -s http://localhost:5984/_users || exit 1"
-      interval: 5s
+      interval: 10s
       timeout: 10s
       retries: 6
 #      start_period: 2s

@@ -6,8 +6,8 @@ server {
 
     index  app.php;
 
-    access_log            /var/log/nginx/default.access.log combined;
-    error_log             /var/log/nginx/default.error.log debug;
+    access_log /dev/stdout combined;
+    error_log  /dev/stdout debug;
 
     rewrite_log on;
 
