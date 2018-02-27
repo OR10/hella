@@ -124,11 +124,13 @@ class Import
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
      * @param                                     $overwriteTaskConfigurationId
+     * @param bool                                $deactivateSha256
      *
      * @return array
+     * @throws Model\TaskConfiguration\Exception\EmptyData
      * @throws \Exception
      */
-    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $overwriteTaskConfigurationId = null)
+    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $overwriteTaskConfigurationId = null, $deactivateSha256 = false)
     {
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
@@ -156,11 +158,11 @@ class Import
 
         if ($overwriteTaskConfigurationId !== null) {
             $this->requirementsXml = $this->requirementsXmlFacade->find($overwriteTaskConfigurationId);
-            $this->previousRequirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
+            $this->previousRequirementsXml = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user, $deactivateSha256);
         }
 
         if ($this->requirementsXml === null) {
-            $requirementsXml       = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user);
+            $requirementsXml       = $this->createRequirementsXml($xpath, $xmlImportFilePath, $organisation, $user, $deactivateSha256);
             $this->requirementsXml = $requirementsXml;
         } else {
             $requirementsXml = $this->requirementsXml;
@@ -283,15 +285,18 @@ class Import
      * @param                                     $xmlImportFilePath
      * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\User                          $user
+     * @param bool                                $deactivateSha256
      *
      * @return Model\TaskConfiguration\RequirementsXml
+     * @throws Model\TaskConfiguration\Exception\EmptyData
      * @throws \Exception
      */
     private function createRequirementsXml(
         \DOMXPath $xpath,
         $xmlImportFilePath,
         AnnoStationBundleModel\Organisation $organisation,
-        Model\User $user
+        Model\User $user,
+        $deactivateSha256 = false
     ) {
         $requirementsElement = $xpath->query('/x:export/x:metadata/x:requirements');
 
@@ -303,7 +308,7 @@ class Import
 
         $expectedHash = hash('sha256', file_get_contents($filePath));
         $actualHash   = $xpath->query('x:sha256', $requirementsElement->item(0))->item(0)->nodeValue;
-        if ($expectedHash !== $actualHash) {
+        if (!$deactivateSha256 && $expectedHash !== $actualHash) {
             throw new \Exception(
                 sprintf(
                     'Your SHA256 hash:\n"%s"\nfound in file:\n"%s"\ndoes not match the expected hash:\n"%s"\nfor file:\n"%s"',

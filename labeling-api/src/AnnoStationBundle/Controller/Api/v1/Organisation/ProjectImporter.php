@@ -179,14 +179,15 @@ class ProjectImporter extends Controller\Base
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
         clearstatcache();
-        $user                 = $this->tokenStorage->getToken()->getUser();
-        $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
-        $overwriteTaskConfigurationId  = $request->request->get('taskConfigurationId');
-        $tasks = [];
+        $user                         = $this->tokenStorage->getToken()->getUser();
+        $uploadCacheDirectory         = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
+        $overwriteTaskConfigurationId = $request->request->get('taskConfigurationId');
+        $deactivateSha256             = $request->request->get('deactivateSha256', false);
+        $tasks                        = [];
         try {
             foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
                 $tasks = array_merge(
-                    $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId),
+                    $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId, $deactivateSha256),
                     $tasks
                 );
             }

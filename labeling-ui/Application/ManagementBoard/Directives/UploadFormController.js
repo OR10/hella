@@ -119,15 +119,20 @@ class UploadFormController {
 
     this.useLossLess = false;
 
+    this.deactivateSha256 = false;
+
     organisationService.subscribe(newOrganisation => {
       this.currentOrganisationId = newOrganisation.id;
     });
   }
 
   _uploadComplete() {
-    let data;
+    const data = {};
     if (this.overwriteRequirementsXml) {
-      data = {'taskConfigurationId': this.taskConfigurationToOverwrite};
+      data.taskConfigurationId = this.taskConfigurationToOverwrite;
+    }
+    if (this.deactivateSha256) {
+      data.deactivateSha256 = this.deactivateSha256;
     }
     this._uploadGateway.markUploadAsFinished(this.uploadCompletePath, data)
       .then(

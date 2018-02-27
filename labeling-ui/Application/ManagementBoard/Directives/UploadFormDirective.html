@@ -73,6 +73,10 @@
                             </div>
                         </div>
                     </div>
+                  <div>
+                    <input class="default-checkbox" type="checkbox" ng-model="vm.deactivateSha256" />
+                    Deactivate SHA-256 check
+                  </div>
                   <div ng-if="vm.uploadDisplayTaskConfigurationOverwrite" class="upload-overwrite">
                     <input type="checkbox" ng-model="vm.overwriteRequirementsXml" /> Overwrite RequirementsXML
                     <div class="grid-content" ng-if="vm.overwriteRequirementsXml">
