@@ -390,7 +390,7 @@ class RequirementsProjectToXml
             foreach ($taskConfigurations as $taskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($taskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($taskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_POSTFIX,
                     'xml'
                 );
@@ -400,7 +400,7 @@ class RequirementsProjectToXml
             foreach ($previousTaskConfigurations as $previousTaskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($previousTaskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($previousTaskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_PREVIOUS_POSTFIX,
                     'xml'
                 );
@@ -772,5 +772,19 @@ class RequirementsProjectToXml
         $zip->close();
 
         return file_get_contents($zipFilename);
+    }
+
+    /**
+     * @param $filename
+     *
+     * @return mixed
+     */
+    private function getFilename($filename)
+    {
+        $search   = ['ä', 'ü', 'ü', 'ö', 'Ä', 'Ü', 'Ö']; // ü is not the same as ü
+        $replace  = ['ae', 'ue', 'ue', 'oe', 'Ae', 'Üe', 'Oe'];
+        $filename = str_replace($search, $replace, $filename);
+
+        return $filename;
     }
 }
