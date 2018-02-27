@@ -37,6 +37,8 @@ class ProjectService
         $campaigns        = $request->request->get('campaigns', []);
         $dueDate          = $request->request->get('dueDate');
 
+        $campaigns = array_filter($campaigns);
+
         $labelingValidationProcesses = [];
         if ($review) {
             $labelingValidationProcesses[] = 'review';
