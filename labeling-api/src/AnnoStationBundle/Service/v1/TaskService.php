@@ -127,6 +127,7 @@ class TaskService
 
         $result['tasks'] = $tasks;
         $result['numberOfTotalDocuments'] = $numberOfTotalDocuments;
+
         return $result;
     }
 }
