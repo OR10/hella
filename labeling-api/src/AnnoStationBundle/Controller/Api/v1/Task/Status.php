@@ -69,6 +69,13 @@ class Status extends Controller\Base
     private $amqpFacade;
 
     /**
+     * @var Service\v1\Task\StatusService
+     */
+    private $statusService;
+
+    /**
+     * Status constructor.
+     *
      * @param Facade\LabelingTask                           $labelingTaskFacade
      * @param Storage\TokenStorage                          $tokenStorage
      * @param Facade\Project                                $projectFacade
@@ -77,6 +84,7 @@ class Status extends Controller\Base
      * @param Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService
      * @param Authentication\UserPermissions                $userPermissions
      * @param AMQP\FacadeAMQP                               $amqpFacade
+     * @param Service\v1\Task\StatusService                 $statusService
      */
     public function __construct(
         Facade\LabelingTask $labelingTaskFacade,
@@ -86,7 +94,8 @@ class Status extends Controller\Base
         Service\Authorization $authorizationService,
         Service\TaskDatabaseSecurityPermissionService $databaseSecurityPermissionService,
         Authentication\UserPermissions $userPermissions,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\v1\Task\StatusService $statusService
     ) {
         $this->labelingTaskFacade                = $labelingTaskFacade;
         $this->tokenStorage                      = $tokenStorage;
@@ -96,6 +105,7 @@ class Status extends Controller\Base
         $this->labeledThingFacade                = $labeledThingFacade;
         $this->userPermissions                   = $userPermissions;
         $this->amqpFacade                        = $amqpFacade;
+        $this->statusService                     = $statusService;
     }
 
     /**
@@ -119,41 +129,8 @@ class Status extends Controller\Base
         ) {
             throw new Exception\AccessDeniedHttpException('You are not allowed to change the status');
         }
-
-        $isOneLabeledFrameComplete = false;
-        if ($task->getTaskType() === 'meta-labeling') {
-            $labeledFrames = $this->labelingTaskFacade->getLabeledFrames($task);
-            foreach ($labeledFrames as $labeledFrame) {
-                if (!$labeledFrame->getIncomplete()) {
-                    $isOneLabeledFrameComplete = true;
-                }
-            }
-            if (!$isOneLabeledFrameComplete) {
-                throw new Exception\PreconditionFailedHttpException('There must be at least one LabeledFrame labeled');
-            }
-        }
-
-        if ($task->getTaskType() === 'object-labeling') {
-            $labeledThings = $this->labeledThingFacade->findByTaskId($task);
-            foreach ($labeledThings as $labeledThing) {
-                if ($labeledThing->getIncomplete()) {
-                    throw new Exception\PreconditionFailedHttpException('One or more LabeledThings are incomplete');
-                }
-            }
-        }
-
-        $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
-        $task->addAssignmentHistory($phase, Model\LabelingTask::STATUS_DONE, $user);
-
-        if ($task->hasReviewPhase() && $phase === Model\LabelingTask::PHASE_LABELING) {
-            $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
-            $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
-        }
-
-        $this->labelingTaskFacade->save($task);
-
-        $job = new Jobs\DeleteInvalidLtifLtAndLtgReferences($task->getId());
-        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
+        /** update label status */
+        $this->statusService->updateLabeledStatus($user, $task, $phase);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }

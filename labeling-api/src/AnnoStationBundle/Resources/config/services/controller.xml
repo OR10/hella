@@ -69,6 +69,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.task.status"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.user"

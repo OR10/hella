@@ -447,5 +447,12 @@
                  class="AnnoStationBundle\Service\v1\Task\PhaseService">
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
         </service>
+
+        <service id="annostation.labeling_api.service.task.status"
+                 class="AnnoStationBundle\Service\v1\Task\StatusService">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
+            <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+        </service>
     </services>
 </container>
