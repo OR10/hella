@@ -1,0 +1,10 @@
+*    * * * * root               /code/app/AnnoStation/console hagl:workerpool:rescheduler worker.reschedule.30s
+*    * * * * root /bin/sleep 30;/code/app/AnnoStation/console hagl:workerpool:rescheduler worker.reschedule.30s
+*    * * * * root               /code/app/AnnoStation/console hagl:workerpool:rescheduler worker.reschedule.60s
+*/5  * * * * root               /code/app/AnnoStation/console hagl:workerpool:rescheduler worker.reschedule.300s
+*/15 * * * * root               /code/app/AnnoStation/console hagl:workerpool:rescheduler worker.reschedule.900s
+
+0    1 * * * root               /code/app/AnnoStation/console annostation:remove-expired-user-assignments-and-memberships
+*/30 1 * * * root               /code/app/AnnoStation/console monitor:health --reporter=annostation.labeling_api.helper.monitoring.couch_db_reporter
+30   3 * * * root               /code/scripts/CouchDB/Migration/TriggerCompactionForEachTaskDb.js "api_couchdb" > /dev/null 2>&1
+#30   4 * * * root               /code/scripts/CouchDB/Migration/TriggerCompactionForEachTaskDb.js "<%= @_couchdb_url_hotstandby %>" > /dev/null 2>&1

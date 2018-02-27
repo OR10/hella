@@ -15,7 +15,7 @@
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.20",
-        "friendsofsymfony/user-bundle": "~2.0@dev",
+        "friendsofsymfony/user-bundle": "2.0.0-alpha3",
         "symfony/swiftmailer-bundle": "~2.3",
         "doctrine/couchdb": "dev-master",
         "doctrine/couchdb-odm": "dev-master",
@@ -26,6 +26,7 @@
         "oneup/flysystem-bundle": "@stable",
         "crosscan/worker-pool": "@dev",
         "mlehner/gelf-php": "dev-master",
+        "sensio/generator-bundle": "~2.3",
         "crosscan/logger": "@dev",
         "crosscan/php-stdlib": "@dev",
         "qafoolabs/profiler": "dev-master",
@@ -45,7 +46,6 @@
         "beberlei/assert": "^2.7"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "~5",
         "toolphar/phpcs": "2.0.0RC1",
         "phpmd/phpmd": "~1.5",
@@ -97,7 +97,6 @@
     },
     "extra": {
         "symfony-app-dir": "app/AnnoStation",
-        "symfony-web-dir": "web/AnnoStation",
-        "symfony-assets-install": "relative"
+        "symfony-web-dir": "web/AnnoStation"
     }
 }

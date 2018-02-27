@@ -142,7 +142,7 @@ class User extends Controller\Base
                 'email' => $user->getEmail(),
                 'enabled' => $user->isEnabled(),
                 'lastLogin' => $user->getLastLogin(),
-                'locked' => $user->isLocked(),
+                'locked' => !$user->isAccountNonLocked(),
                 'roles' => $user->getRoles(),
             );
         }, $users);
@@ -293,12 +293,6 @@ class User extends Controller\Base
         $this->userFacade->updateUser($user);
         $this->userRolesRebuilderService->rebuildForUser($user);
 
-        if ($user->getUsername() === $loginUser->getUsername()) {
-            $this->tokenStorage->setToken(null);
-
-            return View\View::createRouteRedirect('annostation_index_index');
-        }
-
         return View\View::create()->setData(
             [
                 'result' =>
@@ -322,9 +316,9 @@ class User extends Controller\Base
             'email'         => $user->getEmail(),
             'enabled'       => $user->isEnabled(),
             'lastLogin'     => $user->getLastLogin(),
-            'locked'        => $user->isLocked(),
+            'locked'        => !$user->isAccountNonLocked(),
             'roles'         => $user->getRoles(),
-            'expired'       => $user->isExpired(),
+            'expired'       => !$user->isAccountNonExpired(),
             'expiresAt'     => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             'organisations' => [],
         );

@@ -351,10 +351,10 @@ class Project extends Controller\Base
                 'id'                => $user->getId(),
                 'email'             => $user->getEmail(),
                 'enabled'           => $user->isEnabled(),
-                'expired'           => $user->isExpired(),
+                'expired'           => !$user->isAccountNonExpired(),
                 'expiresAt'         => $user->getExpiresAt(),
                 'lastLogin'         => $user->getLastLogin(),
-                'locked'            => $user->isLocked(),
+                'locked'            => !$user->isAccountNonLocked(),
                 'organisations'     => $user->getOrganisations(),
                 'password'          => null, // for compability
                 'roles'             => $user->getRoles(),
@@ -451,7 +451,7 @@ class Project extends Controller\Base
 
         return View\View::create()->setData(
             [
-                'result' => $project
+                'result' => $project,
             ]
         );
     }

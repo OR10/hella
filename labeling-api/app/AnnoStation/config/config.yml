@@ -60,6 +60,11 @@ twig:
     fallback.title: AnnoStation
     customer: %customer%
 
+fos_user:
+  from_email:
+    address: %mailer_from%
+    sender_name: no_reply
+
 fos_rest:
     versioning:
         enabled: true
