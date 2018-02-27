@@ -442,5 +442,10 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
         </service>
+
+        <service id="annostation.labeling_api.service.phase"
+                 class="AnnoStationBundle\Service\v1\Task\PhaseService">
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+        </service>
     </services>
 </container>
