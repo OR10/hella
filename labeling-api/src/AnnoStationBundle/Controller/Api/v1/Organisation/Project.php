@@ -110,22 +110,28 @@ class Project extends Controller\Base
     private $projectFacadeReadOnly;
 
     /**
+     * @var Service\v1\Project\ProjectService
+     */
+    private $projectService;
+
+    /**
      * Project constructor.
      *
-     * @param Facade\Project                                   $projectFacade
-     * @param Facade\LabelingTask                              $labelingTaskFacade
-     * @param Facade\Organisation                              $organisationFacade
-     * @param Facade\Campaign                                  $campaignFacade
-     * @param Facade\TaskConfiguration                         $taskConfigurationFacade
-     * @param ProjectFacadeFactory\FacadeInterface             $projectFacadeFactory
-     * @param LabelingTaskFacadeFactory\FacadeInterface        $labelingTaskFacadeFactory
-     * @param LabeledThingInFrameFacadeFactory\FacadeInterface $labeledThingInFrameFacadeFactory
-     * @param Storage\TokenStorage                             $tokenStorage
-     * @param AppFacade\User                                   $userFacade
-     * @param Service\Authorization                            $authorizationService
-     * @param Service\TaskDatabaseSecurityPermissionService    $taskDatabaseSecurityPermissionService
-     * @param AMQP\FacadeAMQP                                  $amqpFacade
-     * @param Authentication\UserPermissions                   $userPermissions
+     * @param ProjectFacadeFactory                          $projectFacade
+     * @param LabelingTaskFacadeFactory                     $labelingTaskFacade
+     * @param Facade\Organisation                           $organisationFacade
+     * @param Facade\Campaign                               $campaignFacade
+     * @param Facade\TaskConfiguration                      $taskConfigurationFacade
+     * @param Facade\Project\FacadeInterface                $projectFacadeFactory
+     * @param Facade\LabelingTask\FacadeInterface           $labelingTaskFacadeFactory
+     * @param Facade\LabeledThingInFrame\FacadeInterface    $labeledThingInFrameFacadeFactory
+     * @param Storage\TokenStorage                          $tokenStorage
+     * @param AppFacade\User                                $userFacade
+     * @param Service\Authorization                         $authorizationService
+     * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
+     * @param AMQP\FacadeAMQP                               $amqpFacade
+     * @param Authentication\UserPermissions                $userPermissions
+     * @param Service\v1\Project\ProjectService             $projectService
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -141,7 +147,8 @@ class Project extends Controller\Base
         Service\Authorization $authorizationService,
         Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
-        Authentication\UserPermissions $userPermissions
+        Authentication\UserPermissions $userPermissions,
+        Service\v1\Project\ProjectService $projectService
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
@@ -157,6 +164,7 @@ class Project extends Controller\Base
         $this->projectFacadeReadOnly                 = $projectFacadeFactory->getReadOnlyFacade();
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
+        $this->projectService                        = $projectService;
     }
 
     /**
@@ -400,7 +408,7 @@ class Project extends Controller\Base
      * @return array
      */
     private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds) {
-
+        
         //TODO Will be better for the future prevent empty elements.
         if ($campaignIds === null || count(array_filter($campaignIds) < 1)) {
             return [];
@@ -434,137 +442,10 @@ class Project extends Controller\Base
     {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        $name             = $request->request->get('name');
-        $review           = $request->request->get('review');
-        $frameSkip        = $request->request->get('frameSkip');
-        $startFrameNumber = $request->request->get('startFrameNumber');
-        $splitEach        = $request->request->get('splitEach');
-        $description      = $request->request->get('description');
-        $projectType      = $request->request->get('projectType');
-        $campaigns        = $request->request->get('campaigns', []);
-        $dueDate          = $request->request->get('dueDate');
-
-        $campaigns = array_filter($campaigns);
-
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $labelingValidationProcesses = [];
-        if ($review) {
-            $labelingValidationProcesses[] = 'review';
-        }
-
-        try {
-            $project = Model\Project::create(
-                $name,
-                $organisation,
-                $user,
-                null,
-                $dueDate === null ? null : new \DateTime($dueDate, new \DateTimeZone('UTC')),
-                $labelingValidationProcesses,
-                $frameSkip,
-                $startFrameNumber,
-                $splitEach,
-                $description,
-                $campaigns
-            );
-
-            $project->setAvailableExports([$projectType]);
-        } catch (\InvalidArgumentException $exception) {
-            throw new Exception\BadRequestHttpException($exception->getMessage(), $exception);
-        }
-
-        switch ($projectType) {
-            case 'legacy':
-                if ($request->request->get('vehicle', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_VEHICLE,
-                        $request->request->get('drawingToolVehicle', 'rectangle')
-                    );
-                }
-                if ($request->request->get('person', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_PERSON,
-                        $request->request->get('drawingToolPerson', 'pedestrian')
-                    );
-                }
-                if ($request->request->get('cyclist', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_CYCLIST,
-                        $request->request->get('drawingToolCyclist', 'rectangle')
-                    );
-                }
-                if ($request->request->get('ignore', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_IGNORE,
-                        $request->request->get('drawingToolIgnore', 'rectangle')
-                    );
-                }
-                if ($request->request->get('ignore-vehicle', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE,
-                        $request->request->get('drawingToolIgnoreVehicle', 'rectangle')
-                    );
-                }
-                if ($request->request->get('lane', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_LANE,
-                        $request->request->get('drawingToolLane', 'rectangle')
-                    );
-                }
-                if ($request->request->get('parked-cars', false)) {
-                    $project->addLegacyTaskInstruction(
-                        Model\LabelingTask::INSTRUCTION_PARKED_CARS,
-                        $request->request->get('drawingToolParkedCars', 'cuboid')
-                    );
-                }
-                break;
-            case 'genericXml':
-                $taskTypeConfigurations = $request->request->get('taskTypeConfigurations');
-
-                if (empty($taskTypeConfigurations)) {
-                    throw new Exception\BadRequestHttpException('Missing task type configuration');
-                }
-
-                foreach ($taskTypeConfigurations as $taskTypeConfiguration) {
-                    $project->addGenericXmlTaskInstruction(
-                        $taskTypeConfiguration['type'],
-                        $taskTypeConfiguration['taskConfigurationId']
-                    );
-                }
-                break;
-            case 'requirementsXml':
-                $taskTypeConfigurations = $request->request->get('taskTypeConfigurations');
-
-                if (empty($taskTypeConfigurations)) {
-                    throw new Exception\BadRequestHttpException('Missing task type configuration');
-                }
-
-                if (count($taskTypeConfigurations) > 1) {
-                    throw new Exception\BadRequestHttpException(
-                        'Only a single requirementsXML is allowed for a project.'
-                    );
-                }
-
-                $taskTypeConfiguration = reset($taskTypeConfigurations);
-
-                if ($taskTypeConfiguration['taskConfigurationId'] === '' || $taskTypeConfiguration['type'] === '') {
-                    throw new Exception\BadRequestHttpException('Invalid taskConfigurationId or taskType');
-                }
-
-                $taskConfiguration = $this->taskConfigurationFacade->find(
-                    $taskTypeConfiguration['taskConfigurationId']
-                );
-                if ($taskConfiguration === null) {
-                    throw new Exception\BadRequestHttpException('Task configuration not found.');
-                }
-
-                $project->addRequirementsXmlTaskInstruction(
-                    $taskTypeConfiguration['type'],
-                    $taskTypeConfiguration['taskConfigurationId']
-                );
-                break;
-        }
+        $project = $this->projectService->createNewProject($organisation, $user, $request);
 
         $project = $this->projectFacade->save($project);
 

@@ -63,13 +63,21 @@ class Task extends Controller\Base
     private $authorizationService;
 
     /**
-     * @param Facade\Video          $videoFacade
-     * @param Facade\LabelingTask   $labelingTaskFacade
-     * @param Service\FrameCdn      $frameCdn
-     * @param AppFacade\User        $userFacade
-     * @param Facade\Project        $projectFacade
-     * @param Storage\TokenStorage  $tokenStorage
-     * @param Service\Authorization $authorizationService
+     * @var Service\v1\TaskService
+     */
+    private $taskService;
+
+    /**
+     * Task constructor.
+     *
+     * @param Facade\Video            $videoFacade
+     * @param Facade\LabelingTask     $labelingTaskFacade
+     * @param Service\FrameCdn        $frameCdn
+     * @param AppFacade\User          $userFacade
+     * @param Facade\Project          $projectFacade
+     * @param Storage\TokenStorage    $tokenStorage
+     * @param Service\Authorization   $authorizationService
+     * @param Service\v1\TaskService  $taskService
      */
     public function __construct(
         Facade\Video $videoFacade,
@@ -78,7 +86,8 @@ class Task extends Controller\Base
         AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Service\v1\TaskService $taskService
     ) {
         $this->videoFacade          = $videoFacade;
         $this->labelingTaskFacade   = $labelingTaskFacade;
@@ -87,6 +96,7 @@ class Task extends Controller\Base
         $this->projectFacade        = $projectFacade;
         $this->tokenStorage         = $tokenStorage;
         $this->authorizationService = $authorizationService;
+        $this->taskService          = $taskService;
     }
 
     /**
@@ -102,99 +112,19 @@ class Task extends Controller\Base
      */
     public function listAction(HttpFoundation\Request $request)
     {
-        $offset     = $request->query->has('offset') ? $request->query->getInt('offset') : null;
-        $limit      = $request->query->has('limit') ? $request->query->getInt('limit') : null;
-        $taskPhase  = $request->query->get('phase');
-        $taskStatus = $request->query->get('taskStatus');
-        $projectId  = $request->query->get('project');
+
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-
-        if ($projectId === null) {
-            throw new Exception\BadRequestHttpException('Please provide a project ID');
-        }
-
-        $project = $this->projectFacade->find($projectId);
-        if ($project === null) {
-            throw new Exception\BadRequestHttpException(sprintf('There is no project with the id "%s"', $projectId));
-        }
-
-        if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
-            throw new Exception\BadRequestHttpException('Invalid offset or limit');
-        }
-
-        if (isset($taskPhase)) {
-            $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-            $numberOfTotalDocumentsByStatus = $numberOfTotalDocumentsByStatus[$taskPhase];
-        }
-
-        $tasks                  = [];
-        $numberOfTotalDocuments = 0;
-        switch ($taskStatus) {
-            case Model\LabelingTask::STATUS_IN_PROGRESS:
-                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_IN_PROGRESS,
-                    $project,
-                    $offset,
-                    $limit,
-                    $taskPhase
-                )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_IN_PROGRESS];
-                break;
-            case Model\LabelingTask::STATUS_TODO:
-                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_TODO,
-                    $project,
-                    $offset,
-                    $limit,
-                    $taskPhase
-                )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_TODO];
-                break;
-            case Model\LabelingTask::STATUS_DONE:
-                $tasks                  = $this->labelingTaskFacade->findAllByStatusAndProject(
-                    Model\LabelingTask::STATUS_DONE,
-                    $project,
-                    $offset,
-                    $limit,
-                    $taskPhase
-                )->toArray();
-                $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[Model\LabelingTask::STATUS_DONE];
-                break;
-            case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                $tasks = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
-                    $project,
-                    $offset,
-                    $limit
-                )->toArray();
-
-                $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
-                    $project
-                );
-                break;
-        }
-
-        usort(
-            $tasks,
-            function ($a, $b) {
-                if ($a->getCreatedAt() === null || $b->getCreatedAt() === null) {
-                    return -1;
-                }
-                if ($a->getCreatedAt()->getTimestamp() === $b->getCreatedAt()->getTimestamp()) {
-                    return 0;
-                }
-
-                return ($a->getCreatedAt()->getTimestamp() > $b->getCreatedAt()->getTimestamp()) ? -1 : 1;
-            }
-        );
+        /** get task*/
+        $task = $this->taskService->getTask($request);
 
         return new View\View(
             new Response\Tasks(
-                $tasks,
+                $task['tasks'],
                 $this->videoFacade,
                 $this->userFacade,
                 $this->projectFacade,
-                $numberOfTotalDocuments
+                $task['numberOfTotalDocuments']
             ),
             HttpFoundation\Response::HTTP_ACCEPTED
         );
