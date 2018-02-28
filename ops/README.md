@@ -49,7 +49,8 @@ Fix:
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
-For Fedora you can permanently add line `vm.max_map_count=262144` to file `/etc/sysctl.d/99-sysctl.conf` 
+For Fedora you can permanently add line `vm.max_map_count=262144` to file `/etc/sysctl.d/99-sysctl.conf`
+For Ubuntu - to file `/etc/sysctl.conf`
 
 ## Backend
 
