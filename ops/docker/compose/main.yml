@@ -7,7 +7,7 @@ services:
       dockerfile: 'ops/docker/proxy/Dockerfile'
       context: ../../../../
     depends_on:
-      - api_nginx
+      - api-nginx
 #      - front disabled for separate BE and FE build
     restart: on-failure
     deploy:

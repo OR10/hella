@@ -16,7 +16,7 @@ server {
     }
 
     location /couch/ {
-        proxy_pass       http://api_couchdb:5984/;
+        proxy_pass       http://api-couchdb:5984/;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
@@ -30,17 +30,17 @@ server {
     ######## API monolith start ########
     location / {
         rewrite_log on;
-        proxy_pass http://api_nginx/;
+        proxy_pass http://api-nginx/;
     }
 
     location _profiler {
         rewrite_log on;
-        proxy_pass http://api_nginx/;
+        proxy_pass http://api-nginx/;
     }
 
     location /api {
         rewrite_log on;
-        proxy_pass http://api_nginx/api;
+        proxy_pass http://api-nginx/api;
     }
     ######## API monolith end ########
 }
