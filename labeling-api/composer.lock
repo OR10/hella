@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "54dafe5dfe4b0b9692d162908eabd852",
+    "content-hash": "e91f0beda993c74ad6bcfca53ab6d57c",
     "packages": [
         {
             "name": "arbit/phpillow",
@@ -35,16 +35,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.52.18",
+            "version": "3.52.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "becba2be9cfb22d6394c4d7e4d8cb70807c8a6b3"
+                "reference": "6d2f46b55a9620e41e2fc71eb9993d43ebb352c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/becba2be9cfb22d6394c4d7e4d8cb70807c8a6b3",
-                "reference": "becba2be9cfb22d6394c4d7e4d8cb70807c8a6b3",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6d2f46b55a9620e41e2fc71eb9993d43ebb352c7",
+                "reference": "6d2f46b55a9620e41e2fc71eb9993d43ebb352c7",
                 "shasum": ""
             },
             "require": {
@@ -111,7 +111,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-02-27T21:06:51+00:00"
+            "time": "2018-02-20T20:46:59+00:00"
         },
         {
             "name": "beberlei/assert",
@@ -3758,16 +3758,16 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v6.0.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "412333372fb6c8ffb65496a2bbd7321af75733fc"
+                "reference": "f5f8daa92a4ab69fad7dfdb949dc635510a6ea81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/412333372fb6c8ffb65496a2bbd7321af75733fc",
-                "reference": "412333372fb6c8ffb65496a2bbd7321af75733fc",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/f5f8daa92a4ab69fad7dfdb949dc635510a6ea81",
+                "reference": "f5f8daa92a4ab69fad7dfdb949dc635510a6ea81",
                 "shasum": ""
             },
             "require": {
@@ -3778,10 +3778,14 @@
                 "mockery/mockery": "~0.9.1",
                 "symfony/phpunit-bridge": "~3.3@dev"
             },
+            "suggest": {
+                "ext-intl": "Needed to support internationalized email addresses",
+                "true/punycode": "Needed to support internationalized email addresses, if ext-intl is not installed"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.0-dev"
+                    "dev-master": "6.1-dev"
                 }
             },
             "autoload": {
@@ -3803,13 +3807,13 @@
                 }
             ],
             "description": "Swiftmailer, free feature-rich PHP mailer",
-            "homepage": "http://swiftmailer.symfony.com",
+            "homepage": "https://swiftmailer.symfony.com",
             "keywords": [
                 "email",
                 "mail",
                 "mailer"
             ],
-            "time": "2017-09-30T22:39:41+00:00"
+            "time": "2018-02-27T06:34:13+00:00"
         },
         {
             "name": "symfony/config",
@@ -5670,6 +5674,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 15,
+        "swiftmailer/swiftmailer": 20,
         "doctrine/couchdb": 20,
         "doctrine/couchdb-odm": 20,
         "doctrine/couchdb-odm-bundle": 20,

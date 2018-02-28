@@ -17,6 +17,7 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.20",
         "friendsofsymfony/user-bundle": "2.0.0-alpha3",
+        "swiftmailer/swiftmailer": "dev-master",
         "symfony/swiftmailer-bundle": "~3.2.0",
         "doctrine/couchdb": "dev-master",
         "doctrine/couchdb-odm": "dev-master",
