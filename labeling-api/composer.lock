@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6134cb24ed214c07a9dc1f2c17898172",
+    "content-hash": "c9a5c801ba4b9decb907beb25e9575a0",
     "packages": [
         {
             "name": "arbit/phpillow",
