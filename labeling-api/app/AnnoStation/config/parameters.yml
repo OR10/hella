@@ -27,9 +27,9 @@ parameters:
     mailer_user: %mailer.user%
     mailer_password: %mailer.password%
     mailer_from: %mailer.from%
-    mailer_encryption: %mailer.encryption%
-    mailer_auth_mode: %mailer.auth.mode%
-    mailer_port: %mailer.port%
+    #mailer_encryption: %mailer.encryption%
+    #mailer_auth_mode: %mailer.auth.mode%
+    #mailer_port: %mailer.port%
 
     secret: %app.secret%
 
