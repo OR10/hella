@@ -41,32 +41,49 @@ sudo netstat -nlp | grep 8080
 unlink labeling-api/bin/phpcs
 ```
 
+#### ELK
+
+Error: `max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]`
+
+Fix:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
+For Fedora you can permanently add line `vm.max_map_count=262144` to file `/etc/sysctl.d/99-sysctl.conf`
+For Ubuntu - to file `/etc/sysctl.conf`
+
+
+#### docker-machine
+User is not a sudoer
+
+Add line `dev ALL=(ALL) NOPASSWD: ALL` to the end of `/etc/sudoers` file.
+
 ## Backend
 
 ### how to run composer
 
 Install vendors for api
 ```bash
-$ docker-compose run --rm -v $PWD/labeling-api/:/code:Z maintenance_composer composer install
+$ docker-compose run --rm -v $PWD/labeling-api/:/code:Z maintenance-composer composer install
 ```
 Install vendors for video processing
 ```bash
-$ docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance_composer composer install
+$ docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance-composer composer install
 ```
 
 Init project
 ```bash
-$ docker-compose run --rm api_cron app/AnnoStation/console annostation:init -v
+$ docker-compose run --rm api-cron app/AnnoStation/console annostation:init -v
 ```
 
 Init queue
 ```bash
-$ docker-compose run --rm api_cron app/AnnoStation/console hagl:workerpool:setup -v
+$ docker-compose run --rm api-cron app/AnnoStation/console hagl:workerpool:setup -v
 ```
 
 Run additional Consumers
 ```bash
-$ docker-compose exec api_workerpool_high app/AnnoStation/console annostation:workerpool:starter high &
+$ docker-compose exec api-workerpool-high app/AnnoStation/console annostation:workerpool:starter high &
 ```
 
 
@@ -76,18 +93,26 @@ $ docker-compose exec api_workerpool_high app/AnnoStation/console annostation:wo
 
 Build yarn
 ```bash
-$ docker-compose run --user $(id -u) --rm maintenance_node yarn
+$ docker-compose run --user $(id -u) --rm maintenance-node yarn
 ```
 
 Build gulp
 ```bash
-$ docker-compose run --user $(id -u) --rm maintenance_node gulp
+$ docker-compose run --user $(id -u) --rm maintenance-node gulp
 ```
 
 Or just run bash in container if you need some else
 ```bash
-$ docker-compose run --rm maintenance_node bash
+$ docker-compose run --rm maintenance-node bash
 ```
+
+## New service implementation checklist
+
+* Add service to docker-compose (Folder `service` or other. It depends on...) 
+* Add build configuration to `ops/build_(fe|be).sh` and `install locally` file
+* If you added new `docker-compose.yml` file - Add it to required `COMPOSE_FILE=` sections in `.env`, `build`, `deploy` 
+and `install locally` files
+* Add useful documentation into `README.md` and `confluence`
 
 ## Build and deploy
 
@@ -119,18 +144,32 @@ Create docker machines
 ```bash
 $ docker-machine create --swarm-experimental --driver virtualbox myvm1
 $ docker-machine create --swarm-experimental --driver virtualbox myvm2
+```
+
+Create docker machines with `generic` driver for azure
+```bash
+$ docker-machine create --driver generic --generic-ssh-user=softeq-dev-hella --generic-ip-address=10.90.4.4 dev-proxy
+$ docker-machine create --driver generic --generic-ssh-user=softeq-dev-hella --generic-ip-address=10.90.4.9 dev-api
+$ docker-machine create --driver generic --generic-ssh-user=softeq-dev-hella --generic-ip-address=10.90.4.8 dev-video
 ``` 
 
 Init swarm
 ```bash
 $ docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.101"
 $ docker-machine ssh myvm2 "docker swarm join --token <token> <ip>:2377"
+$ docker-machine ssh myvm1 "sudo sysctl -w vm.max_map_count=262144"
+$ docker-machine ssh myvm2 "sudo sysctl -w vm.max_map_count=262144"
 ```
 
 Label images
 ```bash
 $ docker-machine ssh myvm1 "docker node update --label-add proxy=1 --label-add rmq=1 --label-add front=1 --label-add api_redis=1 --label-add api_db=1 --label-add api_cron=1 --label-add api_worker=1 --label-add api=1 myvm1"
-$ docker-machine ssh myvm1 "docker node update --label-add video=1 myvm2"
+$ docker-machine ssh myvm1 "docker node update --label-add video=1 --label-add elk=1 myvm2"
+```
+
+Configure machine with Elastic Search
+```bash
+$ docker-machine ssh myvm2 "sudo sysctl -w vm.max_map_count=262144"
 ```
 
 #### How to deploy
@@ -151,10 +190,10 @@ $ docker-machine ssh myvm1
 
 Show logs
 ```bash
-docker logs $(docker ps -a -f name=api_cron -q)
+docker logs $(docker ps -a -f name=api-cron -q)
 ```
 
 Run some command 
 ```bash
-docker exec -it $(docker ps -a -f name=api_fpm -q) bash
+docker exec -it $(docker ps -a -f name=api-fpm -q) bash
 ```

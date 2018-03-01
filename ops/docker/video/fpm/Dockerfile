@@ -87,3 +87,5 @@ RUN apt-get update -y && \
 #Do not remove pip. It will break s3cmd
 
 COPY ./labeling-video-processing /code
+
+COPY ops/docker/video/fpm/config/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini

@@ -4,19 +4,41 @@ server {
 
     client_max_body_size 512M;
 
-    access_log            /var/log/nginx/default.access.log combined;
-    error_log             /var/log/nginx/default.error.log debug;
+    access_log /dev/stdout combined;
+    error_log  /dev/stdout debug;
 
     rewrite_log on;
 
     location /s3 {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
         proxy_pass       https://s3.eu-central-1.amazonaws.com/hella-frame-cdn;
         #    proxy_set_header Host      $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     location /couch/ {
-        proxy_pass       http://api_couchdb:5984/;
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
+        proxy_pass       http://api-couchdb:5984/;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
@@ -29,18 +51,40 @@ server {
 
     ######## API monolith start ########
     location / {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
         rewrite_log on;
-        proxy_pass http://api_nginx/;
+        proxy_pass http://api-nginx/;
     }
 
     location _profiler {
         rewrite_log on;
-        proxy_pass http://api_nginx/;
+        proxy_pass http://api-nginx/;
     }
 
     location /api {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
         rewrite_log on;
-        proxy_pass http://api_nginx/api;
+        proxy_pass http://api-nginx/api;
     }
     ######## API monolith end ########
 }

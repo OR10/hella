@@ -43,7 +43,7 @@
 
         <service id="annostation.labeling_api.vendor.logger" class="cscntLogger">
             <factory service="annostation.labeling_api.service.logger_factory" method="createLogger"/>
-            <argument>%kernel.logs_dir%/labeling_api_%kernel.environment%.log</argument>
+            <argument>php://stdout</argument>
             <argument>null</argument>
             <argument>0</argument><!-- log severity -->
         </service>

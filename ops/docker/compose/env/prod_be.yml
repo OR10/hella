@@ -9,25 +9,25 @@ services:
 
   ############# API SECTION BEGIN #############
 
-  api_nginx:
+  api-nginx:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_nginx:${DOCKER_BE_TAG}
 
-  api_fpm:
+  api-fpm:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_fpm:${DOCKER_BE_TAG}
 
-  api_workerpool_low:
+  api-workerpool-low:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
-  api_workerpool_normallow:
+  api-workerpool-normallow:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
-  api_workerpool_normal:
+  api-workerpool-normal:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
-  api_workerpool_high:
+  api-workerpool-high:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
-  api_cron:
+  api-cron:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cron:${DOCKER_BE_TAG}
 
   ############# API SECTION END #############
@@ -35,10 +35,17 @@ services:
 
   ############# VIDEO PROCESSING SECTION BEGIN #############
 
-  video_nginx:
+  video-nginx:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/video_nginx:${DOCKER_BE_TAG}
 
-  video_fpm:
+  video-fpm:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/video_fpm:${DOCKER_BE_TAG}
 
   ############# VIDEO PROCESSING SECTION END #############
+
+  ############# MONITORING SECTION BEGIN #############
+
+  monitoring-logstash:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}
+
+  ############# MONITORING SECTION END #############

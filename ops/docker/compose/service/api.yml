@@ -1,12 +1,12 @@
 version: "3.1"
 
 services:
-  api_nginx:
+  api-nginx:
     build:
       dockerfile: 'ops/docker/api/nginx/Dockerfile'
       context: ../../../../
     depends_on:
-        - api_fpm
+        - api-fpm
     deploy:
       restart_policy:
         condition: on-failure
@@ -14,13 +14,13 @@ services:
         constraints:
           - node.labels.api == 1
 
-  api_fpm:
+  api-fpm:
     build:
       dockerfile: 'ops/docker/api/fpm/Dockerfile'
       context: ../../../../
     depends_on:
-      - api_couchdb
-      - api_redis
+      - api-couchdb
+      - api-redis
       - rmq
     environment:
       - APP_ENV
@@ -58,14 +58,14 @@ services:
         constraints:
           - node.labels.api == 1
 
-  api_workerpool_low:
+  api-workerpool-low:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: on-failure
     command: app/AnnoStation/console annostation:workerpool:starter low
     depends_on:
-      - api_couchdb
+      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -103,14 +103,14 @@ services:
         constraints:
           - node.labels.api_worker == 1
 
-  api_workerpool_normallow:
+  api-workerpool-normallow:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: on-failure
     command: app/AnnoStation/console annostation:workerpool:starter normal low
     depends_on:
-      - api_couchdb
+      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -149,14 +149,14 @@ services:
         constraints:
           - node.labels.api_worker == 1
 
-  api_workerpool_normal:
+  api-workerpool-normal:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: on-failure
     command: app/AnnoStation/console annostation:workerpool:starter normal
     depends_on:
-      - api_couchdb
+      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -195,14 +195,14 @@ services:
         constraints:
           - node.labels.api_worker == 1
 
-  api_workerpool_high:
+  api-workerpool-high:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: on-failure
     command: app/AnnoStation/console annostation:workerpool:starter high
     depends_on:
-      - api_couchdb
+      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -241,14 +241,14 @@ services:
         constraints:
           - node.labels.api_worker == 1
 
-  api_cron:
+  api-cron:
     build:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
     restart: on-failure
     command: bash -c "service cron start && tail -f /dev/null"
     depends_on:
-      - api_couchdb
+      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -286,14 +286,14 @@ services:
         constraints:
           - node.labels.api_cron == 1
 
-  api_couchdb:
+  api-couchdb:
     image: couchdb:1.7
     environment:
       - COUCHDB_USER=${COUCHDB_USER}
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
     healthcheck:
       test: "curl -f -s http://localhost:5984/_users || exit 1"
-      interval: 5s
+      interval: 10s
       timeout: 10s
       retries: 6
 #      start_period: 2s
@@ -309,7 +309,7 @@ services:
         constraints:
           - node.labels.api_db == 1
 
-  api_redis:
+  api-redis:
     image: redis
     restart: on-failure
     deploy:

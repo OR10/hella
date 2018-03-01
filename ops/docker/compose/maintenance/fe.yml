@@ -1,7 +1,7 @@
 version: "3.1"
 
 services:
-  maintenance_node:
+  maintenance-node:
     build:
       dockerfile: 'ops/docker/maintenance/node/Dockerfile'
       context: ../../../../

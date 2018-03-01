@@ -6,8 +6,8 @@ server {
 
     index  app.php;
 
-    access_log            /var/log/nginx/default.access.log combined;
-    error_log             /var/log/nginx/default.error.log debug;
+    access_log /dev/stdout combined;
+    error_log  /dev/stdout debug;
 
     rewrite_log on;
 
@@ -25,7 +25,7 @@ server {
         root          /code/web/AnnoStation;
         include       /etc/nginx/fastcgi_params;
 
-        fastcgi_pass  api_fpm:9000;
+        fastcgi_pass  api-fpm:9000;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 3600;
         rewrite_log on;
@@ -35,7 +35,7 @@ server {
         root          /code/web/AnnoStation;
         include       /etc/nginx/fastcgi_params;
 
-        fastcgi_pass  api_fpm:9000;
+        fastcgi_pass  api-fpm:9000;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 3600;
 
