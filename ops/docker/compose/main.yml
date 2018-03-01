@@ -38,7 +38,7 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - node.labels.dd == 1
+          - node.labels.rmq == 1
 
 volumes:
   rmq_data:
