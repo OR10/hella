@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1;
 
+use AnnoStationBundle\Type\UserType;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
-
+use Symfony\Component\Form\FormFactory;
 /**
  * @Version("v1")
  * @Rest\Prefix("/api/{version}/currentUser")
@@ -63,6 +64,11 @@ class CurrentUser extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * CurrentUser constructor.
      *
      * @param Storage\TokenStorage                 $tokenStorage
@@ -72,6 +78,7 @@ class CurrentUser extends Controller\Base
      * @param Authentication\UserPermissions       $currentUserPermissions
      * @param Validation\ValidationService         $validationService
      * @param Service\UserRolesRebuilder           $userRolesRebuilderService
+     * @param FormFactory                          $userType
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -80,7 +87,8 @@ class CurrentUser extends Controller\Base
         AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions,
         Validation\ValidationService $validationService,
-        Service\UserRolesRebuilder $userRolesRebuilderService
+        Service\UserRolesRebuilder $userRolesRebuilderService,
+        FormFactory $formFactory
     ) {
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
@@ -89,6 +97,7 @@ class CurrentUser extends Controller\Base
         $this->organisation              = $organisation;
         $this->validationService         = $validationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->formFactory               = $formFactory;
     }
 
     /**
@@ -150,10 +159,8 @@ class CurrentUser extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-
-        $oldPassword = $request->request->get('oldPassword');
-        $newPassword = $request->request->get('newPassword');
-
+        $oldPassword = $request->request->get('password');
+        $newPassword = $request->request->get('plainPassword');
         $encoder = $this->encoderFactory->getEncoder($user);
 
         if (!$encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
@@ -171,24 +178,24 @@ class CurrentUser extends Controller\Base
                 ]
             );
         }
-
         $user->setPlainPassword($newPassword);
-        $validationResult = $this->validationService->validate($user);
-        if ($validationResult->hasErrors()) {
+        $form = $this->formFactory->create(UserType::class, $user);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+            $this->userFacade->updateUser($user);
+            $this->userRolesRebuilderService->rebuildForUser($user);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        } else {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
-                            'error' => $validationResult->getErrors(),
+                            'error' =>  $errors = $this->getErrorsFromForm($form)
                         ],
                 ]
             );
         }
-
-        $this->userFacade->updateUser($user);
-        $this->userRolesRebuilderService->rebuildForUser($user);
-
-        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use FOS\UserBundle\Model\User as BaseUser;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @CouchDB\Document
@@ -39,6 +40,16 @@ class User extends BaseUser
      * @CouchDB\Field(type="mixed")
      */
     protected $settings = [];
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $plainPassword;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $password;
 
     /**
      * @var ProjectRoles[]
@@ -82,6 +93,14 @@ class User extends BaseUser
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @Assert\IsTrue(message="New password did not match plainPassword")
+     */
+    public function isCheckPassword()
+    {
+        return ($this->password == $this->plainPassword);
     }
 
     /**
