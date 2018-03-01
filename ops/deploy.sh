@@ -9,8 +9,6 @@ export APP_ENV=prod
 export COMPOSE_FILE=ops/docker/compose/env/prod_be.yml:ops/docker/compose/env/prod_fe.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/service/video.yml:ops/docker/compose/service/front.yml:ops/docker/compose/monitoring.yml
 docker-compose config > tmp.yml
 
-#Copy environment
-docker-machine scp .env $SWARM_MASTER:/home/$SWARM_USER/
 #Copy docker stack config
 docker-machine scp tmp.yml $SWARM_MASTER:/home/$SWARM_USER/
 

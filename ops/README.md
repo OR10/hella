@@ -52,6 +52,12 @@ sudo sysctl -w vm.max_map_count=262144
 For Fedora you can permanently add line `vm.max_map_count=262144` to file `/etc/sysctl.d/99-sysctl.conf`
 For Ubuntu - to file `/etc/sysctl.conf`
 
+
+#### docker-machine
+User is not a sudoer
+
+Add line `dev ALL=(ALL) NOPASSWD: ALL` to the end of `/etc/sudoers` file.
+
 ## Backend
 
 ### how to run composer

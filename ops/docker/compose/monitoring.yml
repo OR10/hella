@@ -60,9 +60,6 @@ services:
       restart_policy:
         condition: on-failure
         delay: 30s
-      placement:
-        constraints:
-          - node.labels.elk == 1
 
   monitoring-kibana:
     image: docker.elastic.co/kibana/kibana:5.3.2
