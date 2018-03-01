@@ -42,3 +42,10 @@ services:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/video_fpm:${DOCKER_BE_TAG}
 
   ############# VIDEO PROCESSING SECTION END #############
+
+  ############# MONITORING SECTION BEGIN #############
+
+  monitoring-logstash:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}
+
+  ############# MONITORING SECTION END #############

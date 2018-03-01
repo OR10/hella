@@ -16,7 +16,6 @@ if ($notProd = ENV_NAME_PROD !== $env) {
 require_once __DIR__.'/../vendor/autoload.php';
 
 if ($notProd = ENV_NAME_PROD !== $env) {
-    ini_set('display_errors',1);
     Debug::enable();
 }
 
