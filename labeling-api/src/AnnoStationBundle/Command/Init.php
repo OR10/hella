@@ -212,86 +212,50 @@ class Init extends Base
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->clearDirectories($output)) {
-            return 1;
-        }
+            $output->writeln("clearDirectories failed");
 
-        if (!$this->initializeDatabase($output, $input->getOption('drop-database'))) {
             return 1;
         }
 
         if (!$this->initializeCouchDatabase($output)) {
+            $output->writeln("initializeCouchDatabase failed");
+
             return 1;
         }
 
         if (!$this->setupRabbitmq($output)) {
+            $output->writeln("setupRabbitmq failed");
+
             return 1;
         }
 
         if (!$this->createUsers($output)) {
+            $output->writeln("createUsers failed");
+
             return 1;
         }
 
         if (!$this->createLabelGroup($output)) {
+            $output->writeln("createLabelGroup failed");
+
             return 1;
         }
 
         if (!$this->addXmlConfiguration($output)) {
+            $output->writeln("addXmlConfiguration failed");
+
             return 1;
         }
-
-        if (!$this->downloadSampleVideo(
-            $output,
-            $input->getOption('video-base-path'),
-            $input->getOption('skip-import'),
-            $input->getOption('lossless')
-        )
-        ) {
-            return 1;
-        }
-    }
-
-    private function initializeDatabase(OutputInterface $output, $dropDatabase)
-    {
-        $this->writeSection($output, 'Initializing database');
-
-        if ($dropDatabase) {
-            $this->writeVerboseInfo($output, 'dropping database');
-            if (!$this->runCommand(
-                $output,
-                'doctrine:database:drop',
-                [
-                    '--force'     => true,
-                    '--if-exists' => true,
-                ]
-            )
-            ) {
-                return false;
-            }
-
-            $this->writeVerboseInfo($output, 'creating database');
-            if (!$this->runCommand($output, 'doctrine:database:create')) {
-                return false;
-            }
-        } else {
-            $this->writeVerboseInfo($output, 'dropping database schema');
-            if (!$this->runCommand(
-                $output,
-                'doctrine:schema:drop',
-                [
-                    '--force' => true,
-                ]
-            )
-            ) {
-                return false;
-            }
-        }
-
-        $this->writeVerboseInfo($output, 'creating database schema');
-        if (!$this->runCommand($output, 'doctrine:schema:create')) {
-            return false;
-        }
-
-        return true;
+        //Disabled because it is broken for more than 1 year
+//        if (!$this->downloadSampleVideo(
+//            $output,
+//            $input->getOption('video-base-path'),
+//            $input->getOption('skip-import'),
+//            $input->getOption('lossless')
+//        )
+//        ) {
+//            return 1;
+//        }
     }
 
     private function initializeCouchDatabase(OutputInterface $output)
@@ -411,7 +375,7 @@ class Init extends Base
 
     private function createLabelGroup(OutputInterface $output)
     {
-        if (!isset($this->users['label_manager']) || !isset($this->users['user'])) {
+        if (!isset($this->users['label_manager'])) {
             return false;
         }
 
@@ -503,6 +467,8 @@ class Init extends Base
         $this->taskConfigurationFacade->save($config);
 
         $this->writeSection($output, 'Added new Sample Task Configuration for the LabelManager User');
+
+        return true;
     }
 
     private function downloadSampleVideo(OutputInterface $output, string $videoBasePath, $skipImport, $lossless)

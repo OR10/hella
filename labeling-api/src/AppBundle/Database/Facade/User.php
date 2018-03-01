@@ -217,7 +217,7 @@ class User
             array_filter(
                 $users,
                 function (Model\User $user) {
-                    if ($user->isLocked()) {
+                    if (!$user->isAccountNonLocked()) {
                         return false;
                     }
 
@@ -253,7 +253,7 @@ class User
             $users = array_filter(
                 $users,
                 function (Model\User $user) {
-                    if ($user->isLocked()) {
+                    if (!$user->isAccountNonLocked()) {
                         return false;
                     }
 

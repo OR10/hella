@@ -154,7 +154,7 @@ class VideoImporter
         foreach ($imageTypes as $imageTypeName) {
             $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),
-                $video->getSourceVideoPath(),
+                $videoFilePath,
                 ImageType\Base::create($imageTypeName)
             );
 

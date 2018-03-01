@@ -9,14 +9,16 @@
     },
     "require": {
         "php": ">=7.0",
-        "symfony/symfony": "2.7.*",
+        "symfony/symfony": "2.8.*",
+        "symfony/config": "~2.8",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.20",
-        "friendsofsymfony/user-bundle": "~2.0@dev",
-        "symfony/swiftmailer-bundle": "~2.3",
+        "friendsofsymfony/user-bundle": "2.0.0-alpha3",
+        "swiftmailer/swiftmailer": "dev-master",
+        "symfony/swiftmailer-bundle": "~3.2.0",
         "doctrine/couchdb": "dev-master",
         "doctrine/couchdb-odm": "dev-master",
         "doctrine/couchdb-odm-bundle": "dev-master",
@@ -26,6 +28,7 @@
         "oneup/flysystem-bundle": "@stable",
         "crosscan/worker-pool": "@dev",
         "mlehner/gelf-php": "dev-master",
+        "sensio/generator-bundle": "~2.3",
         "crosscan/logger": "@dev",
         "crosscan/php-stdlib": "@dev",
         "qafoolabs/profiler": "dev-master",
@@ -34,7 +37,7 @@
         "phake/phake": "dev-master",
         "snc/redis-bundle": "dev-master",
         "predis/predis": "^1.0",
-        "guzzlehttp/guzzle": "^6.2",
+        "guzzlehttp/guzzle": "6.3.0",
         "hco/phar-installer-plugin": "^0.1.3",
         "league/flysystem-aws-s3-v3": "^1.0",
         "flowjs/flow-php-server": "^1.0",
@@ -45,7 +48,6 @@
         "beberlei/assert": "^2.7"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "~5",
         "toolphar/phpcs": "2.0.0RC1",
         "phpmd/phpmd": "~1.5",
@@ -97,7 +99,6 @@
     },
     "extra": {
         "symfony-app-dir": "app/AnnoStation",
-        "symfony-web-dir": "web/AnnoStation",
-        "symfony-assets-install": "relative"
+        "symfony-web-dir": "web/AnnoStation"
     }
 }

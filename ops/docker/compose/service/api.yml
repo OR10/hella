@@ -1,0 +1,325 @@
+version: "3.1"
+
+services:
+  api-nginx:
+    build:
+      dockerfile: 'ops/docker/api/nginx/Dockerfile'
+      context: ../../../../
+    depends_on:
+        - api-fpm
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api == 1
+
+  api-fpm:
+    build:
+      dockerfile: 'ops/docker/api/fpm/Dockerfile'
+      context: ../../../../
+    depends_on:
+      - api-couchdb
+      - api-redis
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api == 1
+
+  api-workerpool-low:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: on-failure
+    command: app/AnnoStation/console annostation:workerpool:starter low
+    depends_on:
+      - api-couchdb
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+
+  api-workerpool-normallow:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: on-failure
+    command: app/AnnoStation/console annostation:workerpool:starter normal low
+    depends_on:
+      - api-couchdb
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+
+  api-workerpool-normal:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: on-failure
+    command: app/AnnoStation/console annostation:workerpool:starter normal
+    depends_on:
+      - api-couchdb
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+
+  api-workerpool-high:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+    restart: on-failure
+    command: app/AnnoStation/console annostation:workerpool:starter high
+    depends_on:
+      - api-couchdb
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+
+  api-cron:
+    build:
+      dockerfile: 'ops/docker/api/cron/Dockerfile'
+      context: ../../../../
+    restart: on-failure
+    command: bash -c "service cron start && tail -f /dev/null"
+    depends_on:
+      - api-couchdb
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
+      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
+      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_cron == 1
+
+  api-couchdb:
+    image: couchdb:1.7
+    environment:
+      - COUCHDB_USER=${COUCHDB_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
+    healthcheck:
+      test: "curl -f -s http://localhost:5984/_users || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 6
+#      start_period: 2s
+    restart: on-failure
+    ports:
+      - 5984:5984
+    volumes:
+      - api_couchdb_dbdata:/opt/couchdb/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_db == 1
+
+  api-redis:
+    image: redis
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.api_redis == 1
+
+
+volumes:
+    api_couchdb_dbdata:
+      driver: local

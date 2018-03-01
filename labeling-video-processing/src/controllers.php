@@ -8,9 +8,11 @@ use Symfony\Component\Process\Process;
 $app->get('/', function (Request $request) use ($app) {
 
     $frameSizesInBytes = $app['VideoFrameSplitter']->splitVideoInFrames(
-        (int)$request->query->get('videoId'),
+        (string)$request->query->get('videoId'),
+        (string)$request->query->get('videoName'),
         $request->query->get('sourceFileFilename'),
-        $request->query->get('type')
+        $request->query->get('type'),
+        $app['cacheDirectory']
     );
     $imageSizes = $app['VideoFrameSplitter']->getImageSizes();
 
@@ -18,7 +20,6 @@ $app->get('/', function (Request $request) use ($app) {
         'frame' => $frameSizesInBytes,
         'image' => $imageSizes
     );
-
 
     return new JsonResponse($frameSizesInBytes);
 });

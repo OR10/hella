@@ -1,0 +1,51 @@
+version: "3.1"
+
+services:
+  proxy:
+    # ADD image option like this for pushing image to registry or docker hub
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/proxy:${DOCKER_BE_TAG}
+    ports:
+      - 80:80
+
+  ############# API SECTION BEGIN #############
+
+  api-nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_nginx:${DOCKER_BE_TAG}
+
+  api-fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_fpm:${DOCKER_BE_TAG}
+
+  api-workerpool-low:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-normallow:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-normal:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-high:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-cron:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cron:${DOCKER_BE_TAG}
+
+  ############# API SECTION END #############
+
+
+  ############# VIDEO PROCESSING SECTION BEGIN #############
+
+  video-nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_nginx:${DOCKER_BE_TAG}
+
+  video-fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_fpm:${DOCKER_BE_TAG}
+
+  ############# VIDEO PROCESSING SECTION END #############
+
+  ############# MONITORING SECTION BEGIN #############
+
+  monitoring-logstash:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}
+
+  ############# MONITORING SECTION END #############

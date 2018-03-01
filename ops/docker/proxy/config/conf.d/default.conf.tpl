@@ -1,0 +1,90 @@
+server {
+    listen 80;
+    server_name _;
+
+    client_max_body_size 512M;
+
+    access_log /dev/stdout combined;
+    error_log  /dev/stdout debug;
+
+    rewrite_log on;
+
+    location /s3 {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
+        proxy_pass       https://s3.eu-central-1.amazonaws.com/hella-frame-cdn;
+        #    proxy_set_header Host      $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /couch/ {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
+        proxy_pass       http://api-couchdb:5984/;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    ######## FE Angular start ########
+    location /labeling {
+        rewrite_log on;
+        proxy_pass http://front/labeling;
+    }
+    ######## FE Angular end ########
+
+    ######## API monolith start ########
+    location / {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
+        rewrite_log on;
+        proxy_pass http://api-nginx/;
+    }
+
+    location _profiler {
+        rewrite_log on;
+        proxy_pass http://api-nginx/;
+    }
+
+    location /api {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' '*';
+        add_header 'Access-Control-Max-Age' '1728000';
+
+        if ($request_method = OPTIONS ) {
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
+        rewrite_log on;
+        proxy_pass http://api-nginx/api;
+    }
+    ######## API monolith end ########
+}

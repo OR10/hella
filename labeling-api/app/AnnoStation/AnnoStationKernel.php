@@ -42,22 +42,4 @@ class AnnoStationKernel extends Kernel
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
-
-    function getCacheDir()
-    {
-        if (in_array($this->environment, array('dev', 'test'))) {
-            return '/dev/shm/labeling_api/cache/' .  $this->environment;
-        }
-
-        return parent::getCacheDir();
-    }
-
-    public function getLogDir()
-    {
-        if (in_array($this->environment, array('dev', 'test'))) {
-            return '/dev/shm/labeling_api/logs';
-        }
-
-        return parent::getLogDir();
-    }
 }

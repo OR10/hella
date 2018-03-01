@@ -1,0 +1,45 @@
+version: "3.1"
+
+services:
+
+  proxy:
+    build:
+      dockerfile: 'ops/docker/proxy/Dockerfile'
+      context: ../../../../
+    depends_on:
+      - api-nginx
+#      - front disabled for separate BE and FE build
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.proxy == 1
+
+  rmq:
+    image: rabbitmq:management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: "rabbitmqctl status || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 6
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rmq_data:/var/lib/rabbitmq
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.dd == 1
+
+volumes:
+  rmq_data:
+    driver: local

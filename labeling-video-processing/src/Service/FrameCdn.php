@@ -2,7 +2,7 @@
 
 namespace Service;
 
-abstract class FrameCdn
+class FrameCdn extends S3Cmd
 {
     /**
      * @var bool
@@ -10,24 +10,18 @@ abstract class FrameCdn
     protected $transactionInProgress;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $transactionVideo;
 
-    public function __construct()
-    {
-        $this->transactionInProgress = false;
-        $this->transactionVideo      = null;
-    }
-
     /**
-     * @param int $videoId
+     * @param string $videoId
      *
      * @return void
      *
      * @throws \RuntimeException
      */
-    public function beginBatchTransaction(int $videoId)
+    public function beginBatchTransaction(string $videoId)
     {
         if ($this->transactionInProgress === true) {
             throw new \RuntimeException('A frame cdn storage transaction is already in progress');
@@ -35,6 +29,8 @@ abstract class FrameCdn
 
         $this->transactionInProgress = true;
         $this->transactionVideo      = $videoId;
+
+        parent::beginBatchTransaction($videoId);
     }
 
     /**
@@ -50,6 +46,8 @@ abstract class FrameCdn
 
         $this->transactionInProgress = false;
         $this->transactionVideo      = null;
+
+        parent::commit();
     }
 
 }
