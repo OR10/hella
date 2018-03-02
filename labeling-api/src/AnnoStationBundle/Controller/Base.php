@@ -41,17 +41,31 @@ abstract class Base
      */
     protected function getErrorsFromForm(FormInterface $form)
     {
-        $errors = array();
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
+        $errors = [];
+
+        $eCounter = 0;
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[$eCounter]['field'] = '';
+            $errors[$eCounter]['message'] = $error->getMessage();;
+            $eCounter ++;
         }
+
+        $counter=0;
         foreach ($form->all() as $childForm) {
             if ($childForm instanceof FormInterface) {
                 if ($childErrors = $this->getErrorsFromForm($childForm)) {
-                    $errors[$childForm->getName()] = $childErrors;
+                    if(is_array($childErrors)) {
+                        $errors[$counter]['field'] = $childForm->getName();
+                        $errors[$counter]['message'] = $childErrors[0];
+                    } else {
+                        $errors[$counter]['field'] = $childForm->getName();
+                        $errors[$counter]['message'] = $childErrors;
+                    }
+                    $counter++;
                 }
             }
         }
+
         return $errors;
     }
 }

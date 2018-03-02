@@ -159,18 +159,19 @@ class CurrentUser extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-        $oldPassword = $request->request->get('password');
-        $newPassword = $request->request->get('plainPassword');
+        $userParam = [];
+        $userParam['password'] = $request->request->get('oldPassword');
+        $userParam['plainPassword'] = $request->request->get('newPassword');
         $encoder = $this->encoderFactory->getEncoder($user);
 
-        if (!$encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
+        if (!$encoder->isPasswordValid($user->getPassword(), $userParam['password'], $user->getSalt())) {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
                             'error' => [
                                 [
-                                    'field'   => 'password',
+                                    'field'   => 'newPassword',
                                     'message' => 'Failed to save the new password. The current password is not correct',
                                 ],
                             ],
@@ -179,22 +180,23 @@ class CurrentUser extends Controller\Base
             );
         }
 
-        $user->setPlainPassword($newPassword);
+        $user->setPlainPassword($userParam['plainPassword']);
         /** validate request */
         $form = $this->formFactory->create(CurrentUserType::class, $user);
-        $form->submit($request->request->all());
+        $form->submit($userParam);
         if ($form->isValid()) {
             $this->userFacade->updateUser($user);
             $this->userRolesRebuilderService->rebuildForUser($user);
 
             return View\View::create()->setData(['result' => ['success' => true]]);
         } else {
+            $errors = $this->getErrorsFromForm($form);
 
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
-                            'error' =>  $errors = $this->getErrorsFromForm($form)
+                            'error' =>  $errors
                         ],
                 ]
             );
