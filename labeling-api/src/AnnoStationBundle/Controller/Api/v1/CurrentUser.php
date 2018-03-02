@@ -64,11 +64,6 @@ class CurrentUser extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
-     * @var FormFactory
-     */
-    private $formFactory;
-
-    /**
      * CurrentUser constructor.
      *
      * @param Storage\TokenStorage                 $tokenStorage
@@ -78,7 +73,6 @@ class CurrentUser extends Controller\Base
      * @param Authentication\UserPermissions       $currentUserPermissions
      * @param Validation\ValidationService         $validationService
      * @param Service\UserRolesRebuilder           $userRolesRebuilderService
-     * @param FormFactory                          $userType
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -87,8 +81,7 @@ class CurrentUser extends Controller\Base
         AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions,
         Validation\ValidationService $validationService,
-        Service\UserRolesRebuilder $userRolesRebuilderService,
-        FormFactory $formFactory
+        Service\UserRolesRebuilder $userRolesRebuilderService
     ) {
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
@@ -97,7 +90,6 @@ class CurrentUser extends Controller\Base
         $this->organisation              = $organisation;
         $this->validationService         = $validationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
-        $this->formFactory               = $formFactory;
     }
 
     /**
@@ -182,38 +174,22 @@ class CurrentUser extends Controller\Base
 
         $user->setPlainPassword($userParam['plainPassword']);
         /** validate request */
-        $form = $this->formFactory->create(CurrentUserType::class, $user);
-        $form->submit($userParam);
-        if ($form->isValid()) {
-
-            $validationResult = $this->validationService->validate($user);
-            if ($validationResult->hasErrors()) {
-                return View\View::create()->setData(
-                    [
-                        'result' =>
-                            [
-                                'error' => $validationResult->getErrors(),
-                            ],
-                    ]
-                );
-            }
-
-            $this->userFacade->updateUser($user);
-            $this->userRolesRebuilderService->rebuildForUser($user);
-
-            return View\View::create()->setData(['result' => ['success' => true]]);
-        } else {
-            $errors = $this->getErrorsFromForm($form);
-
+        $validationResult = $this->validationService->validate($user);
+        if ($validationResult->hasErrors()) {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
-                            'error' =>  $errors
+                            'error' => $validationResult->getErrors(),
                         ],
                 ]
             );
         }
+
+        $this->userFacade->updateUser($user);
+        $this->userRolesRebuilderService->rebuildForUser($user);
+
+        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**

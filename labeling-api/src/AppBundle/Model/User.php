@@ -42,16 +42,6 @@ class User extends BaseUser
     protected $settings = [];
 
     /**
-     * @Assert\NotBlank()
-     */
-    protected $plainPassword;
-
-    /**
-     * @Assert\NotBlank()
-     */
-    protected $password;
-
-    /**
      * @var ProjectRoles[]
      *
      * @CouchDB\EmbedMany(targetDocument="ProjectRoles")

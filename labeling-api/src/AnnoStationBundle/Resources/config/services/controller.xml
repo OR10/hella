@@ -188,7 +188,6 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.service.validation"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
-            <argument type="service" id="form.factory"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project_count"

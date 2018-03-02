@@ -10,3 +10,6 @@ msgstr "This value should contain at least one special character."
 
 msgid "validator.uppercase.required"
 msgstr "This value should contain at least one uppercase character."
+
+msgid "validator.minlength.required"
+msgstr "Field can not be empty"
