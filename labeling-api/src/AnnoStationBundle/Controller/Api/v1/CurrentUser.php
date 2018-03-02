@@ -185,6 +185,19 @@ class CurrentUser extends Controller\Base
         $form = $this->formFactory->create(CurrentUserType::class, $user);
         $form->submit($userParam);
         if ($form->isValid()) {
+
+            $validationResult = $this->validationService->validate($user);
+            if ($validationResult->hasErrors()) {
+                return View\View::create()->setData(
+                    [
+                        'result' =>
+                            [
+                                'error' => $validationResult->getErrors(),
+                            ],
+                    ]
+                );
+            }
+
             $this->userFacade->updateUser($user);
             $this->userRolesRebuilderService->rebuildForUser($user);
 

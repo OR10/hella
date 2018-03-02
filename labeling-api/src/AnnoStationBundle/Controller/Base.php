@@ -43,20 +43,19 @@ abstract class Base
     {
         $errors = [];
 
-        $eCounter = 0;
+        $counter = 0;
         foreach ($form->getErrors() as $key => $error) {
-            $errors[$eCounter]['field'] = '';
-            $errors[$eCounter]['message'] = $error->getMessage();;
-            $eCounter ++;
+            $errors[$counter]['field'] = '';
+            $errors[$counter]['message'] = $error->getMessage();;
+            $counter ++;
         }
 
-        $counter=0;
         foreach ($form->all() as $childForm) {
             if ($childForm instanceof FormInterface) {
                 if ($childErrors = $this->getErrorsFromForm($childForm)) {
                     if(is_array($childErrors)) {
                         $errors[$counter]['field'] = $childForm->getName();
-                        $errors[$counter]['message'] = $childErrors[0];
+                        $errors[$counter]['message'] = (isset($childErrors[0]['message'])) ? $childErrors[0]['message'] : $childErrors[0];
                     } else {
                         $errors[$counter]['field'] = $childForm->getName();
                         $errors[$counter]['message'] = $childErrors;

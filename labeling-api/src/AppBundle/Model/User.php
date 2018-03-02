@@ -96,14 +96,6 @@ class User extends BaseUser
     }
 
     /**
-     * @Assert\IsTrue(message="New password did not match plainPassword")
-     */
-    public function isCheckPassword()
-    {
-        return ($this->password == $this->plainPassword);
-    }
-
-    /**
      * @param array $roles
      *
      * @return bool
