@@ -178,7 +178,9 @@ class CurrentUser extends Controller\Base
                 ]
             );
         }
+
         $user->setPlainPassword($newPassword);
+        /** validate request */
         $form = $this->formFactory->create(UserType::class, $user);
         $form->submit($request->request->all());
         if ($form->isValid()) {
@@ -187,6 +189,7 @@ class CurrentUser extends Controller\Base
 
             return View\View::create()->setData(['result' => ['success' => true]]);
         } else {
+
             return View\View::create()->setData(
                 [
                     'result' =>
