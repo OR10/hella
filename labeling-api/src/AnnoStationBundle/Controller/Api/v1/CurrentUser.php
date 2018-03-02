@@ -2,7 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1;
 
-use AnnoStationBundle\Type\UserType;
+use AnnoStationBundle\Type\CurrentUserType;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
@@ -181,7 +181,7 @@ class CurrentUser extends Controller\Base
 
         $user->setPlainPassword($newPassword);
         /** validate request */
-        $form = $this->formFactory->create(UserType::class, $user);
+        $form = $this->formFactory->create(CurrentUserType::class, $user);
         $form->submit($request->request->all());
         if ($form->isValid()) {
             $this->userFacade->updateUser($user);
