@@ -155,7 +155,18 @@ class Status extends Controller\Base
                     $status[Model\LabelingTask::STATUS_IN_PROGRESS] > 0 ||
                     $status[Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION] > 0
                 ) {
-                    throw new Exception\BadRequestHttpException('Project has incomplete tasks');
+                    return View\View::create()->setData(
+                        [
+                            'result' =>
+                                [
+                                    'error' => [
+                                        [
+                                            'message' => 'Project has incomplete tasks',
+                                        ],
+                                    ],
+                                ],
+                        ]
+                    );
                 }
             }
         }
