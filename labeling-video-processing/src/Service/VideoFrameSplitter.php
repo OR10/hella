@@ -54,8 +54,8 @@ class VideoFrameSplitter
      * @param Flysystem\Filesystem $fileSystem
      */
     public function __construct(
-        Service\FrameCdn $frameCdn,
-        Service\VideoCdn $videoCdn,
+        $frameCdn,
+        $videoCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {

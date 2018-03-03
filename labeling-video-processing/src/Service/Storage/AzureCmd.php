@@ -1,20 +1,16 @@
 <?php
 
-namespace Service;
+namespace Service\Storage;
 
 use Model;
 use League\Flysystem\Adapter;
 use League\Flysystem\Filesystem;
+use Service\Azure;
 
-class S3Cmd
+class AzureCmd
 {
     /**
-     * @var string
-     */
-    protected $frameCdnBaseUrl;
-
-    /**
-     * @var Cmd
+     * @var Azure
      */
     private $s3CmdCdn;
 
@@ -36,17 +32,13 @@ class S3Cmd
     /**
      * Cdn constructor.
      *
-     * @param string        $frameCdnBaseUrl
      * @param string        $cacheDirectory
-     * @param Cmd $s3CmdCdn
+     * @param Azure $s3CmdCdn
      */
     public function __construct(
-        $frameCdnBaseUrl,
         $cacheDirectory,
-        Cmd $s3CmdCdn
+        Azure $s3CmdCdn
     ) {
-
-        $this->frameCdnBaseUrl = $frameCdnBaseUrl;
         $this->s3CmdCdn        = $s3CmdCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
@@ -64,9 +56,9 @@ class S3Cmd
     {
         return $this->s3CmdCdn->getFile($fileSourcePath);
     }
-    
+
     /**
-     * 
+     *
      * @param string $videoId
      */
     public function beginBatchTransaction(string $videoId)
@@ -112,7 +104,7 @@ class S3Cmd
     }
 
     /**
-     * 
+     *
      * @throws \RuntimeException
      */
     public function commit()

@@ -13,7 +13,9 @@
         "microsoft/azure-storage-blob": "*"
     },
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "": "src/",
+                   "Service\\Storage": "src/Storage/"
+        }
     },
     "extra": {
         "branch-alias": {
