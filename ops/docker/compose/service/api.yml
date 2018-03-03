@@ -301,7 +301,7 @@ services:
     ports:
       - 5984:5984
     volumes:
-      - api_couchdb_dbdata:/opt/couchdb/data
+      - api_couchdb_dbdata:/usr/local/var/lib/couchdb
     deploy:
       restart_policy:
         condition: on-failure
@@ -312,6 +312,8 @@ services:
   api-redis:
     image: redis
     restart: on-failure
+    volumes:
+      - api_redis_dbdata:/data
     deploy:
       restart_policy:
         condition: on-failure
@@ -322,4 +324,6 @@ services:
 
 volumes:
     api_couchdb_dbdata:
+      driver: local
+    api_redis_dbdata:
       driver: local
