@@ -11,6 +11,7 @@ use AnnoStationBundle\Response;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
 use AppBundle\Model;
+use AppBundle\Service\Validation\ValidationService;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
@@ -57,13 +58,19 @@ class Organisation extends Controller\Base
      */
     private $userPermissions;
 
+    /**
+     * @var ValidationService
+     */
+    private $validationService;
+
     public function __construct(
         Facade\Organisation $organisationFacade,
         Facade\Video $videoFacade,
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService,
-        Authentication\UserPermissions $userPermissions
+        Authentication\UserPermissions $userPermissions,
+        ValidationService $validationService
     ) {
         $this->organisationFacade   = $organisationFacade;
         $this->tokenStorage         = $tokenStorage;
@@ -71,6 +78,7 @@ class Organisation extends Controller\Base
         $this->projectFacade        = $projectFacade;
         $this->authorizationService = $authorizationService;
         $this->userPermissions      = $userPermissions;
+        $this->validationService    = $validationService;
     }
 
     /**
@@ -149,6 +157,18 @@ class Organisation extends Controller\Base
             $organisation->setQuota($quota);
         }
         $organisation->setUserQuota($userQuota);
+        /** validation */
+        $validationResult = $this->validationService->validate($organisation);
+        if ($validationResult->hasErrors()) {
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => $validationResult->getErrors(),
+                        ],
+                ]
+            );
+        }
         $this->organisationFacade->save($organisation);
 
         return new View\View(['result' => $organisation]);
