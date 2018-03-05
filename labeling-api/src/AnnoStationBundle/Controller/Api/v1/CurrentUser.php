@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1;
 
+use AnnoStationBundle\Type\CurrentUserType;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
-
+use Symfony\Component\Form\FormFactory;
 /**
  * @Version("v1")
  * @Rest\Prefix("/api/{version}/currentUser")
@@ -150,20 +151,19 @@ class CurrentUser extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-
-        $oldPassword = $request->request->get('oldPassword');
-        $newPassword = $request->request->get('newPassword');
-
+        $userParam = [];
+        $userParam['password'] = $request->request->get('oldPassword');
+        $userParam['plainPassword'] = $request->request->get('newPassword');
         $encoder = $this->encoderFactory->getEncoder($user);
 
-        if (!$encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
+        if (!$encoder->isPasswordValid($user->getPassword(), $userParam['password'], $user->getSalt())) {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
                             'error' => [
                                 [
-                                    'field'   => 'password',
+                                    'field'   => 'newPassword',
                                     'message' => 'Failed to save the new password. The current password is not correct',
                                 ],
                             ],
@@ -172,7 +172,8 @@ class CurrentUser extends Controller\Base
             );
         }
 
-        $user->setPlainPassword($newPassword);
+        $user->setPlainPassword($userParam['plainPassword']);
+        /** validate request */
         $validationResult = $this->validationService->validate($user);
         if ($validationResult->hasErrors()) {
             return View\View::create()->setData(

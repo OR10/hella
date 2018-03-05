@@ -1,3 +1,4 @@
+
 msgid "validator.password.confirm.invalid"
 msgstr "The current password is invalid"
 
@@ -15,3 +16,6 @@ msgstr "Username is not unique."
 
 msgid "validator.user.organisation.quota"
 msgstr "You reached your user limit of %limit% for organisation %name%"
+
+msgid "validator.minlength.required"
+msgstr "Field can not be empty"
