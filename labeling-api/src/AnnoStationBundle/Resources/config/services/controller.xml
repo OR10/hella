@@ -258,6 +258,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.service.validation"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.campaign" class="AnnoStationBundle\Controller\Api\v1\Organisation\Campaign">

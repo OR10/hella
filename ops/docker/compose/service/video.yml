@@ -1,12 +1,12 @@
 version: "3.1"
 
 services:
-  video_nginx:
+  video-nginx:
     build:
       dockerfile: 'ops/docker/video/nginx/Dockerfile'
       context: ../../../../
     depends_on:
-        - video_fpm
+        - video-fpm
     deploy:
       restart_policy:
         condition: on-failure
@@ -14,7 +14,7 @@ services:
         constraints:
           - node.labels.video == 1
 
-  video_fpm:
+  video-fpm:
     build:
       dockerfile: 'ops/docker/video/fpm/Dockerfile'
       context: ../../../../

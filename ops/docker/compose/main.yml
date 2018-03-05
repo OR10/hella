@@ -7,7 +7,7 @@ services:
       dockerfile: 'ops/docker/proxy/Dockerfile'
       context: ../../../../
     depends_on:
-      - api_nginx
+      - api-nginx
 #      - front disabled for separate BE and FE build
     restart: on-failure
     deploy:
@@ -22,6 +22,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - HOSTNAME=localhost
+      - NODENAME=rabbit@localhost
     healthcheck:
       test: "rabbitmqctl status || exit 1"
       interval: 5s

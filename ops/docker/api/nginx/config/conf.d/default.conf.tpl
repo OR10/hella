@@ -25,7 +25,7 @@ server {
         root          /code/web/AnnoStation;
         include       /etc/nginx/fastcgi_params;
 
-        fastcgi_pass  api_fpm:9000;
+        fastcgi_pass  api-fpm:9000;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 3600;
         rewrite_log on;
@@ -35,7 +35,7 @@ server {
         root          /code/web/AnnoStation;
         include       /etc/nginx/fastcgi_params;
 
-        fastcgi_pass  api_fpm:9000;
+        fastcgi_pass  api-fpm:9000;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 3600;
 
