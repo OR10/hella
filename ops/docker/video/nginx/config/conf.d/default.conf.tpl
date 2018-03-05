@@ -17,7 +17,7 @@ server {
     # If you have 2 front controllers for dev|prod use the following line instead
     location ~ ^/(index|index_dev)\.php(/|$) {
     #location ~ ^/index\.php(/|$) {
-        fastcgi_pass  video_fpm:9000;
+        fastcgi_pass  video-fpm:9000;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

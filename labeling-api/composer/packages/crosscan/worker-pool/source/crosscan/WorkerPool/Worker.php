@@ -64,6 +64,9 @@ class Worker
         $startTimestamp = time();
 
         while ($this->running) {
+            //trying to fix CPU loading on empty queue
+            usleep(50);
+
             $this->newRelicWrapper->startTransaction("Crosscan\\WorkerPool\\Worker::work_JobPreparation", true);
             $this->eventHandler->beforeJob();
             $cycle++;

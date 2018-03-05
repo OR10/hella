@@ -8,7 +8,7 @@ export APP_ENV=prod
 export REGISTRY_URL=docker.io
 
 docker-compose stop
-docker-compose build maintenance_node
+docker-compose build maintenance-node
 
 #TODO: run tests
 
@@ -16,10 +16,10 @@ docker-compose build maintenance_node
 #TODO: !!!!Would you like to set up your GitHub credentials?    !!!!
 
 #Build yarn
-docker-compose run --rm maintenance_node yarn
+docker-compose run --rm maintenance-node yarn
 
 #Build gulp
-docker-compose run --rm maintenance_node gulp
+docker-compose run --rm maintenance-node gulp
 
 #Create symlinc for nginx
 cd labeling-ui && ln -sf Distribution labeling && cd ..

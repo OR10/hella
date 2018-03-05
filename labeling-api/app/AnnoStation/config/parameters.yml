@@ -1,12 +1,12 @@
 # This file is auto-generated during the composer install
 parameters:
-    video_processing_host: http://video_nginx
+    video_processing_host: http://video-nginx
     cache_dir: /code/app/AnnoStation/cache/labeling_api/
 
     database_name: labeling_api
     database_name_read_only: labeling_api
 
-    couchdb_host: api_couchdb
+    couchdb_host: api-couchdb
     couchdb_host_external: %couchdb.host.external%
     couchdb_port: 5984
     couchdb_port_external: 80
@@ -81,7 +81,7 @@ parameters:
     rabbitmq_use_dead_letter_exchange: true
     rabbitmq_management_port: 15672
 
-    redis_host: api_redis
+    redis_host: api-redis
     redis_port: 6379
 
 oneup_flysystem:
