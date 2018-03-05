@@ -3,6 +3,7 @@ namespace AnnoStationBundle\Controller;
 
 use AppBundle\Annotations\CloseSession;
 use AppBundle\Model;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session;
 
 /**
