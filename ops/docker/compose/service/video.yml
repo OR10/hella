@@ -8,11 +8,14 @@ services:
     depends_on:
         - video-fpm
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.video == 1
+      resources:
+        limits:
+          cpus: '0.75'
+      restart_policy:
+        condition: on-failure
 
   video-fpm:
     build:
@@ -28,9 +31,12 @@ services:
       - S3_BUCKET_FRAME
       - S3_BUCKET_VIDEO
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.video == 1
+      resources:
+        limits:
+          cpus: '0.75'
+      restart_policy:
+        condition: on-failure
 

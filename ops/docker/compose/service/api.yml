@@ -52,11 +52,14 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api == 1
+      resources:
+        limits:
+          cpus: '0.5'
+      restart_policy:
+        condition: on-failure
 
   api-workerpool-low:
     build:
@@ -97,11 +100,14 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_worker == 1
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: on-failure
 
   api-workerpool-normallow:
     build:
@@ -142,12 +148,15 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      replicas: 4
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: on-failure
 
   api-workerpool-normal:
     build:
@@ -188,12 +197,15 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      replicas: 4
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: on-failure
 
   api-workerpool-high:
     build:
@@ -234,12 +246,15 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: on-failure
 
   api-cron:
     build:
@@ -280,11 +295,14 @@ services:
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_cron == 1
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: on-failure
 
   api-couchdb:
     image: couchdb:1.7
@@ -303,11 +321,14 @@ services:
     volumes:
       - api_couchdb_dbdata:/usr/local/var/lib/couchdb
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_db == 1
+      resources:
+        limits:
+          cpus: '0.8'
+      restart_policy:
+        condition: on-failure
 
   api-redis:
     image: redis
@@ -315,11 +336,14 @@ services:
     volumes:
       - api_redis_dbdata:/data
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.api_redis == 1
+      resources:
+        limits:
+          cpus: '0.4'
+      restart_policy:
+        condition: on-failure
 
 
 volumes:

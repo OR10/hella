@@ -10,6 +10,9 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+      resources:
+        limits:
+          cpus: '0.2'
 
   monitoring-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
@@ -25,10 +28,13 @@ services:
     ports:
       - 9200:9200
     deploy:
-      replicas: 1
       placement:
         constraints:
           - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.2'
 
   monitoring-logstash:
     build:
@@ -39,10 +45,13 @@ services:
     ports:
       - 5044:5044
     deploy:
-      replicas: 1
       placement:
         constraints:
           - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.2'
 
   monitoring-logspout:
     image: bekt/logspout-logstash
@@ -60,6 +69,9 @@ services:
       restart_policy:
         condition: on-failure
         delay: 30s
+      resources:
+        limits:
+          cpus: '0.2'
 
   monitoring-kibana:
     image: docker.elastic.co/kibana/kibana:5.3.2
@@ -72,10 +84,13 @@ services:
       XPACK_SECURITY_ENABLED: 'false'
       XPACK_MONITORING_ENABLED: 'false'
     deploy:
-      replicas: 1
       placement:
         constraints:
           - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.4'
 
 volumes:
   esdata:

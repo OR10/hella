@@ -36,11 +36,14 @@ services:
       - rmq_data:/var/lib/rabbitmq
     restart: on-failure
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.rmq == 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.4'
 
 volumes:
   rmq_data:
