@@ -12,6 +12,7 @@ parameters:
     Length:
       min: 5
       max: 500
+    NotBlank: true
 
 doctrine_couch_db: &doctrine_couch_db
     odm:

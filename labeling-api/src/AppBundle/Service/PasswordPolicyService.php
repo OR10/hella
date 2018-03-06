@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 use AppBundle\Service\Validation\Constraints\AtLeastOneDigit;
 use AppBundle\Service\Validation\Constraints\AtLeastOneSpecialCharacter;
 use AppBundle\Service\Validation\Constraints\AtLeastOneUpperCaseCharacter;
+use AppBundle\Service\Validation\Constraints\MinLength;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Length;
 
@@ -48,6 +49,8 @@ class PasswordPolicyService
                 case "AtLeastOneUpperCaseCharacter":
                     $constraints[] = new AtLeastOneUpperCaseCharacter();
                     break;
+                case "NotBlank":
+                    $constraints[] = new MinLength();
             }
         }
 

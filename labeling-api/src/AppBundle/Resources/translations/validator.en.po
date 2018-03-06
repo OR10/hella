@@ -10,8 +10,14 @@ msgstr "This value should contain at least one special character."
 msgid "validator.uppercase.required"
 msgstr "This value should contain at least one uppercase character."
 
+msgid "validator.minlength.required"
+msgstr "Field can not be empty"
+
 msgid "validator.username.unique.invalid"
 msgstr "Username is not unique."
 
 msgid "validator.user.organisation.quota"
 msgstr "You reached your user limit of %limit% for organisation %name%"
+
+msgid "validator.minlength.required"
+msgstr "Field can not be empty"

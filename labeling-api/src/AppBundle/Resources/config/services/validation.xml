@@ -41,5 +41,10 @@
             <tag name="data.validator"/>
         </service>
 
+        <service id="annostation.labeling_api.validator.organisation"
+                 class="AppBundle\Service\Validation\Validators\OrganisationValidator">
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
     </services>
 </container>

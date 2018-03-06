@@ -22,6 +22,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - HOSTNAME=localhost
+      - NODENAME=rabbit@localhost
     healthcheck:
       test: "rabbitmqctl status || exit 1"
       interval: 5s
@@ -34,11 +36,14 @@ services:
       - rmq_data:/var/lib/rabbitmq
     restart: on-failure
     deploy:
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
-          - node.labels.dd == 1
+          - node.labels.rmq == 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.4'
 
 volumes:
   rmq_data:

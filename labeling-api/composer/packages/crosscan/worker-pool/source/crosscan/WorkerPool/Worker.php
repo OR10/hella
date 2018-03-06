@@ -70,14 +70,16 @@ class Worker
             $this->newRelicWrapper->startTransaction("Crosscan\\WorkerPool\\Worker::work_JobPreparation", true);
             $this->eventHandler->beforeJob();
             $cycle++;
+
+            $this->logger->newGroup();
+
             try {
                 $jobDelivery = $this->jobSource->getNext();
             } catch (Exception\UnserializeFailed $e) {
+                $this->logger->logException($e, \cscntLogPayload::SEVERITY_WARNING);
                 $this->rescheduleManager->handleUnserializeFailed($e);
                 break;
             }
-
-            $this->logger->newGroup();
 
             if (time() - $startTimestamp > $maxSeconds) {
                 $this->logger->logString("Max seconds reached", \cscntLogPayload::SEVERITY_DEBUG);

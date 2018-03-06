@@ -10,11 +10,13 @@ server {
     rewrite_log on;
 
     location /s3 {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' '*';
-        add_header 'Access-Control-Max-Age' '1728000';
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
 
-        if ($request_method = OPTIONS ) {
+        if ($request_method = OPTIONS) {
             add_header Content-Length 0;
             add_header Content-Type text/plain;
 
@@ -27,11 +29,18 @@ server {
     }
 
     location /couch/ {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' '*';
-        add_header 'Access-Control-Max-Age' '1728000';
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
 
-        if ($request_method = OPTIONS ) {
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+            add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+            add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+            add_header 'Access-Control-Max-Age' '1728000' always;
             add_header Content-Length 0;
             add_header Content-Type text/plain;
 
@@ -44,6 +53,24 @@ server {
 
     ######## FE Angular start ########
     location /labeling {
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
+
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+            add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+            add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+            add_header 'Access-Control-Max-Age' '1728000' always;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+
+            return 204;
+        }
+
         rewrite_log on;
         proxy_pass http://front/labeling;
     }
@@ -51,11 +78,18 @@ server {
 
     ######## API monolith start ########
     location / {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' '*';
-        add_header 'Access-Control-Max-Age' '1728000';
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
 
-        if ($request_method = OPTIONS ) {
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+            add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+            add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+            add_header 'Access-Control-Max-Age' '1728000' always;
             add_header Content-Length 0;
             add_header Content-Type text/plain;
 
@@ -72,11 +106,13 @@ server {
     }
 
     location /api {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' '*';
-        add_header 'Access-Control-Max-Age' '1728000';
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
 
-        if ($request_method = OPTIONS ) {
+        if ($request_method = OPTIONS) {
             add_header Content-Length 0;
             add_header Content-Type text/plain;
 
