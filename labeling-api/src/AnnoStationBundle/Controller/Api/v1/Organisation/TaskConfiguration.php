@@ -260,7 +260,10 @@ class TaskConfiguration extends Controller\Base
         $errorMessage = $this->requirementsXmlValidator->validateRelaxNg($xml);
         if ($errorMessage !== null) {
             return View\View::create()
-                ->setData(['error' => $errorMessage])
+                ->setData([
+                    'headline' => 'Incorrect XML data',
+                    'error' => $errorMessage
+                ])
                 ->setStatusCode(406);
         }
 
