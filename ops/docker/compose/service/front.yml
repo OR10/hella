@@ -7,7 +7,7 @@ services:
       context: ../../../../
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: always
       placement:
         constraints:
           - node.labels.front == 1

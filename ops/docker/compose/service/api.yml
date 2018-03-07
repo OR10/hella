@@ -9,7 +9,7 @@ services:
         - api-fpm
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: always
       placement:
         constraints:
           - node.labels.api == 1
@@ -59,7 +59,7 @@ services:
         limits:
           cpus: '0.5'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-workerpool-low:
     build:
@@ -107,7 +107,7 @@ services:
         limits:
           cpus: '0.3'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-workerpool-normallow:
     build:
@@ -156,7 +156,7 @@ services:
         limits:
           cpus: '0.3'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-workerpool-normal:
     build:
@@ -205,7 +205,7 @@ services:
         limits:
           cpus: '0.3'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-workerpool-high:
     build:
@@ -254,7 +254,7 @@ services:
         limits:
           cpus: '0.3'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-cron:
     build:
@@ -302,7 +302,7 @@ services:
         limits:
           cpus: '0.3'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-couchdb:
     image: couchdb:1.7
@@ -328,7 +328,7 @@ services:
         limits:
           cpus: '0.8'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   api-redis:
     image: redis
@@ -343,7 +343,7 @@ services:
         limits:
           cpus: '0.4'
       restart_policy:
-        condition: on-failure
+        condition: always
 
 
 volumes:

@@ -67,7 +67,7 @@ services:
     deploy:
       mode: global
       restart_policy:
-        condition: on-failure
+        condition: always
         delay: 30s
       resources:
         limits:

@@ -15,7 +15,7 @@ services:
         limits:
           cpus: '0.75'
       restart_policy:
-        condition: on-failure
+        condition: always
 
   video-fpm:
     build:
@@ -38,5 +38,5 @@ services:
         limits:
           cpus: '0.75'
       restart_policy:
-        condition: on-failure
+        condition: always
 
