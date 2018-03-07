@@ -26,6 +26,7 @@ class AnnoStationKernel extends Kernel
             new AppBundle\AppBundle(),
             new Hagl\WorkerPoolBundle\HaglWorkerPoolBundle(),
             new AnnoStationBundle\AnnoStationBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
