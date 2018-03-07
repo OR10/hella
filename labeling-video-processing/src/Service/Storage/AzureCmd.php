@@ -49,7 +49,7 @@ class AzureCmd
     }
 
     /**
-     * @param string $filePath
+     * @param string $fileSourcePath
      * @return string
      */
     public function getFile(string $fileSourcePath)
@@ -112,7 +112,7 @@ class AzureCmd
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->s3CmdCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
+            $this->s3CmdCdn->uploadDirectory($batchDirectoryFullPath, '/');
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
@@ -128,7 +128,7 @@ class AzureCmd
     private function getTemporaryDirectory()
     {
         do {
-            $tempDir = sprintf('%s_%s_%s', 's3_batch_upload', $this->transactionVideo, uniqid());
+            $tempDir = sprintf('%s_%s_%s', 'azure_batch_upload', $this->transactionVideo, uniqid());
         } while ($this->cacheFileSystem->has($tempDir));
 
         $this->cacheFileSystem->createDir($tempDir);

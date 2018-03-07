@@ -41,7 +41,7 @@ class CdnFactory extends AbstractFactory
             case self::AZURE:
                 return new VideoCdnAzure(
                     $this->app['cacheDir'],
-                    $this->app['FrameCmd']
+                    $this->app['VideoCmd']
                 );
                 break;
             case self::S3CMD:

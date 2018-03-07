@@ -425,5 +425,13 @@
         <service id="annostation.labeling_api.service.ghost_labeled_thing_group_in_frame_classes_propagation"
                  class="AnnoStationBundle\Service\GhostLabeledThingGroupInFrameClassesPropagation">
         </service>
+
+        <!--<service id="annostation.storage_factory.service.storage_factory"-->
+                 <!--class="AnnoStationBundle\Service\Storage\StorageFactory">-->
+            <!--<argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />-->
+            <!--<argument type="service" id="annostation.labeling_api.service.video_cdn_azure.selected-alias" />-->
+            <!--<argument>@service_container</argument>-->
+        <!--</service>-->
+
     </services>
 </container>

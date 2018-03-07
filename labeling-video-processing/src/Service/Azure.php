@@ -2,6 +2,7 @@
 namespace Service;
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 
 class Azure
 {
@@ -50,17 +51,22 @@ class Azure
      */
     public function blobClientCreate()
     {
+//        $connectionString = "DefaultEndpointsProtocol=" . $this->endpointsProtocol . ";
+//                             AccountName=" . $this->accountName . ";
+//                             AccountKey=" . $this->accountKey . ";
+//                             BlobEndpoint=" . $this->blobEndpoint . '/' . $this->container;
+
         $connectionString = "DefaultEndpointsProtocol=" . $this->endpointsProtocol . ";
                              AccountName=" . $this->accountName . ";
                              AccountKey=" . $this->accountKey . ";
-                             BlobEndpoint=" . $this->blobEndpoint . '/' . $this->container;
+                             BlobEndpoint=" . $this->blobEndpoint;
 
         return BlobRestProxy::createBlobService($connectionString);
     }
 
-    public function uploadDirectory($sourceDirectory, $targetDirectory, $acl)
+    public function uploadDirectory($sourceDirectory, $targetDirectory)
     {
-        // TODO: Implement uploadDirectory() method.
+
     }
 
     public function uploadFile($video, $source)
@@ -71,23 +77,15 @@ class Azure
 
     public function getFile($filePath)
     {
-//        $configFile = $this->generateConfigfile(
-//            $this->accessKey,
-//            $this->secretKey,
-//            $this->hostBase,
-//            $this->hostBucket
-//        );
-//
-//        $destinationPath = tempnam($this->cacheDirectory, 's3_download_');
-//
-//        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath);
-//
-//        $content = file_get_contents($destinationPath);
-//
-//        return $content;
+        try {
+            $blob = $this->blobClientCreate()->getBlob($this->container, $this->dir.'/'.$filePath);
+        }
+        catch (ServiceException $e) {
+            $code = $e->getCode();
+            $error_message = $e->getMessage();
 
-        $blob = $this->blobClientCreate()->getBlob($this->container, $filePath);
-        return $blob;
+        }
+            return $blob->getContentStream();
     }
 
 }

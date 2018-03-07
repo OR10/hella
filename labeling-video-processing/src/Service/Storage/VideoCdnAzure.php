@@ -2,6 +2,7 @@
 
 namespace Service\Storage;
 
+use Service\Azure;
 class VideoCdnAzure extends AzureCmd
 {
     /**

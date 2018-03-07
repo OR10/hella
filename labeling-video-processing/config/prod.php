@@ -24,9 +24,9 @@ $app['ffmpeg_executable'] = 'avconv';
 $app['azureDefaultEndpointsProtocol'] = 'https';
 $app['azureAccountName'] = 'helladev';
 $app['azureContainer'] = 'helladev';
-$app['azureDirVideo'] = 'video';
-$app['azureDirFrame'] = 'frame';
+$app['azureDirVideo'] = 'hella-video-cdn';
+$app['azureDirFrame'] = 'hella-frame-cdn';
 $app['azureAccountKey'] = 'QQziq7ivBrtpLSwIsJijrOUcEZmF9wwcvV1v2elAPoPXZxLcurbRar7XbJoqzKKZJv49DTCXCaOBqcpFz5/Tiw==';
 $app['azureBlobEndpoint'] = 'https://helladev.blob.core.cloudapi.de';
 
-$app['storage_type'] = 's3cmd';
+$app['storage_type'] = 'azure';

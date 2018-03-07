@@ -65,7 +65,7 @@ class Azure
 
     public function uploadFile($video, $source)
     {
-        $this->blobClientCreate()->createBlockBlob($this->dir, $video, $source);
+        $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
         return 'ok';
     }
 

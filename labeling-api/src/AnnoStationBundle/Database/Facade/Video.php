@@ -20,16 +20,19 @@ class Video
      */
     private $fileSystem;
 
-    /**
-     * @var Service\FrameCdn
-     */
-    private $videoCdnService;
+    private $storageFactory;
 
-    private $videoCdnServiceAzure;
+    /**
+     * @var Service\VideoCdn\S3Cmd
+     */
+//    private $videoCdnService;
+
+//    private $videoCdnServiceAzure;
 
     /**
      * @param CouchDB\DocumentManager $documentManager
      * @param Flysystem\FileSystem    $fileSystem
+     * @param Service\Storage\StorageFactory $storageFactory
      * @param Service\VideoCdn        $videoCdnService
      * @param Service\VideoCdn        $videoCdnServiceAzure
      * @Flysystem\FileSystem          $fileSystem
@@ -37,13 +40,15 @@ class Video
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Flysystem\FileSystem $fileSystem,
-        Service\VideoCdn $videoCdnService,
-        Service\VideoCdn $videoCdnServiceAzure
+        Service\Storage\StorageFactory $storageFactory
+//        Service\VideoCdn $videoCdnService,
+//        Service\VideoCdn $videoCdnServiceAzure
     ) {
         $this->documentManager = $documentManager;
         $this->fileSystem      = $fileSystem;
-        $this->videoCdnService = $videoCdnService;
-        $this->videoCdnServiceAzure = $videoCdnServiceAzure;
+        $this->storageFactory = $storageFactory;
+//        $this->videoCdnService = $videoCdnService;
+//        $this->videoCdnServiceAzure = $videoCdnServiceAzure;
     }
 
     public function findAll()
@@ -221,7 +226,12 @@ class Video
         $this->documentManager->flush();
 
         if ($source !== null) {
-            $this->videoCdnService->saveVideo($video, $source);
+            $storage = $this->storageFactory->getStorage();
+
+            $storage->saveVideo($video, $source);
+
+//            $storageFactory = new Service\Storage\StorageFactory();
+//            $this->videoCdnService->saveVideo($video, $source);
 //            $this->videoCdnServiceAzure->saveVideo($video, $source);
         }
 

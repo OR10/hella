@@ -57,7 +57,7 @@ class StorageFactory extends AbstractFactory
                     $this->app['azureAccountKey'],
                     $this->app['azureBlobEndpoint'],
                     $this->app['azureContainer'],
-                    $this->app['azureDirFrame']
+                    $this->app['azureDirVideo']
                 );
                 break;
             case self::S3CMD:
