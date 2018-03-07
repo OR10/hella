@@ -22,3 +22,6 @@ RUN mkdir /code
 WORKDIR /code
 
 COPY ./labeling-api /code
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug

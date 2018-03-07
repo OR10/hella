@@ -89,3 +89,6 @@ RUN apt-get update -y && \
 COPY ./labeling-video-processing /code
 
 COPY ops/docker/video/fpm/config/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug

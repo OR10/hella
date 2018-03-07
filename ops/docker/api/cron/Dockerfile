@@ -32,3 +32,6 @@ RUN chmod 0644 /etc/cron.d/republisher-cron
 CMD service cron start
 
 COPY ./labeling-api /code
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
