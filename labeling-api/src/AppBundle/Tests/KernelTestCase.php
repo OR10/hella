@@ -19,7 +19,7 @@ class KernelTestCase extends Test\KernelTestCase
 
     const COUCHDB_CLIENT = 'doctrine_couchdb.client.default_connection';
 
-    const ENTITY_MANAGER = 'doctrine.orm.entity_manager';
+    const ENTITY_MANAGER = 'doctrine_couchdb.odm.default_document_manager';
 
     const ANNOSTATION_SERVICE_PATTERN = 'annostation.labeling_api.%s';
 
@@ -99,7 +99,8 @@ class KernelTestCase extends Test\KernelTestCase
         $this->couchdbClient->deleteDatabase($this->couchDbName);
         $this->couchdbClient->deleteDatabase($this->couchDbNameReadOnly);
         $this->couchdbClient->createDatabase($this->couchDbName);
-        $this->couchdbClient->createDatabase($this->couchDbNameReadOnly);
+    //    $this->couchdbClient->createDatabase($this->couchDbNameReadOnly);
+
         $this->couchDbUsersFacade->purgeCouchDbsUserDatabase();
 
         $systemDateTimeMock = \Phake::mock('AnnoStationBundle\Helper\SystemDateTimeProvider');
