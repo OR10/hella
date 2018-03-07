@@ -12,7 +12,7 @@ services:
     restart: on-failure
     deploy:
       restart_policy:
-        condition: always
+        condition: any
       placement:
         constraints:
           - node.labels.proxy == 1
@@ -40,7 +40,7 @@ services:
         constraints:
           - node.labels.rmq == 1
       restart_policy:
-        condition: always
+        condition: any
       resources:
         limits:
           cpus: '0.9'
