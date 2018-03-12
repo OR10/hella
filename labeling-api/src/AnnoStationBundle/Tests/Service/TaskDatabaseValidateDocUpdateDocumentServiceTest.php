@@ -90,7 +90,7 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
         );
 
         $response = json_decode($resource->getBody()->getContents(), true);
-        
+
         $this->assertEquals(
             file_get_contents(__DIR__ . '/TaskDatabaseValidateDocUpdateDocumentServiceTest/validate_doc_function.js'),
             $response['validate_doc_update']
@@ -170,7 +170,7 @@ class TaskDatabaseValidateDocUpdateDocumentServiceTest extends Tests\KernelTestC
             $this->taskDatabaseCreatorService->getDatabaseName($project->getId(), $task->getId())
         );
 
-        $request = $this->guzzleClient->post(
+        $request = $this->guzzleClient->put(
             sprintf(
                 'http://%s:%s@%s:%s/%s/',
                 Facade\UserWithCouchDbSync::COUCHDB_USERNAME_PREFIX . $user->getUsername(),
