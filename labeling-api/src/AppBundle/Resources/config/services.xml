@@ -113,5 +113,11 @@
             <argument>%password.policy%</argument>
         </service>
 
+        <service id="annostation.labeling_api.oauth_checker" class="AppBundle\EventListener\OAuthChecker">
+            <argument type="service" id="service_container"/>
+            <tag name="kernel.event_listener"  event="kernel.controller" method="onKernelController"/>
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
+        </service>
+
     </services>
 </container>
