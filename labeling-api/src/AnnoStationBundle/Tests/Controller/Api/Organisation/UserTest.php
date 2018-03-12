@@ -75,7 +75,7 @@ class UserTest extends Tests\WebTestCase
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
 
-        $this->assertEquals(400, $requestWrapper->getResponse()->getStatusCode());
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testAddUserToOrganisationAsLabelManager()

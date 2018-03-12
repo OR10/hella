@@ -3,7 +3,7 @@ FROM php:7.1-cli
 
 #TODO: optimize it
 RUN apt-get update && \
-    apt-get install -y git subversion ssh openssl mercurial zlib1g-dev && \
+    apt-get install -y git subversion ssh openssl mercurial zlib1g-dev apt-utils libmcrypt-dev libpq-dev netcat libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libpng-dev zlib1g-dev libicu-dev g++ && \
     rm -rf /var/lib/apt/lists/* && \
     echo "memory_limit=-1" > "$PHP_INI_DIR/conf.d/memory-limit.ini" && \
     echo "date.timezone=${PHP_TIMEZONE:-UTC}" > "$PHP_INI_DIR/conf.d/date_timezone.ini"
@@ -21,6 +21,13 @@ RUN apt-get update && \
         bcmath \
         curl \
         zip
+
+#install gd library
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-install -j$(nproc) intl \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
 
 RUN mkdir /code
 WORKDIR /code
