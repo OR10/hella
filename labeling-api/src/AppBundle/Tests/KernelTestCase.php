@@ -85,6 +85,8 @@ class KernelTestCase extends Test\KernelTestCase
     {
         parent::setUp();
 
+        ini_set('memory_limit','256M');
+
         static::bootKernel(['test', true]);
 
         $this->couchdbClient      = $this->getService(self::COUCHDB_CLIENT);
