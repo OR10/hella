@@ -101,7 +101,6 @@ class KernelTestCase extends Test\KernelTestCase
         $this->couchdbClient->deleteDatabase($this->couchDbName);
         $this->couchdbClient->deleteDatabase($this->couchDbNameReadOnly);
         $this->couchdbClient->createDatabase($this->couchDbName);
-    //    $this->couchdbClient->createDatabase($this->couchDbNameReadOnly);
 
         $this->couchDbUsersFacade->purgeCouchDbsUserDatabase();
 
