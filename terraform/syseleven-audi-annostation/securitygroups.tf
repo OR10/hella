@@ -2,7 +2,7 @@
 # jump host instead or we don't assign this security group to the compute
 # instances but instead assign it manually on purpose - we will see
 resource "openstack_compute_secgroup_v2" "SSH-audi" {
-    name = "SSH"
+    name = "SSH-audi"
     description = "Allow incoming SSH access"
 
     rule {

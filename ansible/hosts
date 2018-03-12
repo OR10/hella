@@ -13,6 +13,7 @@ syseleven-labeltool-demo         ansible_ssh_host=weblabel-demo.hella-aglaia.com
 syseleven-labeltool-live         ansible_ssh_host=video-labeling.com             ansible_ssh_user=root
 syseleven-labeltool-live-couch-0 ansible_ssh_host=couch-0-live                   ansible_ssh_user=root
 syseleven-labeltool-live-couch-1 ansible_ssh_host=couch-1-live                   ansible_ssh_user=root
+syseleven-labeltool-audi         ansible_ssh_host=weblabel-demo.hella-aglaia.com ansible_ssh_user=root
 
 [jenkins-slaves]
 slave01
@@ -28,6 +29,7 @@ staging-proxy
 syseleven-labeltool
 syseleven-labeltool-demo
 syseleven-labeltool-live
+syseleven-labeltool-audi
 
 [production]
 syseleven-labeltool
