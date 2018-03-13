@@ -65,7 +65,7 @@ services:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
+    restart: unless-stopped
     command: app/AnnoStation/console -vvv annostation:workerpool:starter low
     depends_on:
       - api-couchdb
@@ -103,6 +103,7 @@ services:
       placement:
         constraints:
           - node.labels.api_worker == 1
+      replicas: 3
       resources:
         limits:
           cpus: '0.3'
@@ -113,7 +114,7 @@ services:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
+    restart: unless-stopped
     command: app/AnnoStation/console -vvv annostation:workerpool:starter normal low
     depends_on:
       - api-couchdb
@@ -162,7 +163,7 @@ services:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
+    restart: unless-stopped
     command: app/AnnoStation/console -vvv annostation:workerpool:starter normal
     depends_on:
       - api-couchdb
@@ -211,7 +212,7 @@ services:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
+    restart: unless-stopped
     command: app/AnnoStation/console -vvv annostation:workerpool:starter high
     depends_on:
       - api-couchdb
@@ -260,7 +261,7 @@ services:
     build:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
-    restart: on-failure
+    restart: unless-stopped
     command: bash -c "service cron start && tail -f /dev/null"
     depends_on:
       - api-couchdb
@@ -315,7 +316,7 @@ services:
       timeout: 10s
       retries: 6
 #      start_period: 2s
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - 5984:5984
     volumes:
@@ -332,7 +333,7 @@ services:
 
   api-redis:
     image: redis
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - api_redis_dbdata:/data
     deploy:

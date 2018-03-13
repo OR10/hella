@@ -68,7 +68,7 @@ class Starter extends Command
 
         $this->addArgument('primary', Input\InputArgument::REQUIRED, 'Primary queue to listen for jobs');
         $this->addArgument('secondary', Input\InputArgument::OPTIONAL, 'Secondary queue to listen for jobs');
-        $this->addArgument('cycles', Input\InputArgument::OPTIONAL, 'Exit after this number of jobs', 1);
+        $this->addArgument('cycles', Input\InputArgument::OPTIONAL, 'Exit after this number of jobs', 10);
     }
 
     /**
