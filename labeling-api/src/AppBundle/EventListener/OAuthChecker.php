@@ -3,22 +3,22 @@
 namespace AppBundle\EventListener;
 
 use AnnoStationBundle\Controller\CanViewWithoutOAuth;
-use AppBundle\Exception;
 use FOS\UserBundle\Controller\SecurityController;
-use GuzzleHttp\Exception\BadResponseException;
-use Prophecy\Exception\Call\UnexpectedCallException;
 use Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
+/**
+ * Class OAuthChecker
+ * @package AppBundle\EventListener
+ */
 class OAuthChecker
 {
 
+    /**
+     * @param FilterControllerEvent $event
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $token = null;
@@ -33,6 +33,7 @@ class OAuthChecker
             }
         }
 
+        //disable OAuth action for controllers in statement
         if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) return;
 
         if((!$user && !$pwd) || !$token) {

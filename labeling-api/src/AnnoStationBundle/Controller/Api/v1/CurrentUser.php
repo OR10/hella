@@ -78,6 +78,7 @@ class CurrentUser extends Controller\Base
      * @param Authentication\UserPermissions       $currentUserPermissions
      * @param Validation\ValidationService         $validationService
      * @param Service\UserRolesRebuilder           $userRolesRebuilderService
+     * @param Service\HeaderConverter              $headerConverter
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
