@@ -79,7 +79,7 @@ class VideoFrameSplitter
         $response = $httpClient->put(
             $this->processingHost,
             [
-                'body' => [
+                'form_params' => [
                     'videoId' => $video->getId(),
                     'videoName' => $video->getName(),
                     'sourceFileFilename' => $sourceFileFilename,
