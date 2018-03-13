@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Service\Video;
 
+use GuzzleHttp;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\Model\Video\ImageType;
@@ -74,21 +75,24 @@ class VideoFrameSplitter
      */
     public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->processingHost);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, 'videoId='.$video->getId().
-            '&videoName='.$video->getName().
-            '&sourceFileFilename='.$sourceFileFilename.
-            '&type='.$type->getName());
-        $result = curl_exec($curl);
-        curl_close($curl);
+        $httpClient = new GuzzleHttp\Client();
+        $response = $httpClient->put(
+            $this->processingHost,
+            [
+                'body' => [
+                    'videoId' => $video->getId(),
+                    'videoName' => $video->getName(),
+                    'sourceFileFilename' => $sourceFileFilename,
+                    'type' => $type->getName()
+                ],
+                'timeout' => self::TIMEOUT
+            ]
+        );
+       
+        $response = json_decode($response, true);
+        $this->imageSizes = $response['image'];
 
-        $result = json_decode($result, true);
-        $this->imageSizes = $result['image'];
-
-        return $result['frame'];
+        return $response['frame'];
 
     }
 
