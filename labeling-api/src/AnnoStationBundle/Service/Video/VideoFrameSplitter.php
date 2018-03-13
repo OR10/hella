@@ -74,19 +74,16 @@ class VideoFrameSplitter
      */
     public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
     {
-        $request = $this->processingHost.'?videoId='.$video->getId().
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->processingHost);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, 'videoId='.$video->getId().
             '&videoName='.$video->getName().
             '&sourceFileFilename='.$sourceFileFilename.
-            '&type='.$type->getName();
-
-
-        $context = stream_context_create(array('http'=>
-            array(
-                'timeout' => self::TIMEOUT,
-            )
-        ));
-
-        $result = file_get_contents($request, false, $context);
+            '&type='.$type->getName());
+        $result = curl_exec($curl);
+        curl_close($curl);
 
         $result = json_decode($result, true);
         $this->imageSizes = $result['image'];
