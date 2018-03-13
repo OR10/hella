@@ -33,7 +33,6 @@ class Azure extends Service\VideoCdn
     public function saveVideo(Model\Video $video, $source)
     {
         $this->azureVideo->uploadFile(
-//            $video->getName,
             $video,
             fopen($source, "r")
         );

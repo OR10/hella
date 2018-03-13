@@ -53,7 +53,7 @@ class Azure
         $connectionString = "DefaultEndpointsProtocol=" . $this->endpointsProtocol . ";
                              AccountName=" . $this->accountName . ";
                              AccountKey=" . $this->accountKey . ";
-                             BlobEndpoint=" . $this->blobEndpoint . '/' . $this->container;
+                             BlobEndpoint=" . $this->blobEndpoint;
 
         return BlobRestProxy::createBlobService($connectionString);
     }
@@ -71,21 +71,6 @@ class Azure
 
     public function getFile($filePath)
     {
-//        $configFile = $this->generateConfigfile(
-//            $this->accessKey,
-//            $this->secretKey,
-//            $this->hostBase,
-//            $this->hostBucket
-//        );
-//
-//        $destinationPath = tempnam($this->cacheDirectory, 's3_download_');
-//
-//        $process = $this->getFileDownloadProcess($configFile, $filePath, $destinationPath);
-//
-//        $content = file_get_contents($destinationPath);
-//
-//        return $content;
-
         $blob = $this->blobClientCreate()->getBlob($this->container, $filePath);
         return $blob;
     }

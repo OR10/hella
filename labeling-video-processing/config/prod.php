@@ -21,6 +21,7 @@ $app['cacheDir'] = '/var/cache/labeling_api';
 
 $app['ffmpeg_executable'] = 'avconv';
 
+$app['azureCmdExecutable'] = 'az';
 $app['azureDefaultEndpointsProtocol'] = 'https';
 $app['azureAccountName'] = 'helladev';
 $app['azureContainer'] = 'helladev';

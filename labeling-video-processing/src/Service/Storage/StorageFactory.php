@@ -17,6 +17,10 @@ class StorageFactory extends AbstractFactory
         switch ($this->app['storage_type']) {
             case self::AZURE:
                 return new Azure(
+                    $this->app['azureCmdExecutable'],
+                    $this->app['parallelExecutable'],
+                    $this->app['numberOfParallelConnections'],
+                    $this->app['cacheDirectory'],
                     $this->app['azureDefaultEndpointsProtocol'],
                     $this->app['azureAccountName'],
                     $this->app['azureAccountKey'],
@@ -52,6 +56,10 @@ class StorageFactory extends AbstractFactory
         switch ($this->app['storage_type']) {
             case self::AZURE:
                 return new Azure(
+                    $this->app['azureCmdExecutable'],
+                    $this->app['parallelExecutable'],
+                    $this->app['numberOfParallelConnections'],
+                    $this->app['cacheDirectory'],
                     $this->app['azureDefaultEndpointsProtocol'],
                     $this->app['azureAccountName'],
                     $this->app['azureAccountKey'],

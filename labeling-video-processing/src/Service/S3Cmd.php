@@ -57,7 +57,7 @@ class S3Cmd
     }
 
     /**
-     * @param string $filePath
+     * @param string $fileSourcePath
      * @return string
      */
     public function getFile(string $fileSourcePath)
