@@ -454,5 +454,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
         </service>
+
+        <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
+        </service>
     </services>
 </container>
