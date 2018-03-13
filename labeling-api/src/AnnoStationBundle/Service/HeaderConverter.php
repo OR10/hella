@@ -11,11 +11,10 @@ class HeaderConverter
 {
 
     /**
-     * @param string $header
+     * @param $header
      * @return mixed|null
-     * return Basic $token
      */
-    public function getBasic(string $header)
+    public function getBasic($header)
     {
         $token = null;
         if (preg_match('/Basic\s(\S+)/', $header, $matches)) {
