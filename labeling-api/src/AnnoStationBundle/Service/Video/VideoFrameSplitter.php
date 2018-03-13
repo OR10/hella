@@ -89,7 +89,7 @@ class VideoFrameSplitter
             ]
         );
        
-        $response = json_decode($response, true);
+        $response = json_decode($response->getBody()->getContents(), true);
         $this->imageSizes = $response['image'];
 
         return $response['frame'];
