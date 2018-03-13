@@ -64,6 +64,11 @@ class CurrentUser extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var Service\HeaderConverter
+     */
+    private $headerConverter;
+
+    /**
      * CurrentUser constructor.
      *
      * @param Storage\TokenStorage                 $tokenStorage
@@ -81,7 +86,8 @@ class CurrentUser extends Controller\Base
         AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions,
         Validation\ValidationService $validationService,
-        Service\UserRolesRebuilder $userRolesRebuilderService
+        Service\UserRolesRebuilder $userRolesRebuilderService,
+        Service\HeaderConverter $headerConverter
     ) {
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
@@ -90,6 +96,7 @@ class CurrentUser extends Controller\Base
         $this->organisation              = $organisation;
         $this->validationService         = $validationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->headerConverter           = $headerConverter;
     }
 
     /**
@@ -97,19 +104,23 @@ class CurrentUser extends Controller\Base
      *
      * @return View\View
      */
-    public function profileAction()
+    public function profileAction(HttpFoundation\Request $request)
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
+        $authorizeToken = $request->headers->get('authorization');
+        //get oAuth token
+        $token = $this->headerConverter->getBasic($authorizeToken);
 
         return View\View::create()->setData(
             [
                 'result' => [
-                    'id'        => $user->getId(),
-                    'username'  => $user->getUsername(),
-                    'email'     => $user->getEmail(),
-                    'roles'     => $user->getRoles(),
-                    'expiresAt' => $user->getExpiresAt(),
+                    'id'         => $user->getId(),
+                    'username'   => $user->getUsername(),
+                    'email'      => $user->getEmail(),
+                    'roles'      => $user->getRoles(),
+                    'expiresAt'  => $user->getExpiresAt(),
+                    'oAuthToken' => $token
                 ],
             ]
         );

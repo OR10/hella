@@ -2,10 +2,12 @@
 
 namespace AppBundle\EventListener;
 
+use AnnoStationBundle\Controller\CanViewWithoutOAuth;
 use AppBundle\Exception;
 use FOS\UserBundle\Controller\SecurityController;
 use GuzzleHttp\Exception\BadResponseException;
 use Prophecy\Exception\Call\UnexpectedCallException;
+use Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -31,7 +33,7 @@ class OAuthChecker
             }
         }
 
-        if($controller[0] instanceof SecurityController) return;
+        if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) return;
 
         if((!$user && !$pwd) || !$token) {
             throw new UnauthorizedHttpException('Basic Auth header do not exist');
