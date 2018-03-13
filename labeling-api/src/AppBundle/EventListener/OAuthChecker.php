@@ -2,59 +2,45 @@
 
 namespace AppBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use AppBundle\Exception;
+use FOS\UserBundle\Controller\SecurityController;
+use GuzzleHttp\Exception\BadResponseException;
+use Prophecy\Exception\Call\UnexpectedCallException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class OAuthChecker
 {
 
-    private $container;
-
-    /**
-     * TokenListener constructor.
-     * @param $auth
-     */
-    public function __construct($container)
-    {
-
-        $this->container = $container;
-    }
-
-
     public function onKernelController(FilterControllerEvent $event)
     {
+        $token = null;
         $controller = $event->getController();
         $req =  $event->getRequest();
-        $token = $req->headers->get('Authorization');
-
-        var_dump($controller);
-
-        /*
-         * $controller passed can be either a class or a Closure.
-         * This is not usual in Symfony but it may happen.
-         * If it is a class, it comes in array format
-         */
-        /*
-        if (!is_array($controller)) {
-            return;
+        $user = $req->headers->get('php-auth-user');
+        $pwd = $req->headers->get('php-auth-pw');
+        $apiKey = $req->headers->get('Authorization');
+        if($apiKey) {
+            if (preg_match('/Basic\s(\S+)/', $apiKey, $matches)) {
+                $token = $matches[1];
+            }
         }
-        if (!($controller[0] instanceof BaseController)) return;
-        $this->setInputParam($controller,$req);
-        if($controller[0]->input) $this->validate($controller[0]);
-        $user = $token ? $this->auth->userByToken($token) : null;
-//        if ($controller[0] instanceof UserLevel) {
-//            if (!$user) {
-//                throw new UnauthorizedApiException;
-//            }
-//        }
-        $controller[0]->currentUser = $user;
-        $this->checkAccess($controller);
-        */
+
+        if($controller[0] instanceof SecurityController) return;
+
+        if((!$user && !$pwd) || !$token) {
+            throw new UnauthorizedHttpException('Basic Auth header do not exist');
+        }
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
+
     }
+
 }
