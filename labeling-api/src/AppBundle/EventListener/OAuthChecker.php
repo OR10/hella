@@ -2,7 +2,9 @@
 
 namespace AppBundle\EventListener;
 
+use AnnoStationBundle\Controller\Api\v1\CurrentUser;
 use AnnoStationBundle\Controller\CanViewWithoutOAuth;
+use AppBundle\Exception;
 use FOS\UserBundle\Controller\SecurityController;
 use Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -44,12 +46,14 @@ class OAuthChecker
         }
 
         //disable OAuth action for controllers in statement
-        if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) return;
-
-        $tokenStorage = $this->container->get('security.token_storage');
-        $currentToken = $tokenStorage->getToken()->getUser()->getToken();
-        if(!$token || ($token != $currentToken) ) {
-            throw new UnauthorizedHttpException('Basic Auth header do not exist');
+        if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController || $controller[0] instanceof CurrentUser) {
+            return;
+        } else {
+            $tokenStorage = $this->container->get('security.token_storage');
+            $currentToken = $tokenStorage->getToken()->getUser()->getToken();
+            if(!$token || ($token != $currentToken) ) {
+                  throw new Exception('Authorization token not valid');
+            }
         }
     }
 
