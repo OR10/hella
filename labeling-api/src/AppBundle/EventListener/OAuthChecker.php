@@ -35,9 +35,8 @@ class OAuthChecker
 
         //disable OAuth action for controllers in statement
         if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) return;
-
         if((!$user && !$pwd) || !$token) {
-            //throw new UnauthorizedHttpException('Basic Auth header do not exist');
+            throw new UnauthorizedHttpException('Basic Auth header do not exist');
         }
     }
 
