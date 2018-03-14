@@ -7,12 +7,6 @@ services:
       context: ../../../../
     depends_on:
         - api-fpm
-    deploy:
-      restart_policy:
-        condition: any
-      placement:
-        constraints:
-          - node.labels.api == 1
 
   api-fpm:
     build:
@@ -51,15 +45,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api == 1
-      resources:
-        limits:
-          cpus: '0.5'
-      restart_policy:
-        condition: any
 
   api-workerpool-low:
     build:
@@ -99,16 +84,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 3
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-normallow:
     build:
@@ -148,16 +123,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-normal:
     build:
@@ -197,16 +162,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-high:
     build:
@@ -246,16 +201,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-cron:
     build:
@@ -295,15 +240,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_cron == 1
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-couchdb:
     image: couchdb:1.7
@@ -321,30 +257,12 @@ services:
       - 5984:5984
     volumes:
       - api_couchdb_dbdata:/usr/local/var/lib/couchdb
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_db == 1
-      resources:
-        limits:
-          cpus: '0.8'
-      restart_policy:
-        condition: any
 
   api-redis:
     image: redis
     restart: unless-stopped
     volumes:
       - api_redis_dbdata:/data
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_redis == 1
-      resources:
-        limits:
-          cpus: '0.4'
-      restart_policy:
-        condition: any
 
 
 volumes:
