@@ -19,6 +19,8 @@ use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices;
+
 /**
  * @Version("v1")
  * @Rest\Prefix("/api/{version}/currentUser")
@@ -103,7 +105,7 @@ class CurrentUser extends Controller\Base
     /**
      * return user profile param with OAuth token
      *
-     * @Rest\Post("/profile")
+     * @Rest\Get("/profile")
      *
      * @return View\View
      */
@@ -111,9 +113,13 @@ class CurrentUser extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-        $authorizeToken = $request->headers->get('authorization');
         //get oAuth token
-        $token = $this->headerConverter->getBasic($authorizeToken);
+        $token = $user->getToken();
+        if(!$token) {
+            $token = uniqid(bin2hex($user->getUsername()));
+            $user->setToken($token);
+            $this->userFacade->updateUser($user);
+        }
 
         return View\View::create()->setData(
             [

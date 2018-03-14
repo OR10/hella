@@ -16,6 +16,17 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class OAuthChecker
 {
 
+    private $container;
+
+    /**
+     * TokenListener constructor.
+     * @param $auth
+     */
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @param FilterControllerEvent $event
      */
@@ -24,18 +35,20 @@ class OAuthChecker
         $token = null;
         $controller = $event->getController();
         $req =  $event->getRequest();
-        $user = $req->headers->get('php-auth-user');
-        $pwd = $req->headers->get('php-auth-pw');
-        $apiKey = $req->headers->get('Authorization');
+        $apiKey = $req->headers->get('Auth');
+
         if($apiKey) {
-            if (preg_match('/Basic\s(\S+)/', $apiKey, $matches)) {
+            if (preg_match('/Bearer\s(\S+)/', $apiKey, $matches)) {
                 $token = $matches[1];
             }
         }
 
         //disable OAuth action for controllers in statement
         if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) return;
-        if((!$user && !$pwd) || !$token) {
+
+        $tokenStorage = $this->container->get('security.token_storage');
+        $currentToken = $tokenStorage->getToken()->getUser()->getToken();
+        if(!$token || ($token != $currentToken) ) {
             throw new UnauthorizedHttpException('Basic Auth header do not exist');
         }
     }
