@@ -16,6 +16,9 @@ class StorageFactory
 
     private $videoCdnServiceAzure;
 
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     public function __construct(
@@ -26,8 +29,8 @@ class StorageFactory
         $this->videoCdnService = $videoCdnService;
         $this->videoCdnServiceAzure = $videoCdnServiceAzure;
         $this->container = $container;
-
     }
+
     /**
      * @return Cmd|Azure
      * @throws \RuntimeException

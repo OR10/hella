@@ -20,35 +20,25 @@ class Video
      */
     private $fileSystem;
 
-    private $storageFactory;
-
     /**
-     * @var Service\VideoCdn\S3Cmd
+     * @var Service\Storage\StorageFactory
      */
-//    private $videoCdnService;
-
-//    private $videoCdnServiceAzure;
+    private $storageFactory;
 
     /**
      * @param CouchDB\DocumentManager $documentManager
      * @param Flysystem\FileSystem    $fileSystem
      * @param Service\Storage\StorageFactory $storageFactory
-     * @param Service\VideoCdn        $videoCdnService
-     * @param Service\VideoCdn        $videoCdnServiceAzure
      * @Flysystem\FileSystem          $fileSystem
      */
     public function __construct(
         CouchDB\DocumentManager $documentManager,
         Flysystem\FileSystem $fileSystem,
         Service\Storage\StorageFactory $storageFactory
-//        Service\VideoCdn $videoCdnService,
-//        Service\VideoCdn $videoCdnServiceAzure
     ) {
         $this->documentManager = $documentManager;
         $this->fileSystem      = $fileSystem;
         $this->storageFactory = $storageFactory;
-//        $this->videoCdnService = $videoCdnService;
-//        $this->videoCdnServiceAzure = $videoCdnServiceAzure;
     }
 
     public function findAll()
@@ -229,10 +219,6 @@ class Video
             $storage = $this->storageFactory->getStorage();
 
             $storage->saveVideo($video, $source);
-
-//            $storageFactory = new Service\Storage\StorageFactory();
-//            $this->videoCdnService->saveVideo($video, $source);
-//            $this->videoCdnServiceAzure->saveVideo($video, $source);
         }
 
         return $video;

@@ -56,6 +56,7 @@ class S3Cmd implements StorageInterface
      */
     private $hostBucket;
 
+    private $frameCdnBaseUrl;
     /**
      * S3Uploader constructor.
      *
@@ -68,6 +69,7 @@ class S3Cmd implements StorageInterface
      * @param string $secretKey
      * @param string $hostBase
      * @param string $hostBucket
+     * @param string $frameCdnBaseUrlAzure
      */
     public function __construct(
         $s3CmdExecutable,
@@ -78,7 +80,8 @@ class S3Cmd implements StorageInterface
         $accessKey,
         $secretKey,
         $hostBase,
-        $hostBucket
+        $hostBucket,
+        $frameCdnBaseUrl
     ) {
         $this->s3CmdExecutable             = $s3CmdExecutable;
         $this->parallelExecutable          = $parallelExecutable;
@@ -89,6 +92,7 @@ class S3Cmd implements StorageInterface
         $this->secretKey                   = $secretKey;
         $this->hostBase                    = $hostBase;
         $this->hostBucket                  = $hostBucket;
+        $this->frameCdnBaseUrl             = $frameCdnBaseUrl;
     }
 
     public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3, $acl = 'private')
@@ -394,5 +398,10 @@ EOF;
     private function convertBooleanToConfigString($boolean)
     {
         return $boolean === true ? 'True' : 'False';
+    }
+
+    public function getBaseUrl()
+    {
+        return $this->frameCdnBaseUrl;
     }
 }

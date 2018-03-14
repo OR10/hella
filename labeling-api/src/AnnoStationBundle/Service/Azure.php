@@ -35,7 +35,9 @@ class Azure
      */
     private $dir;
 
-    public function __construct($endpointsProtocol, $accountName, $accountKey, $blobEndpoint, $container, $dir)
+    private $frameCdnBaseUrlAzure;
+
+    public function __construct($endpointsProtocol, $accountName, $accountKey, $blobEndpoint, $container, $dir, $frameCdnBaseUrlAzure)
     {
         $this->endpointsProtocol = $endpointsProtocol;
         $this->accountName = $accountName;
@@ -43,6 +45,7 @@ class Azure
         $this->blobEndpoint = $blobEndpoint;
         $this->container = $container;
         $this->dir = $dir;
+        $this->frameCdnBaseUrlAzure = $frameCdnBaseUrlAzure;
     }
 
     /**
@@ -73,6 +76,11 @@ class Azure
     {
         $blob = $this->blobClientCreate()->getBlob($this->container, $filePath);
         return $blob;
+    }
+
+    public function getBaseUrl()
+    {
+        return $this->frameCdnBaseUrlAzure;
     }
 
 }

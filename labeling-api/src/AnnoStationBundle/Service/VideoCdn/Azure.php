@@ -57,4 +57,9 @@ class Azure extends Service\VideoCdn
     {
 
     }
+
+    public function getStorageData()
+    {
+        return $this->azureVideo;
+    }
 }

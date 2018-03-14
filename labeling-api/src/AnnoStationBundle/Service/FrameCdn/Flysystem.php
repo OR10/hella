@@ -15,6 +15,11 @@ class Flysystem extends Service\FrameCdn
     protected $frameCdnBaseUrl;
 
     /**
+     * @var Service\Storage\StorageFactory
+     */
+    private $storageFactory;
+
+    /**
      * @var League\Flysystem\Filesystem
      */
     protected $fileSystem;
@@ -25,11 +30,12 @@ class Flysystem extends Service\FrameCdn
      * @param string                      $frameCdnBaseUrl
      * @param League\Flysystem\Filesystem $fileSystem
      */
-    public function __construct($frameCdnBaseUrl, League\Flysystem\Filesystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, Service\Storage\StorageFactory $storageFactory, League\Flysystem\Filesystem $fileSystem)
     {
         parent::__construct();
 
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
+        $this->storageFactory = $storageFactory;
         $this->fileSystem      = $fileSystem;
     }
 
@@ -94,12 +100,15 @@ class Flysystem extends Service\FrameCdn
         array $frameNumbers
     ) {
         $urls = [];
+        $storage = $this->storageFactory->getStorage();
+        $frameCdnBaseUrl = $storage->getStorageData()->getBaseUrl();
         foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
                 "frameIndex" => $index,
                 'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
-                    $this->frameCdnBaseUrl,
+//                    $this->frameCdnBaseUrl,
+                    $frameCdnBaseUrl,
                     $labelingTask->getVideoId(),
                     $imageType->getName(),
                     $frameNumber,

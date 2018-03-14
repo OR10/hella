@@ -34,6 +34,7 @@
         <service id="annostation.labeling_api.service.frame_cdn.flysystem"
                  class="AnnoStationBundle\Service\FrameCdn\Flysystem">
             <argument>%frame_cdn_base_url%</argument>
+            <argument type="service" id="annostation.storage_factory.service.storage_factory" />
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem"/>
         </service>
 
