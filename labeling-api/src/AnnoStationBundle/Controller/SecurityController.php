@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception;
 
 /**
- * @Configuration\Route("/", service="annostation.labeling_api.controller.index")
+ * @Configuration\Route("/", service="annostation.labeling_api.controller.auth")
  *
  * @CloseSession
  */
