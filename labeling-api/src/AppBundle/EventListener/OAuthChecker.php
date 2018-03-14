@@ -52,7 +52,7 @@ class OAuthChecker
             $tokenStorage = $this->container->get('security.token_storage');
             $currentToken = $tokenStorage->getToken()->getUser()->getToken();
             if(!$token || ($token != $currentToken) ) {
-                  throw new Exception('Authorization token not valid');
+                //throw new Exception('Authorization token not valid');
             }
         }
     }
