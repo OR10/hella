@@ -10,7 +10,7 @@ if ($notProd = ENV_NAME_PROD !== $env) {
     ini_set('display_errors',1);
 }
 
-$loader = require_once __DIR__ . '/../../app/bootstrap.php.cache';
+$loader = require_once __DIR__ . '/../../app/AnnoStation/bootstrap.php.cache';
 
 // Enable APC for autoloading to improve performance.
 // You should change the ApcClassLoader first argument to a unique prefix

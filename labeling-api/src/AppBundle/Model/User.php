@@ -75,6 +75,8 @@ class User extends BaseUser
     {
         $this->projectRoles = new ArrayCollection();
         parent::__construct();
+        //fix FoS set password
+        $this->salt = null;
     }
 
     /**

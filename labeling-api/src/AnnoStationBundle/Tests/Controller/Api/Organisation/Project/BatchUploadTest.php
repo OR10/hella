@@ -120,6 +120,9 @@ class BatchUploadTest extends Tests\WebTestCase
                 ],
             ]
         )->withVideo($video)->withCalibrationData($calibrationData)->build();
+
+        $project->setUserId($this->defaultUser->getId());
+        $project->setDiskUsageInBytes(23456788);
         $this->projectFacade->save($project);
 
         $requestWrapper = $this->createRequest(self::UPLOAD_COMPLETE_ROUTE, [$this->organisation->getId(), $project->getId()])
@@ -162,12 +165,24 @@ class BatchUploadTest extends Tests\WebTestCase
         $this->videoFacade = $this->getAnnostationService('database.facade.video');
         $this->calibrationDataFacade = $this->getAnnostationService('database.facade.calibration_data');
         $organisationFacade = $this->getAnnostationService('database.facade.organisation');
+        $organisation = new AnnoStationBundleModel\Organisation('Test name');
+        $organisation->setUserQuota(200);
+        $organisation->setQuota(5000);
         $this->organisation = $organisationFacade->save(
-            Tests\Helper\OrganisationBuilder::create()->build()
+           $organisation
         );
+        $video = new Model\Video($this->organisation, 'test');
+        $metaData = new Model\Video\MetaData();
+        $metaData->sizeInBytes = 500;
+        $metaData->numberOfFrames = 10;
+        $metaData->height = 200;
+        $metaData->width = 10;
+        $video->setMetaData($metaData);
+        $video->setOriginalId($this->organisation->getId());
+        $this->videoFacade->save($video);
 
         $this->createDefaultUser();
-        $this->defaultUser->setRoles([Model\User::ROLE_LABEL_MANAGER]);
+        $this->defaultUser->setRoles([Model\User::ROLE_SUPER_ADMIN]);
         $this->defaultUser->assignToOrganisation($this->organisation);
     }
 
