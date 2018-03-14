@@ -127,5 +127,12 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="annostation.labeling_api.authentificator" class="AppBundle\Security\ApiAuthenticator">
+            <argument type="service" id="router"/>
+            <argument type="service" id="security.password_encoder"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
+            <argument type="service" id="security.token_storage" />
+        </service>
+
     </services>
 </container>

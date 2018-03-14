@@ -285,5 +285,9 @@
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
         </service>
+
+        <service id="annostation.labeling_api.controller.auth"
+                 class="AnnoStationBundle\Controller\SecurityController">
+        </service>
     </services>
 </container>
