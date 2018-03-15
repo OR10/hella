@@ -188,7 +188,7 @@ class VideoFrameSplitter
      *
      * The temporary file will have the same file extension as the original video.
      *
-     * @param string $video
+     * @param string $videoName
      *
      * @return string
      */

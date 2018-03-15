@@ -27,8 +27,9 @@ class Flysystem extends Service\FrameCdn
     /**
      * FrameCdn constructor.
      *
-     * @param string                      $frameCdnBaseUrl
-     * @param League\Flysystem\Filesystem $fileSystem
+     * @param string                         $frameCdnBaseUrl
+     * @param Service\Storage\StorageFactory $storageFactory
+     * @param League\Flysystem\Filesystem    $fileSystem
      */
     public function __construct($frameCdnBaseUrl, Service\Storage\StorageFactory $storageFactory, League\Flysystem\Filesystem $fileSystem)
     {
@@ -107,7 +108,6 @@ class Flysystem extends Service\FrameCdn
                 "frameIndex" => $index,
                 'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
-//                    $this->frameCdnBaseUrl,
                     $frameCdnBaseUrl,
                     $labelingTask->getVideoId(),
                     $imageType->getName(),

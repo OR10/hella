@@ -107,6 +107,9 @@ class Azure
         return "DefaultEndpointsProtocol=" . $this->endpointsProtocol . ";AccountName=" . $this->accountName . ";AccountKey=" . $this->accountKey . ";BlobEndpoint=" . $this->blobEndpoint;
     }
 
+    /**
+     * @param $sourceDirectory
+     */
     public function uploadDirectory($sourceDirectory)
     {
         $connectionString = $this->createConnectionString();
@@ -122,12 +125,20 @@ class Azure
         }
     }
 
+    /**
+     * @param $video
+     * @param $source
+     * @return string
+     */
     public function uploadFile($video, $source)
     {
         $this->blobClientCreate()->createBlockBlob($this->dir, $video, $source);
-        return 'ok';
     }
 
+    /**
+     * @param $filePath
+     * @return resource
+     */
     public function getFile($filePath)
     {
         try {

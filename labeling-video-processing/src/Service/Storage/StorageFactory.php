@@ -2,7 +2,6 @@
 
 namespace Service\Storage;
 
-use FOS\UserBundle\Form\Factory\FactoryInterface;
 use Service\Azure;
 use Service\Cmd;
 

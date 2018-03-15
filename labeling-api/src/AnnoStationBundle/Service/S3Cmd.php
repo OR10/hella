@@ -56,6 +56,9 @@ class S3Cmd implements StorageInterface
      */
     private $hostBucket;
 
+    /**
+     * @var string
+     */
     private $frameCdnBaseUrl;
     /**
      * S3Uploader constructor.
@@ -69,7 +72,7 @@ class S3Cmd implements StorageInterface
      * @param string $secretKey
      * @param string $hostBase
      * @param string $hostBucket
-     * @param string $frameCdnBaseUrlAzure
+     * @param string $frameCdnBaseUrl
      */
     public function __construct(
         $s3CmdExecutable,
@@ -400,6 +403,9 @@ EOF;
         return $boolean === true ? 'True' : 'False';
     }
 
+    /**
+     * @return string
+     */
     public function getBaseUrl()
     {
         return $this->frameCdnBaseUrl;

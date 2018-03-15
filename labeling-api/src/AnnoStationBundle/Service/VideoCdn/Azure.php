@@ -4,7 +4,6 @@ namespace AnnoStationBundle\Service\VideoCdn;
 
 use AnnoStationBundle\Service;
 use AppBundle\Model;
-use crosscan\Logger\Facade\LoggerFacade;
 
 class Azure extends Service\VideoCdn
 {
