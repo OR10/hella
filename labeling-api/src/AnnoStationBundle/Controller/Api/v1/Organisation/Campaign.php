@@ -85,7 +85,18 @@ class Campaign extends Controller\Base
         $name = $request->request->get('name');
 
         if (count($this->campaignFacade->getCampaignByOrganisationAndName($organisation, $name)) > 0) {
-            throw new Exception\ConflictHttpException('Campaign with this name already exists');
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => [
+                                [
+                                    'field'   => 'Label',
+                                    'message' => 'Label name already exist',
+                                ],
+                            ],
+                        ],
+                ]);
         }
 
         $campaign = new AnnoStationBundleModel\Campaign($organisation, $name);

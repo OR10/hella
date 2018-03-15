@@ -26,6 +26,7 @@ class AnnoStationKernel extends Kernel
             new AppBundle\AppBundle(),
             new Hagl\WorkerPoolBundle\HaglWorkerPoolBundle(),
             new AnnoStationBundle\AnnoStationBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -41,23 +42,5 @@ class AnnoStationKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
-    }
-
-    function getCacheDir()
-    {
-        if (in_array($this->environment, array('dev', 'test'))) {
-            return '/dev/shm/labeling_api/cache/' .  $this->environment;
-        }
-
-        return parent::getCacheDir();
-    }
-
-    public function getLogDir()
-    {
-        if (in_array($this->environment, array('dev', 'test'))) {
-            return '/dev/shm/labeling_api/logs';
-        }
-
-        return parent::getLogDir();
     }
 }

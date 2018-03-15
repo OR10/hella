@@ -129,7 +129,10 @@ class UserTest extends Tests\WebTestCase
 
     public function testAddUserAsSuperAdmin()
     {
-        $superAdmin   = $this->createSuperAdminUser();
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
+        $superAdmin   = $this->createSuperAdminUser($organisation);
 
         $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($superAdmin)
@@ -142,6 +145,7 @@ class UserTest extends Tests\WebTestCase
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
+                    'organisationIds' => [$organisation->getId()]
                 ]
             )
             ->execute();
@@ -167,6 +171,7 @@ class UserTest extends Tests\WebTestCase
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
+                    'organisationIds' => [$organisation->getId()]
                 ]
             )
             ->execute();
@@ -184,13 +189,17 @@ class UserTest extends Tests\WebTestCase
         )->withCredentialsFromUsername($labelManager)
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
             ->execute();
-        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
 
+        $this->assertEquals(200, $requestWrapper->getResponse()->getStatusCode());
     }
 
     public function testAddUserAsLabelManagerInOtherOrganisation()
     {
         $labelManager = $this->createlabelManagerUser();
+
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
 
         $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($labelManager)
@@ -203,6 +212,7 @@ class UserTest extends Tests\WebTestCase
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_LABELER],
+                    'organisationIds' => [$organisation->getId()]
                 ]
             )
             ->execute();
@@ -354,6 +364,10 @@ class UserTest extends Tests\WebTestCase
     {
         $superAdmin   = $this->createSuperAdminUser();
 
+        $organisation = $this->organisationFacade->save(
+            new AnnoStationBundleModel\Organisation('Test')
+        );
+
         $username = 'super_admin_2';
         $requestWrapper = $this->createRequest('/api/v1/user')
             ->withCredentialsFromUsername($superAdmin)
@@ -366,6 +380,7 @@ class UserTest extends Tests\WebTestCase
                     'enabled'         => 'true',
                     'locked'          => 'false',
                     'roles'           => [Model\User::ROLE_SUPER_ADMIN],
+                    'organisationIds' => [$organisation->getId()]
                 ]
             )
             ->execute();

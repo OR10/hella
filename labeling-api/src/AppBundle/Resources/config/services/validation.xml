@@ -26,5 +26,25 @@
             <tag name="data.validator"/>
         </service>
 
+        <service id="annostation.labeling_api.validator.user_unique"
+                 class="AppBundle\Service\Validation\Validators\UserUniqueValidator">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
+
+        <service id="annostation.labeling_api.validator.user_organisation"
+                 class="AppBundle\Service\Validation\Validators\UserOrganisationValidator">
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
+
+        <service id="annostation.labeling_api.validator.organisation"
+                 class="AppBundle\Service\Validation\Validators\OrganisationValidator">
+            <argument type="service" id="translator"/>
+            <tag name="data.validator"/>
+        </service>
     </services>
 </container>

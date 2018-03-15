@@ -1,0 +1,59 @@
+version: "3.1"
+
+services:
+  proxy:
+    ports:
+      - 80:80
+
+  front:
+    ports:
+      - 8081:80
+    volumes:
+      - ../../../../labeling-ui:/code:Z
+
+  ############# API SECTION BEGIN #############
+
+  api-nginx:
+    ports:
+      - 8082:80
+    volumes:
+      - ../../../../labeling-api/web/AnnoStation:/code
+
+  api-fpm:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  api-workerpool-low:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  api-workerpool-normallow:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  api-workerpool-normal:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  api-workerpool-high:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  api-cron:
+    volumes:
+      - ../../../../labeling-api:/code:z
+
+  ############# API SECTION END #############
+
+
+  ############# VIDEO PROCESSING SECTION BEGIN #############
+
+  video-nginx:
+    ports:
+      - 8090:80
+
+  video-fpm:
+    volumes:
+      - ../../../../labeling-video-processing:/code:z
+
+  ############# VIDEO PROCESSING SECTION END #############

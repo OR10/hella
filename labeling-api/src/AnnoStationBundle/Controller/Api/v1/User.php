@@ -12,6 +12,8 @@ use AnnoStationBundle\Worker\Jobs;
 use AnnoStationBundle\Annotations;
 use AppBundle\Database\Facade as AppFacade;
 use AppBundle\Model;
+use AppBundle\Service\Validation\Model\VerifyUsername;
+use AppBundle\Service\Validation\Model\VerifyUserOrganisation;
 use AppBundle\Service\Validation\ValidationError;
 use AppBundle\View;
 use AppBundle\Service\Validation\Model\VerifyUserPassword;
@@ -142,7 +144,7 @@ class User extends Controller\Base
                 'email' => $user->getEmail(),
                 'enabled' => $user->isEnabled(),
                 'lastLogin' => $user->getLastLogin(),
-                'locked' => $user->isLocked(),
+                'locked' => !$user->isAccountNonLocked(),
                 'roles' => $user->getRoles(),
             );
         }, $users);
@@ -195,19 +197,25 @@ class User extends Controller\Base
         $user = new Model\User();
         $user->setEmail($request->request->get('email'));
         $user->setPlainPassword($request->request->get('password'));
+        $verifyUserName = new VerifyUsername($request->request->get('username'));
+        $verifyUserOrganisation = new VerifyUserOrganisation($user, $request->request->get('organisationIds'));
 
-        $validationResult = $this->validationService->validate($user);
-        if ($validationResult->hasErrors()) {
+        $errors = $this->validationService->validate($user)->getErrors();
+        $errors = array_merge($errors,
+            $this->validationService->validate($verifyUserName)->getErrors(),
+            $this->validationService->validate($verifyUserOrganisation)->getErrors()
+        );
+
+        if ($errors) {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
-                            'error' => $validationResult->getErrors(),
+                            'error' => $errors,
                         ],
                 ]
             );
         }
-
 
         $roles = $request->request->get('roles', array());
         $user = $this->userFacade->createUser(
@@ -257,6 +265,10 @@ class User extends Controller\Base
             throw new Exception\AccessDeniedHttpException('You are not allowed to edit this user in this organisation');
         }
 
+        if($user->getUsername() !== $request->request->get('username')) {
+            $verifyUsernameModel = new VerifyUsername($request->request->get('username'));
+        }
+
         $roles = $request->request->get('roles', array());
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
@@ -264,18 +276,26 @@ class User extends Controller\Base
         if ($request->request->has('password')) {
             $user->setPlainPassword($request->request->get('password'));
 
-            $validationResult = $this->validationService->validate($user);
-            if ($validationResult->hasErrors()) {
-                return View\View::create()->setData(
-                    [
-                        'result' =>
-                            [
-                                'error' => $validationResult->getErrors(),
-                            ],
-                    ]
-                );
-            }
         }
+
+        $errors = $this->validationService->validate($user)->getErrors();
+
+        if(isset($verifyUsernameModel)) {
+            $errors = array_merge($errors, $this->validationService->validate($verifyUsernameModel)->getErrors());
+        }
+
+        if ($errors) {
+            return View\View::create()->setData(
+                [
+                    'result' =>
+                        [
+                            'error' => $errors,
+                        ],
+                ]
+            );
+        }
+
+
         $this->removeAllUserRoles($user);
         foreach ($roles as $role) {
             $user->addRole($role);
@@ -292,12 +312,6 @@ class User extends Controller\Base
 
         $this->userFacade->updateUser($user);
         $this->userRolesRebuilderService->rebuildForUser($user);
-
-        if ($user->getUsername() === $loginUser->getUsername()) {
-            $this->tokenStorage->setToken(null);
-
-            return View\View::createRouteRedirect('annostation_index_index');
-        }
 
         return View\View::create()->setData(
             [
@@ -322,9 +336,9 @@ class User extends Controller\Base
             'email'         => $user->getEmail(),
             'enabled'       => $user->isEnabled(),
             'lastLogin'     => $user->getLastLogin(),
-            'locked'        => $user->isLocked(),
+            'locked'        => !$user->isAccountNonLocked(),
             'roles'         => $user->getRoles(),
-            'expired'       => $user->isExpired(),
+            'expired'       => !$user->isAccountNonExpired(),
             'expiresAt'     => $user->getExpiresAt() ? $user->getExpiresAt()->format('c') : null,
             'organisations' => [],
         );

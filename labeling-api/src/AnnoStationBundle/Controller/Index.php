@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception;
  *
  * @CloseSession
  */
-class Index extends Base
+class Index extends Base implements CanViewWithoutOAuth
 {
     /**
      * @var Twig\TwigEngine

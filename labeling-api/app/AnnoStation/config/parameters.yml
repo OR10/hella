@@ -1,0 +1,196 @@
+# This file is auto-generated during the composer install
+parameters:
+    video_processing_host: http://video-nginx
+    cache_dir: /code/app/AnnoStation/cache/labeling_api/
+
+    database_name: labeling_api
+    database_name_read_only: labeling_api
+
+    couchdb_host: api-couchdb
+    couchdb_host_external: %couchdb.host.external%
+    couchdb_port: 5984
+    couchdb_port_external: 80
+    couchdb_user: %couchdb.user%
+    couchdb_password: %couchdb.password%
+    couchdb_user_read_only: %couchdb.user.read.only%
+    couchdb_password_read_only: %couchdb.password.read.only%
+    couchdb_external_url: %couchdb.external.url%
+    couchdb_path_external: couch
+    couchdb_monitoring_database_name: monitoring
+
+    fos_user_bundle_to_couchdb_sync_enabled: true
+
+    facade_factory_type: taskDatabase
+
+    mailer_transport: %mailer.transport%
+    mailer_host: %mailer.host%
+    mailer_user: %mailer.user%
+    mailer_password: %mailer.password%
+    mailer_from: %mailer.from%
+    #mailer_encryption: %mailer.encryption%
+    #mailer_auth_mode: %mailer.auth.mode%
+    #mailer_port: %mailer.port%
+
+    secret: %app.secret%
+
+    ffmpeg_executable: avconv
+    ffprobe_executable: avprobe
+
+    frame_cdn_dir: /tmp
+    video_cdn_dir: /tmp
+
+    frame_cdn_s3_base_url: %s3.base.url%
+    frame_cdn_s3_region: ~
+    frame_cdn_s3_bucket: %s3.bucket.frame%
+    frame_cdn_s3_key: %s3.key%
+    frame_cdn_s3_secret: %s3.secret%
+
+    video_cdn_s3_base_url: %s3.base.url%
+    video_cdn_s3_region: ~
+    video_cdn_s3_bucket: %s3.bucket.video%
+    video_cdn_s3_key: %s3.key%
+    video_cdn_s3_secret: %s3.secret%
+
+
+    s3cmd_executable: s3cmd
+    parallel_executable: parallel
+
+    deleted_objects_dir: /var/labeling_api_deleted_objects
+
+    frame_cdn_s3_parallel_uploads_per_worker: 10
+    frame_cdn_s3_host_base: %s3.host%
+    frame_cdn_s3_host_bucket: %s3.host%
+
+
+    video_cdn_s3_parallel_uploads_per_worker: 10
+    video_cdn_s3_host_base: %s3.host%
+    video_cdn_s3_host_bucket: %s3.host%
+
+
+    frame_cdn_base_url: %cdn.base.url%
+
+    user_password: %user.password%
+
+
+    rabbitmq_host: rmq
+    rabbitmq_port: 5672
+    rabbitmq_vhost: /
+    rabbitmq_user: %rabbitmq.user%
+    rabbitmq_password: %rabbitmq.pass%
+    rabbitmq_use_alternate_exchange: true
+    rabbitmq_use_dead_letter_exchange: true
+    rabbitmq_management_port: 15672
+
+    redis_host: api-redis
+    redis_port: 6379
+
+oneup_flysystem:
+    adapters:
+        frame_cdn_dir_adapter:
+            local:
+                directory: %frame_cdn_dir%
+
+
+        video_cdn_dir_adapter:
+            local:
+                directory: %video_cdn_dir%
+
+
+        # frame_cdn_dir_adapter:
+        #     awss3v3:
+        #         client: frame_cdn.s3_client
+        #         bucket: "%frame_cdn_s3_bucket%"
+
+        # video_cdn_dir_adapter:
+        #     awss3v3:
+        #         client: video_cdn.s3_client
+        #         bucket: "%video_cdn_s3_bucket%"
+
+
+services:
+
+    annostation.labeling_api.service.s3_cmd_frame_cdn:
+        class: AnnoStationBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%frame_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%frame_cdn_s3_bucket%'
+            - '%frame_cdn_s3_key%'
+            - '%frame_cdn_s3_secret%'
+            - '%frame_cdn_s3_host_base%'
+            - '%frame_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.frame_cdn.s3_cmd:
+        class: AnnoStationBundle\Service\FrameCdn\S3Cmd
+        arguments:
+            - '%frame_cdn_base_url%'
+            - '%cache_dir%'
+            - '@annostation.labeling_api.service.s3_cmd_frame_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.frame_cdn.selected-alias:
+            alias: annostation.labeling_api.service.frame_cdn.s3_cmd
+
+    annostation.labeling_api.service.s3_cmd_video_cdn:
+        class: AnnoStationBundle\Service\S3Cmd
+        arguments:
+            - '%s3cmd_executable%'
+            - '%parallel_executable%'
+            - '%video_cdn_s3_parallel_uploads_per_worker%'
+            - '%cache_dir%'
+            - '%video_cdn_s3_bucket%'
+            - '%video_cdn_s3_key%'
+            - '%video_cdn_s3_secret%'
+            - '%video_cdn_s3_host_base%'
+            - '%video_cdn_s3_host_bucket%'
+    annostation.labeling_api.service.video_cdn.s3_cmd:
+        class: AnnoStationBundle\Service\VideoCdn\S3Cmd
+        arguments:
+            - '@annostation.labeling_api.service.s3_cmd_video_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.video_cdn.selected-alias:
+        alias: annostation.labeling_api.service.video_cdn.s3_cmd
+
+
+
+#     frame_cdn.s3_client:
+#         class: Aws\S3\S3Client
+#         arguments:
+#             -
+#                 version: 'latest'
+#                 region: "%frame_cdn_s3_region%"
+#                 endpoint: '%frame_cdn_s3_base_url%'
+#                 validate: false
+#                 bucket_endpoint: true
+#                 credentials:
+#                     key: "%frame_cdn_s3_key%"
+#                     secret: "%frame_cdn_s3_secret%"
+#     video_cdn.s3_client:
+#         class: Aws\S3\S3Client
+#         arguments:
+#             -
+#                 version: 'latest'
+#                 region: "%video_cdn_s3_region%"
+#                 endpoint: '%video_cdn_s3_base_url%'
+#                 validate: false
+#                 bucket_endpoint: true
+#                 credentials:
+#                     key: "%video_cdn_s3_key%"
+#                     secret: "%video_cdn_s3_secret%"
+
+
+    annostation.labeling_api.database.facade.user.selected-alias:
+        alias: annostation.labeling_api.database.facade.user_with_couch_db_sync
+
+
+liip_monitor:
+    checks:
+        groups:
+            default:
+                guzzle_http_service:
+                    couch_db:
+                        options:
+                            auth:
+                                - %couchdb_user%
+                                - %couchdb_password%
+
