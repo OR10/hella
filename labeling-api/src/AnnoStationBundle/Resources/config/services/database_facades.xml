@@ -8,8 +8,6 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />
             <argument type="service" id="annostation.storage_factory.service.storage_factory" />
-            <!--<argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />-->
-            <!--<argument type="service" id="annostation.labeling_api.service.video_cdn_azure.selected-alias" />-->
         </service>
 
         <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AnnoStationBundle\Database\Facade\PrelabeledFrame">

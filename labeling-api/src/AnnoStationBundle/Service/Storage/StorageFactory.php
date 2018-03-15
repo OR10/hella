@@ -2,9 +2,8 @@
 
 namespace AnnoStationBundle\Service\Storage;
 
-use Service;
-use Service\Cmd;
-use Service\Azure;
+use AnnoStationBundle\Service\VideoCdn\S3Cmd;
+use AnnoStationBundle\Service\VideoCdn\Azure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class StorageFactory
@@ -12,8 +11,14 @@ class StorageFactory
     const AZURE = 'azure';
     const S3CMD = 's3cmd';
 
+    /**
+     * @var S3Cmd
+     */
     private $videoCdnService;
 
+    /**
+     * @var Azure
+     */
     private $videoCdnServiceAzure;
 
     /**
@@ -32,7 +37,7 @@ class StorageFactory
     }
 
     /**
-     * @return Cmd|Azure
+     * @return S3Cmd|Azure
      * @throws \RuntimeException
      */
     public function getStorage()
