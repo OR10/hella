@@ -35,6 +35,9 @@ class Azure
      */
     private $dir;
 
+    /**
+     * @var string
+     */
     private $frameCdnBaseUrlAzure;
 
     public function __construct($endpointsProtocol, $accountName, $accountKey, $blobEndpoint, $container, $dir, $frameCdnBaseUrlAzure)
@@ -66,18 +69,29 @@ class Azure
         // TODO: Implement uploadDirectory() method.
     }
 
+    /**
+     * @param $video
+     * @param $source
+     * @return string
+     */
     public function uploadFile($video, $source)
     {
         $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
-        return 'ok';
     }
 
+    /**
+     * @param $filePath
+     * @return \MicrosoftAzure\Storage\Blob\Models\GetBlobResult
+     */
     public function getFile($filePath)
     {
         $blob = $this->blobClientCreate()->getBlob($this->container, $filePath);
         return $blob;
     }
 
+    /**
+     * @return string
+     */
     public function getBaseUrl()
     {
         return $this->frameCdnBaseUrlAzure;
