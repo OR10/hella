@@ -27,8 +27,8 @@ class StorageFactory
     private $container;
 
     public function __construct(
-        $videoCdnService,
-        $videoCdnServiceAzure,
+        S3Cmd $videoCdnService,
+        Azure $videoCdnServiceAzure,
         ContainerInterface $container
     ) {
         $this->videoCdnService = $videoCdnService;
