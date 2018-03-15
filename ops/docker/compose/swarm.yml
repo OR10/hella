@@ -1,0 +1,222 @@
+version: "3.1"
+
+services:
+  proxy:
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.proxy == 1
+
+  rmq:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.rmq == 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: '0.9'
+
+
+  ############# FRONT SECTION BEGIN #############
+
+  front:
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.front == 1
+
+  ############# FRONT SECTION END #############
+
+  ############# API SECTION BEGIN #############
+
+  api-nginx:
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.api == 1
+
+  api-fpm:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api == 1
+      resources:
+        limits:
+          cpus: '0.7'
+      restart_policy:
+        condition: any
+
+  api-workerpool-low:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: any
+
+  api-workerpool-normallow:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: any
+
+  api-workerpool-normal:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: any
+
+  api-workerpool-high:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_worker == 1
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: any
+
+  api-cron:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_cron == 1
+      resources:
+        limits:
+          cpus: '0.3'
+      restart_policy:
+        condition: any
+
+  api-couchdb:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_db == 1
+      resources:
+        limits:
+          cpus: '0.9'
+      restart_policy:
+        condition: any
+
+  api-redis:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.api_redis == 1
+      resources:
+        limits:
+          cpus: '0.4'
+      restart_policy:
+        condition: any
+
+  ############# API SECTION END #############
+
+  ############# VIDEO SECTION BEGIN #############
+
+  video-nginx:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.video == 1
+      resources:
+        limits:
+          cpus: '0.75'
+      restart_policy:
+        condition: any
+
+  video-fpm:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.video == 1
+      resources:
+        limits:
+          cpus: '0.75'
+      restart_policy:
+        condition: any
+
+  ############# VIDEO SECTION END #############
+
+  ############# MONITORING SECTION BEGIN #############
+
+  monitoring-visualizer:
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      resources:
+        limits:
+          cpus: '0.2'
+
+  monitoring-elasticsearch:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.2'
+
+  monitoring-logstash:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.2'
+
+  monitoring-logspout:
+    deploy:
+      mode: global
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          cpus: '0.2'
+
+  monitoring-kibana:
+    deploy:
+      placement:
+        constraints:
+          - node.labels.elk == 1
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+
+  ############# MONITORING SECTION END #############
+
+networks:
+  default:
+    driver: overlay
+    driver_opts:
+      encrypted: "true"

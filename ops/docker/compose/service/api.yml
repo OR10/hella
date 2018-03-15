@@ -7,12 +7,6 @@ services:
       context: ../../../../
     depends_on:
         - api-fpm
-    deploy:
-      restart_policy:
-        condition: any
-      placement:
-        constraints:
-          - node.labels.api == 1
 
   api-fpm:
     build:
@@ -51,22 +45,13 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api == 1
-      resources:
-        limits:
-          cpus: '0.5'
-      restart_policy:
-        condition: any
 
   api-workerpool-low:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
-    command: app/AnnoStation/console -vvv annostation:workerpool:starter low
+    restart: unless-stopped
+    command: bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter low"
     depends_on:
       - api-couchdb
       - rmq
@@ -99,22 +84,13 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-normallow:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
-    command: app/AnnoStation/console -vvv annostation:workerpool:starter normal low
+    restart: unless-stopped
+    command:  bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     depends_on:
       - api-couchdb
       - rmq
@@ -147,23 +123,13 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-normal:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
-    command: app/AnnoStation/console -vvv annostation:workerpool:starter normal
+    restart: unless-stopped
+    command:  bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     depends_on:
       - api-couchdb
       - rmq
@@ -196,23 +162,13 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-workerpool-high:
     build:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
-    restart: on-failure
-    command: app/AnnoStation/console -vvv annostation:workerpool:starter high
+    restart: unless-stopped
+    command: bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter high"
     depends_on:
       - api-couchdb
       - rmq
@@ -245,23 +201,13 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_worker == 1
-      replicas: 4
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-cron:
     build:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
-    restart: on-failure
-    command: bash -c "service cron start && tail -f /dev/null"
+    restart: unless-stopped
+    command: bash -c "app/AnnoStation/console cache:clear && service cron start && tail -f /dev/null"
     depends_on:
       - api-couchdb
       - rmq
@@ -294,15 +240,6 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_cron == 1
-      resources:
-        limits:
-          cpus: '0.3'
-      restart_policy:
-        condition: any
 
   api-couchdb:
     image: couchdb:1.7
@@ -315,35 +252,17 @@ services:
       timeout: 10s
       retries: 6
 #      start_period: 2s
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - 5984:5984
     volumes:
       - api_couchdb_dbdata:/usr/local/var/lib/couchdb
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_db == 1
-      resources:
-        limits:
-          cpus: '0.8'
-      restart_policy:
-        condition: any
 
   api-redis:
     image: redis
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - api_redis_dbdata:/data
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_redis == 1
-      resources:
-        limits:
-          cpus: '0.4'
-      restart_policy:
-        condition: any
 
 
 volumes:

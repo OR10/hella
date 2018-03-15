@@ -10,12 +10,6 @@ services:
       - api-nginx
 #      - front disabled for separate BE and FE build
     restart: on-failure
-    deploy:
-      restart_policy:
-        condition: any
-      placement:
-        constraints:
-          - node.labels.proxy == 1
 
   rmq:
     image: rabbitmq:management
@@ -35,15 +29,6 @@ services:
     volumes:
       - rmq_data:/var/lib/rabbitmq
     restart: on-failure
-    deploy:
-      placement:
-        constraints:
-          - node.labels.rmq == 1
-      restart_policy:
-        condition: any
-      resources:
-        limits:
-          cpus: '0.9'
 
 volumes:
   rmq_data:
