@@ -105,7 +105,7 @@ class CurrentUser extends Controller\Base
     /**
      * return user profile param with OAuth token
      *
-     * @Rest\Post("/profile")
+     * @Rest\Get("/profile")
      *
      * @return View\View
      */

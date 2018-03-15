@@ -2,6 +2,10 @@ default:
     resource: "AnnoStationBundle\Controller\Index"
     type: annotation
 
+api_authentificator:
+    resource: 'AnnoStationBundle\Controller\SecurityController'
+    type: annotation
+
 api_project_batch_upload:
     resource: 'AnnoStationBundle\Controller\Api\v1\Organisation\Project\BatchUpload'
     type: annotation
