@@ -21,9 +21,9 @@ security:
             security: false
 
         main:
-            entry_point: annostation.labeling_api.authentication_handler
-            http_basic:
-                realm: "Annostation"
+#            entry_point: annostation.labeling_api.authentication_handler
+#            http_basic:
+#                realm: "Annostation"
             #form_login:
             #    provider: fos_userbundle
             #    default_target_path: /labeling
@@ -31,13 +31,13 @@ security:
             #    success_handler: annostation.labeling_api.authentication_handler
             #    failure_handler: annostation.labeling_api.authentication_handler
             guard:
-                authenticators:
-                     - annostation.labeling_api.authentificator
+              authenticators:
+                - annostation.labeling_api.authenticator
 
             logout:       true
             anonymous:    true
-            simple_preauth:
-                authenticator: annostation.labeling_api.security.apikey_authenticator
+#            simple_preauth:
+#                authenticator: annostation.labeling_api.security.apikey_authenticator
 
             # activate different ways to authenticate
 
