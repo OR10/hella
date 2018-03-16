@@ -14,7 +14,6 @@ services:
       context: ../../../../
     depends_on:
       - api-couchdb
-      - api-redis
       - rmq
     environment:
       - APP_ENV
@@ -51,7 +50,7 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter low"
+    command: bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter low"
     depends_on:
       - api-couchdb
       - rmq
@@ -90,7 +89,7 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command:  bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    command:  bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     depends_on:
       - api-couchdb
       - rmq
@@ -129,7 +128,7 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command:  bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+    command:  bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     depends_on:
       - api-couchdb
       - rmq
@@ -168,7 +167,7 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c "app/AnnoStation/console cache:clear && app/AnnoStation/console -vvv annostation:workerpool:starter high"
+    command: bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter high"
     depends_on:
       - api-couchdb
       - rmq
@@ -207,7 +206,7 @@ services:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c "app/AnnoStation/console cache:clear && service cron start && tail -f /dev/null"
+    command: bash -c " service cron start && tail -f /dev/null"
     depends_on:
       - api-couchdb
       - rmq
@@ -257,12 +256,6 @@ services:
       - 5984:5984
     volumes:
       - api_couchdb_dbdata:/usr/local/var/lib/couchdb
-
-  api-redis:
-    image: redis
-    restart: unless-stopped
-    volumes:
-      - api_redis_dbdata:/data
 
 
 volumes:

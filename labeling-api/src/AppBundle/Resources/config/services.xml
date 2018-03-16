@@ -113,11 +113,14 @@
             <argument>%password.policy%</argument>
         </service>
 
-        <service id="annostation.labeling_api.oauth_checker" class="AppBundle\EventListener\OAuthChecker">
-            <argument type="service" id="service_container"/>
-            <tag name="kernel.event_listener"  event="kernel.controller" method="onKernelController"/>
-            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
-        </service>
+        <!--<service id="annostation.labeling_api.authenticator" class="AppBundle\Security\TokenAuthenticator">-->
+            <!--<argument type="service" id="router"/>-->
+        <!--</service>-->
+        <!--<service id="annostation.labeling_api.oauth_checker" class="AppBundle\EventListener\OAuthChecker">-->
+            <!--<argument type="service" id="service_container"/>-->
+            <!--<tag name="kernel.event_listener"  event="kernel.controller" method="onKernelController"/>-->
+            <!--<tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>-->
+        <!--</service>-->
 
         <service id="app.exception_listener" class="AppBundle\EventListener\ExceptionListener">
             <tag name="kernel.event_listener" event="kernel.exception"/>
@@ -127,7 +130,7 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="annostation.labeling_api.authentificator" class="AppBundle\Security\ApiAuthenticator">
+        <service id="annostation.labeling_api.authenticator" class="AppBundle\Security\ApiAuthenticator">
             <argument type="service" id="router"/>
             <argument type="service" id="security.password_encoder"/>
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
