@@ -32,12 +32,6 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="annostation.labeling_api.authentication_handler" class="AppBundle\AuthenticationHandler">
-            <argument>targetUrl</argument>
-            <argument>/labeling</argument>
-            <argument>/login</argument>
-        </service>
-
         <service id="annostation.labeling_api.service.logger_factory" class="AnnoStationBundle\Service\LoggerFactory">
         </service>
 
@@ -62,9 +56,6 @@
 
         <service id="annostation.labeling_api.security.api_key_user_provider" class="AppBundle\Security\ApiKeyUserProvider">
             <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
-        </service>
-
-        <service id="annostation.labeling_api.security.apikey_authenticator" class="AppBundle\Security\ApiKeyAuthenticator" public="true">
         </service>
 
         <service id="annostation.labeling_api.security.user_provider" class="AppBundle\Security\UserProvider" public="true">
@@ -112,15 +103,6 @@
         <service id="annostation.labeling_api.services.password_policy" class="AppBundle\Service\PasswordPolicyService">
             <argument>%password.policy%</argument>
         </service>
-
-        <!--<service id="annostation.labeling_api.authenticator" class="AppBundle\Security\TokenAuthenticator">-->
-            <!--<argument type="service" id="router"/>-->
-        <!--</service>-->
-        <!--<service id="annostation.labeling_api.oauth_checker" class="AppBundle\EventListener\OAuthChecker">-->
-            <!--<argument type="service" id="service_container"/>-->
-            <!--<tag name="kernel.event_listener"  event="kernel.controller" method="onKernelController"/>-->
-            <!--<tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>-->
-        <!--</service>-->
 
         <service id="app.exception_listener" class="AppBundle\EventListener\ExceptionListener">
             <tag name="kernel.event_listener" event="kernel.exception"/>

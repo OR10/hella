@@ -119,10 +119,10 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
         $result = null;
         $username = $credentials['username'];
         $user = $userProvider->loadUserByUsername($username);
-
-        if (!$credentials['authMe'] && $credentials['token'] && $credentials['token'] != $user->getToken()) {
+        $token = $user ? $user->getToken() : null;
+        if ($user && !$credentials['authMe'] && $credentials['token'] && $credentials['token'] != $token) {
             $user = null;
-        } elseif ($credentials['token'] && $credentials['token'] == $user->getToken()) {
+        } elseif ($credentials['token'] && $credentials['token'] == $token) {
             $this->authenticated = true;
         }
 
