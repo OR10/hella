@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Process\Process;
 
 
-$app->post('/', function (Request $request) use ($app) {
+$app->put('/', function (Request $request) use ($app) {
 
     $frameSizesInBytes = $app['VideoFrameSplitter']->splitVideoInFrames(
         (string)$request->get('videoId'),
