@@ -3,11 +3,8 @@
 namespace AppBundle\Security;
 
 use AppBundle\Database\Facade\User;
-use AppBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -26,6 +23,11 @@ use Symfony\Component\Security\Core\Security;
  */
 class ApiAuthenticator extends AbstractFormLoginAuthenticator
 {
+    /**
+     * @fixme stateful service
+     * @var bool
+     */
+    private $authenticated = false;
 
     /**
      * @var RouterInterface
@@ -66,30 +68,73 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
         $this->secureToken = $tokenStorage;
     }
 
-    public function getCredentials(Request $request)
+    private function checkLoginPage(Request $request)
     {
+        $this->authenticated = false;
+
         if ($request->getPathInfo() != '/login_check') {
-            return;
+            return null;
         }
 
-        $email = $request->request->get('_username');
-        $request->getSession()->set(Security::LAST_USERNAME, $email);
-        $password = $request->request->get('_password');
+        if (!$content = $request->getContent()) {
+            return null;
+        }
 
+        $data = array_merge(['username' => null, 'password' => null], json_decode($content, true));
+
+        $request->getSession()->set(Security::LAST_USERNAME, $data['username']);
         return [
-            'username' => $email,
-            'password' => $password,
+            'username' => $data['username'],
+            'password' => $data['password'],
+            'token' => null,
+            'authMe' => true,
+        ];
+
+    }
+
+    public function getCredentials(Request $request)
+    {
+        if ($credentials = $this->checkLoginPage($request)) {
+            return $credentials;
+        }
+
+        $token = $request->headers->get('X-AUTH-TOKEN');
+        $username = $request->headers->get('X-USERNAME');
+
+        // What you return here will be passed to getUser() as $credentials
+        return [
+            'token' => $token,
+            'username' => $username,
+            'authMe' => false,
         ];
     }
 
+    /**
+     * @param string[] $credentials
+     * @param UserProviderInterface $userProvider
+     * @return \AppBundle\Model\User|\FOS\UserBundle\Model\UserInterface|null|UserInterface
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        $result = null;
         $username = $credentials['username'];
-        return $this->userFacade->getUserByUsername($username);
+        $user = $userProvider->loadUserByUsername($username);
+        $token = $user ? $user->getToken() : null;
+        if ($user && !$credentials['authMe'] && $credentials['token'] && $credentials['token'] != $token) {
+            $user = null;
+        } elseif ($credentials['token'] && $credentials['token'] == $token) {
+            $this->authenticated = true;
+        }
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
+        if (!$credentials['authMe']) {
+            return true;
+        }
+
         $plainPassword = $credentials['password'];
         if ($this->encoder->isPasswordValid($user, $plainPassword)) {
             return true;
@@ -100,18 +145,24 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        if ($this->authenticated) {
+            return null;
+        }
 
         $user = $this->userFacade->getUserByUsername($token->getUsername());
         $token->setUser($user);
+        /** @var \AppBundle\Model\User $user */
         $user = $this->secureToken->getToken()->getUser();
 
-        //get oAuth token
-        $token = $user->getToken();
-        if(!$token) {
-            $token = uniqid(bin2hex($user->getUsername()));
-            $user->setToken($token);
-            $this->userFacade->updateUser($user);
+        //get our custom token
+        $tokenStr = $user->getToken();
+
+        if(!$tokenStr) {
+            $tokenStr = uniqid(bin2hex($user->getUsername()));
+            $user->setToken($tokenStr);
         }
+
+        $this->userFacade->updateUser($user);
 
         return new JsonResponse(
             [
@@ -121,7 +172,7 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
                     'email'      => $user->getEmail(),
                     'roles'      => $user->getRoles(),
                     'expiresAt'  => $user->getExpiresAt(),
-                    'oAuthToken' => $token
+                    'XToken' => $tokenStr,
                 ],
             ]
         );
@@ -135,18 +186,17 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
                 'result' => [
                     'Failed to login'
                 ],
-            ]
+            ], 401
         );
     }
 
     protected function getLoginUrl()
     {
-
+        return '/login';
     }
 
     protected function getDefaultSuccessRedirectUrl()
     {
-
     }
 
     public function supportsRememberMe()

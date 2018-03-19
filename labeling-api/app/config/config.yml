@@ -31,9 +31,7 @@ framework:
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
-    session:
-        handler_id: snc_redis.session.handler
-        cookie_lifetime: 3600
+    session: ~
     fragments:       ~
     http_method_override: true
 
@@ -90,13 +88,3 @@ fos_rest:
     routing_loader:
         default_format: json
         include_format: true
-
-snc_redis:
-    clients:
-        default:
-            type: predis
-            alias: default
-            dsn: redis://%redis_host%:%redis_port%
-    session:
-        client: default
-        locking: false
