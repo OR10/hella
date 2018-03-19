@@ -13,8 +13,8 @@ docker-compose config > tmp.yml
 docker-machine scp tmp.yml $SWARM_MASTER:/home/$SWARM_USER/
 
 #Deployment
-docker-machine ssh $SWARM_MASTER "docker stack rm hella"
-sleep 25
+#docker-machine ssh $SWARM_MASTER "docker stack rm hella"
+#sleep 25
 #docker-machine ssh $SWARM_MASTER "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker stack deploy -c tmp.yml hella --with-registry-auth"
 docker-machine ssh $SWARM_MASTER "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker stack deploy -c tmp.yml hella --with-registry-auth && sleep 60 && docker stack deploy -c tmp.yml hella --with-registry-auth"
 
