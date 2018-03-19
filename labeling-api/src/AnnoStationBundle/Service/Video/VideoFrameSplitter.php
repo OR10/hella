@@ -73,7 +73,7 @@ class VideoFrameSplitter
      *
      * @return array
      */
-    public function  splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
+    public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
     {
         $httpClient = new GuzzleHttp\Client();
         $response = $httpClient->put(
