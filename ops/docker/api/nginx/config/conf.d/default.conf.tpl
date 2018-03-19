@@ -11,7 +11,7 @@ server {
 
     rewrite_log on;
 
-    location ~* ".*\.(css|js|txt|jpg|png|ico)$" {
+    location ~* ".*\.(txt|jpg|png|ico)$" {
         root      /code;
     }
 
