@@ -124,17 +124,6 @@ services:
       restart_policy:
         condition: any
 
-  api-redis:
-    deploy:
-      placement:
-        constraints:
-          - node.labels.api_redis == 1
-      resources:
-        limits:
-          cpus: '0.4'
-      restart_policy:
-        condition: any
-
   ############# API SECTION END #############
 
   ############# VIDEO SECTION BEGIN #############

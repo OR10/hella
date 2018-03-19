@@ -67,9 +67,10 @@ class AuthenticationHandler implements
         Core\Exception\AuthenticationException $authException = null
     ) {
         if ($request->isXmlHttpRequest()) {
+            die('ololo');
             return new HttpFoundation\Response(null, HttpFoundation\Response::HTTP_UNAUTHORIZED);
         }
-
+        die('trololo');
         return new HttpFoundation\RedirectResponse($this->failurePath);
     }
 
@@ -116,9 +117,11 @@ class AuthenticationHandler implements
         HttpFoundation\Request $request,
         Core\Exception\AuthenticationException $authException
     ) {
+        die('ololo2');
         if ($request->isXmlHttpRequest()) {
             return new HttpFoundation\Response(null, HttpFoundation\Response::HTTP_UNAUTHORIZED);
         }
+        die('trololo2');
 
         return new HttpFoundation\RedirectResponse($this->failurePath);
     }

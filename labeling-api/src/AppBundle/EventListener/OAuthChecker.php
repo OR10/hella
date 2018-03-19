@@ -34,25 +34,25 @@ class OAuthChecker
      */
     public function onKernelController(FilterControllerEvent $event)
     {
+//        TODO: remove this file!!!!1111
         $token = null;
         $controller = $event->getController();
         $req =  $event->getRequest();
         $apiKey = $req->headers->get('Auth');
 
-        if($apiKey) {
-            if (preg_match('/Bearer\s(\S+)/', $apiKey, $matches)) {
-                $token = $matches[1];
-            }
-        }
+        $token =  ($apiKey && preg_match('/Bearer\s(\S+)/', $apiKey, $matches)) ? $matches : null;
+
 
         //disable OAuth action for controllers in statement
-        if($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController || $controller[0] instanceof CurrentUser) {
+//        if ($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController || $controller[0] instanceof CurrentUser) {
+        if ($controller[0] instanceof SecurityController || $controller[0] instanceof CanViewWithoutOAuth || $controller[0] instanceof ProfilerController) {
             return;
         } else {
             $tokenStorage = $this->container->get('security.token_storage');
             $currentToken = $tokenStorage->getToken()->getUser()->getToken();
             if(!$token || ($token != $currentToken) ) {
-                //throw new Exception('Authorization token not valid');
+//                throw new Exception('Authorization token not valid');
+                throw new UnauthorizedHttpException('Authorization token not valid');
             }
         }
     }
