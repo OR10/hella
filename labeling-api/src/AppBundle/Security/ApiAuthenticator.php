@@ -116,6 +116,7 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        $result = null;
         $username = $credentials['username'];
         $user = $userProvider->loadUserByUsername($username);
 
