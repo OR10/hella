@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
-    video_processing_host: http://video-nginx
+    video_processing_host: %video.host%
     cache_dir: /code/app/AnnoStation/cache/labeling_api/
 
     database_name: labeling_api
