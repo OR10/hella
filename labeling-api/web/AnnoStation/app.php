@@ -10,6 +10,8 @@ if ($notProd = ENV_NAME_PROD !== $env) {
     ini_set('display_errors',1);
 }
 
+$env = 'prod';
+$notProd = false;
 $loader = require_once __DIR__ . '/../../app/AnnoStation/bootstrap.php.cache';
 
 // Enable APC for autoloading to improve performance.
