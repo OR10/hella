@@ -104,14 +104,6 @@
             <argument>%password.policy%</argument>
         </service>
 
-        <service id="app.exception_listener" class="AppBundle\EventListener\ExceptionListener">
-            <tag name="kernel.event_listener" event="kernel.exception"/>
-        </service>
-
-        <service id="app.exception_subscriber" class="AppBundle\EventListener\ExceptionSubscriber">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
         <service id="annostation.labeling_api.authenticator" class="AppBundle\Security\ApiAuthenticator">
             <argument type="service" id="router"/>
             <argument type="service" id="security.password_encoder"/>
@@ -119,5 +111,9 @@
             <argument type="service" id="security.token_storage" />
         </service>
 
+        <service id="annostation.labeling_api.logout_handler" class="AppBundle\Security\LogoutHandler">
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias" />
+            <argument type="service" id="security.token_storage" />
+        </service>
     </services>
 </container>

@@ -16,7 +16,7 @@ class SecurityController extends Controller
 {
 
     /**
-     * @Configuration\Route("/login_check")
+     * @Configuration\Route("/login_check", methods={"POST"})
      */
     public function loginCheckAction()
     {
@@ -24,7 +24,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/logout", name="logout")
+     * @Route("/logout", name="logout", methods={"POST"})
      */
     public function logoutAction()
     {

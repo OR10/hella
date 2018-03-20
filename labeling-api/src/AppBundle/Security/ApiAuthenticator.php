@@ -80,9 +80,14 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
             return null;
         }
 
-        $data = array_merge(['username' => null, 'password' => null], json_decode($content, true));
+        if (!$rawData = json_decode($content, true)) {
+            return null;
+        }
+
+        $data = array_merge(['username' => null, 'password' => null], $rawData);
 
         $request->getSession()->set(Security::LAST_USERNAME, $data['username']);
+
         return [
             'username' => $data['username'],
             'password' => $data['password'],
@@ -192,7 +197,7 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return '/login';
+        return '/labeling/login';
     }
 
     protected function getDefaultSuccessRedirectUrl()
