@@ -6,7 +6,7 @@ parameters:
     database_name: labeling_api
     database_name_read_only: labeling_api
 
-    couchdb_host: api-couchdb
+    couchdb_host: %couchdb.host%
     couchdb_host_external: %couchdb.host.external%
     couchdb_port: 5984
     couchdb_port_external: 80
