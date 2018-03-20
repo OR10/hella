@@ -62,12 +62,12 @@ class Block extends ExportXml\Element
         $block->setAttribute('id', $this->labeledBlock->getId());
 
         $block->setAttribute(
-            'start', $this->frameNumberMapping[(int)$this->labeledBlock->getFrameIndex()]
-            //$this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getStartFrameIndex()]
+            'start', //$this->frameNumberMapping[(int)$this->labeledBlock->getFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getStartFrameIndex()]
         );
         $block->setAttribute(
-            'end', $this->frameNumberMapping[(int)$this->labeledBlock->getFrameIndex()]
-           // $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getEndFrameIndex()]
+            'end', //$this->frameNumberMapping[(int)$this->labeledBlock->getFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getEndFrameIndex()]
         );
 
         $createdByUserId = $this->labeledBlock->getCreatedByUserId();

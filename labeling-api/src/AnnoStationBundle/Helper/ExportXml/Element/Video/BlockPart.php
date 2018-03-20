@@ -57,12 +57,12 @@ class BlockPart extends ExportXml\Element
         $block->setAttribute('class', 'blockage-16-'.$this->labeledBlockPart->getStatus());
 
         $block->setAttribute(
-            'start',$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-        //$this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getStartFrameIndex()]
+            'start', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getStartFrameIndex()]
         );
         $block->setAttribute(
-            'end',$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-        // $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getEndFrameIndex()]
+            'end', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getEndFrameIndex()]
         );
 
         return $block;

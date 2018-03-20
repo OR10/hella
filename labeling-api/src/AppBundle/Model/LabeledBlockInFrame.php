@@ -83,6 +83,7 @@ class LabeledBlockInFrame extends Base
      */
     public function __construct(
         LabeledBlock $labeledBlock,
+        LabelingTask $task,
         $frameIndex
     ) {
         $labeledBlock->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
@@ -90,6 +91,10 @@ class LabeledBlockInFrame extends Base
         $this->taskId         = $labeledBlock->getTaskId();
         $this->projectId     = $labeledBlock->getProjectId();
         $this->frameIndex    = (int) $frameIndex;
+        $this->frameRange      = new FrameIndexRange(
+            min(array_keys($task->getFrameNumberMapping())),
+            max(array_keys($task->getFrameNumberMapping()))
+        );
     }
 
     /**
