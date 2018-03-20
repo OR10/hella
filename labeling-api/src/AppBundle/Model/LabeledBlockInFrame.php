@@ -30,6 +30,16 @@ class LabeledBlockInFrame extends Base
     private $projectId;
 
     /**
+     * @CouchDB\EmbedOne(targetDocument="AppBundle\Model\FrameIndexRange")
+     */
+    private $frameRange;
+
+    /**
+     * @CouchDB\Field(type="string")
+     */
+    private $frameIndex;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $labelBlockGroupIds;
@@ -77,8 +87,8 @@ class LabeledBlockInFrame extends Base
     ) {
         $labeledBlock->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
 
-        $this->taskId               = $labeledBlock->getTaskId();
-        $this->projectId            = $labeledBlock->getProjectId();
+        $this->taskId         = $labeledBlock->getTaskId();
+        $this->projectId     = $labeledBlock->getProjectId();
         $this->frameIndex    = (int) $frameIndex;
     }
 
@@ -200,13 +210,55 @@ class LabeledBlockInFrame extends Base
         $this->lastModifiedByUserId = $lastModifiedByUserId;
     }
 
+    /**
+     * @param $userId
+     */
     public function setUser($userId)
     {
         $this->createdByUserId = $userId;
     }
 
+    /**
+     * @return mixed
+     */
     public function getUser()
     {
         return $this->createdByUserId;
+    }
+
+    /**
+     * @param $index
+     */
+    public function setFrameIndex($index)
+    {
+        $this->frameIndex = $index;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFrameIndex()
+    {
+        return $this->frameIndex;
+    }
+
+    /**
+     * @return FrameIndexRange
+     */
+    public function getFrameRange()
+    {
+        return $this->frameRange ? clone $this->frameRange : null;
+    }
+
+    /**
+     * @param FrameIndexRange $frameRange
+     *
+     * @return LabeledThing
+     */
+    public function setFrameRange(FrameIndexRange $frameRange)
+    {
+        $this->frameRange = $frameRange;
+
+        return $this;
     }
 }

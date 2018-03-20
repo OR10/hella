@@ -66,7 +66,7 @@ class LabeledBlockInFrame
      * @param Model\LabeledBlock $task
      * @return mixed
      */
-    public function findByTaskId(Model\LabeledBlock $task)
+    public function findByTaskId(Model\LabelingTask $task)
     {
         return $this->documentManager
             ->createQuery('annostation_labeled_block_in_frame', 'by_taskId')

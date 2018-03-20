@@ -91,14 +91,6 @@ class LabeledBlock extends Base
     }
 
     /**
-     * @return FrameIndexRange
-     */
-    public function getFrameRange()
-    {
-        return $this->frameRange ? clone $this->frameRange : null;
-    }
-
-    /**
      * @param $status
      * @return $this
      */
@@ -134,6 +126,14 @@ class LabeledBlock extends Base
     public function getFrameIndex()
     {
         return $this->frameIndex;
+    }
+
+    /**
+     * @return FrameIndexRange
+     */
+    public function getFrameRange()
+    {
+        return $this->frameRange ? clone $this->frameRange : null;
     }
 
     /**

@@ -63,6 +63,21 @@ class LabeledBlock
     }
 
     /**
+     * get all mark blocked areas in frame
+     * @param $blockFrameIds
+     * @return array
+     */
+    public function findLabeledBlockInFrame($blockFrameIds)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_block', 'by_id')
+            ->setKeys($blockFrameIds)
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param Model\LabeledBlock $task
      * @return mixed
      */
