@@ -55,7 +55,7 @@ class Block extends ExportXml\Element
 
     public function getElement(\DOMDocument $document)
     {
-        $block = $document->createElementNS($this->namespace, 'blockage-labeling'); //blockage-labeling
+        $block = $document->createElementNS($this->namespace, 'blockage');
 
         $block->setAttribute('incomplete', $this->labeledBlock->getStatus());
 

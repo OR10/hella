@@ -42,7 +42,7 @@ class BlockPart extends ExportXml\Element
         References $references,
         $namespace
     ) {
-        $this->labeledBlockPart   = $labeledBlockPart;   //changed to LabeledBlock model
+        $this->labeledBlockPart   = $labeledBlockPart;
         $this->references         = $references;
         $this->namespace          = $namespace;
         $this->frameNumberMapping = $frameNumberMapping;
@@ -50,7 +50,7 @@ class BlockPart extends ExportXml\Element
 
     public function getElement(\DOMDocument $document)
     {
-        $block = $document->createElementNS($this->namespace, 'value'); //blockage-labeling
+        $block = $document->createElementNS($this->namespace, 'value');
 
         $block->setAttribute('id', $this->labeledBlockPart->getId());
 
@@ -58,11 +58,11 @@ class BlockPart extends ExportXml\Element
 
         $block->setAttribute(
             'start', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getStartFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlockPart->getFrameRange()->getStartFrameIndex()]
         );
         $block->setAttribute(
             'end', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-            $this->frameNumberMapping[$this->labeledBlock->getFrameRange()->getEndFrameIndex()]
+            $this->frameNumberMapping[$this->labeledBlockPart->getFrameRange()->getEndFrameIndex()]
         );
 
         return $block;
