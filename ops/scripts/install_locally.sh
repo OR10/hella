@@ -5,9 +5,9 @@ set -ex
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 echo $SCRIPTPATH
-cd $SCRIPTPATH"/.."
+cd $SCRIPTPATH"/../.."
 
-echo $SCRIPTPATH"/../labeling-ui"
+echo $SCRIPTPATH"/../../labeling-ui"
 
 docker-compose stop
 
@@ -42,7 +42,7 @@ docker-compose run --user $(id -u) --rm maintenance-node yarn
 docker-compose run --user $(id -u) --rm maintenance-node gulp
 
 #Create symlinc for nginx
-cd $SCRIPTPATH"/../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/.."
+cd $SCRIPTPATH"/../../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/../.."
 
 docker-compose stop
 

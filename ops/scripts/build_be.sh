@@ -3,7 +3,7 @@
 source .env
 set -ex
 
-export COMPOSE_FILE=ops/docker/compose/env/prod_be.yml:ops/docker/compose/maintenance/be.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/service/video.yml:ops/docker/compose/monitoring.yml
+export COMPOSE_FILE=ops/docker/compose/env/prod_be.yml:ops/docker/compose/maintenance/be.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/service/api-couch.yml:ops/docker/compose/service/video.yml:ops/docker/compose/monitoring/elk.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/monitoring/visualizer.yml
 export APP_ENV=prod
 export REGISTRY_URL=docker.io
 
