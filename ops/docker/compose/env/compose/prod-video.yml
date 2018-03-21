@@ -1,0 +1,8 @@
+version: "3.1"
+
+services:
+  video-nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_nginx:${DOCKER_BE_TAG}
+
+  video-fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/video_fpm:${DOCKER_BE_TAG}

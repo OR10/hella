@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  monitoring-logspout:
+    image: bekt/logspout-logstash
+    environment:
+      ROUTE_URIS: ${LOGSTASH_HOST}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8070:80"
+    depends_on:
+      - monitoring-logstash
+    restart: on-failure

@@ -3,9 +3,6 @@ version: "3.1"
 services:
 
   proxy:
-    build:
-      dockerfile: 'ops/docker/proxy/Dockerfile'
-      context: ../../../../
     depends_on:
       - api-nginx
 #      - front disabled for separate BE and FE build

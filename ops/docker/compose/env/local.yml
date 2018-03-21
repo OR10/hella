@@ -20,26 +20,38 @@ services:
       - ../../../../labeling-api/web/AnnoStation:/code
 
   api-fpm:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 
   api-workerpool-low:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 
   api-workerpool-normallow:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 
   api-workerpool-normal:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 
   api-workerpool-high:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 
   api-cron:
+    depends_on:
+      - api-couchdb
     volumes:
       - ../../../../labeling-api:/code:z
 

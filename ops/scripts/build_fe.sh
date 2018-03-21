@@ -3,7 +3,7 @@
 source .env
 set -ex
 
-export COMPOSE_FILE=ops/docker/compose/env/prod_fe.yml:ops/docker/compose/maintenance/fe.yml:ops/docker/compose/service/front.yml
+export COMPOSE_FILE=ops/docker/compose/env/prod_fe.yml:ops/docker/compose/maintenance/fe.yml:ops/docker/compose/service/front-build.yml
 export APP_ENV=prod
 export REGISTRY_URL=docker.io
 

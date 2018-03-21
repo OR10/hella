@@ -13,7 +13,6 @@ services:
       dockerfile: 'ops/docker/api/fpm/Dockerfile'
       context: ../../../../
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -52,9 +51,8 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter low"
+    command: bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -93,9 +91,8 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command:  bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -134,9 +131,8 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command:  bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -175,9 +171,8 @@ services:
       dockerfile: 'ops/docker/api/cli/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter high"
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -216,9 +211,8 @@ services:
       dockerfile: 'ops/docker/api/cron/Dockerfile'
       context: ../../../../
     restart: unless-stopped
-    command: bash -c " service cron start && tail -f /dev/null"
+    command: bash -c "app/AnnoStation/console cache:clear -vvv && service cron start && tail -f /dev/null"
     depends_on:
-      - api-couchdb
       - rmq
     environment:
       - APP_ENV
@@ -251,27 +245,3 @@ services:
       - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
       - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
-
-  api-couchdb:
-    image: couchdb:1.7
-    environment:
-      - COUCHDB_USER=${COUCHDB_USER}
-      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
-    healthcheck:
-      test: "curl -f -s http://localhost:5984/_users || exit 1"
-      interval: 10s
-      timeout: 10s
-      retries: 6
-#      start_period: 2s
-    restart: unless-stopped
-    ports:
-      - 5984:5984
-    volumes:
-      - api_couchdb_dbdata:/usr/local/var/lib/couchdb
-
-
-volumes:
-    api_couchdb_dbdata:
-      driver: local
-    api_redis_dbdata:
-      driver: local
