@@ -2,16 +2,10 @@ version: "3.1"
 
 services:
   video-nginx:
-    build:
-      dockerfile: 'ops/docker/video/nginx/Dockerfile'
-      context: ../../../../
     depends_on:
         - video-fpm
 
   video-fpm:
-    build:
-      dockerfile: 'ops/docker/video/fpm/Dockerfile'
-      context: ../../../../
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}

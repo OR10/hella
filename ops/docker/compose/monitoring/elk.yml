@@ -16,9 +16,6 @@ services:
       - 9200:9200
 
   monitoring-logstash:
-    build:
-      dockerfile: 'ops/docker/logstash/Dockerfile'
-      context: ../../../../
     depends_on:
       - monitoring-elasticsearch
     ports:

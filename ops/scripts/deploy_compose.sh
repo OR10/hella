@@ -45,7 +45,7 @@ docker-machine ssh $COUCHDB_MACHINE ".env"
 #################### API DEPLOYMENT BEGIN ####################
 
 #Make yml for docker api
-export COMPOSE_FILE=ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/prod_fe.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/service/front.yml:ops/docker/compose/monitoring/logspout.yml
+export COMPOSE_FILE=ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/prod_fe.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/monitoring/logspout.yml
 docker-compose config > api.yml
 
 #Copy docker-compose config
