@@ -27,7 +27,7 @@ docker-machine ssh $MONITORING_MACHINE ".env"
 #################### COUCHDB DEPLOYMENT BEGIN ####################
 
 #Make yml for docker couchdb
-export COMPOSE_FILE=ops/docker/compose/service/api-couch.ymlops/docker/compose/monitoring/logspout.yml
+export COMPOSE_FILE=ops/docker/compose/service/api-couch.yml:ops/docker/compose/monitoring/logspout.yml
 docker-compose config > couchdb.yml
 
 #Copy docker-compose config
