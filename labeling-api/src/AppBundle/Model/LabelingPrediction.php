@@ -9,6 +9,9 @@ use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
  */
 class LabelingPrediction extends Base
 {
+    const PREDICTION_ON = true;
+    const PREDICTION_OFF = false;
+
     /**
      * @CouchDB\Id
      */
@@ -25,7 +28,7 @@ class LabelingPrediction extends Base
     private $taskId;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="boolean")
      */
     private $status;
 
@@ -51,15 +54,14 @@ class LabelingPrediction extends Base
     }
 
     /**
-     * LabeledBlock constructor.
+     * LabelingPrediction constructor.
      * @param LabelingTask $task
-     * @param Project $project
-     * @param null $createdByUserId
      */
     public function __construct(LabelingTask $task)
     {
-        $this->taskId          = $task->getId();
-        $this->projectId       = $task->getProjectId();
+        $this->taskId     = $task->getId();
+        $this->projectId  = $task->getProjectId();
+        $this->status     = self::PREDICTION_ON;
     }
 
     /**

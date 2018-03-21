@@ -22,6 +22,18 @@ class LabelingPrediction
     }
 
     /**
+     * @param Model\LabelingPrediction $project
+     * @return Model\LabelingPrediction
+     */
+    public function save(Model\LabelingPrediction $project)
+    {
+        $this->documentManager->persist($project);
+        $this->documentManager->flush();
+
+        return $project;
+    }
+
+    /**
      * @param $id
      * @return object
      */
@@ -49,12 +61,12 @@ class LabelingPrediction
      * @param Model\Project $project
      * @return mixed
      */
-    public function findByTaskProject(Model\LabelingTask $task, Model\Project $project)
+    public function findByTaskProject(Model\LabelingTask $task)
     {
         return $this->documentManager
-            ->createQuery('annostation_labeled_prediction', 'by_task_project_id')
-            ->onlyDocs(false)
-            ->setKey([$task->getId(), $project->getId()])
+            ->createQuery('annostation_labeling_prediction', 'by_taskid')
+            ->setKey($task->getId())
+            ->onlyDocs(true)
             ->execute()
             ->toArray();
     }
