@@ -86,6 +86,9 @@ class Shape extends ExportXml\Element
             case $this->shape instanceof Model\Shapes\Point:
                 $shapeElement = new Shape\Point($this->shape, $this->namespace);
                 break;
+            case $this->shape instanceof Model\Shapes\Trapezoid:
+                $shapeElement = new Shape\Trapezoid($this->shape, $this->namespace);
+                break;
         }
 
         if (isset($shapeElement)) {

@@ -69,7 +69,7 @@ class Trapezoid extends Model\Shape
         ) {
             throw new \RuntimeException(
                 sprintf(
-                    'Invalid rectangle shape id:%s topLeft:[x:%s y:%s] bottomRight:[x:%s y:%s]',
+                    'Invalid trapezoid shape id:%s topLeft:[x:%s y:%s] bottomRight:[x:%s y:%s]',
                     isset($shape['id']) ? $shape['id'] : '',
                     isset($shape['topLeft']['x']) ? $shape['topLeft']['x'] : '',
                     isset($shape['topLeft']['y']) ? $shape['topLeft']['y'] : '',
@@ -89,10 +89,12 @@ class Trapezoid extends Model\Shape
             $shape['topLeft']['y'],
             $shape['bottomRight']['x'],
             $shape['bottomRight']['y'],
-            $shape['handleTop']['x'],
-            $shape['handleTop']['y'],
-            $shape['handleBottom']['x'],
-            $shape['handleBottom']['y']
+            [
+                'handleLeft' => $shape['handleTop']['x'],
+                'handleTop' => $shape['handleTop']['y'],
+                'handleRight' => $shape['handleBottom']['x'],
+                'handleBottom' => $shape['handleBottom']['y']
+            ]
         );
     }
 
@@ -110,10 +112,10 @@ class Trapezoid extends Model\Shape
         $this->top    = (float) $top;
         $this->right  = (float) $right;
         $this->bottom = (float) $bottom;
-        $this->handleLeft = (isset($handle['handleLeft'])) ? $handle['handleLeft'] : '';
-        $this->handleTop = (isset($handle['handleTop'])) ? $handle['handleTop'] : '';
-        $this->handleRight = (isset($handle['handleRight'])) ? $handle['handleRight'] : '';
-        $this->handleBottom = (isset($handle['handleBottom'])) ? $handle['handleBottom'] : '';
+        $this->handleLeft = (isset($handle['handleLeft'])) ? (float)$handle['handleLeft'] : '';
+        $this->handleTop = (isset($handle['handleTop'])) ? (float)$handle['handleTop'] : '';
+        $this->handleRight = (isset($handle['handleRight'])) ? (float)$handle['handleRight'] : '';
+        $this->handleBottom = (isset($handle['handleBottom'])) ? (float)$handle['handleBottom'] : '';
     }
 
     public function getId()
@@ -220,7 +222,7 @@ class Trapezoid extends Model\Shape
                 'x' => $this->getLeft(),
                 'y' => $this->getTop(),
             ],
-            'bottomRight ' => [
+            'bottomRight' => [
                 'x' => $this->getRight(),
                 'y' => $this->getBottom(),
             ],
