@@ -30,7 +30,7 @@ class LabeledBlock extends Base
     private $taskId;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="boolean")
      */
     private $status;
 

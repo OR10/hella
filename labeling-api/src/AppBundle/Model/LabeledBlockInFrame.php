@@ -45,7 +45,7 @@ class LabeledBlockInFrame extends Base
     private $labelBlockGroupIds;
 
     /**
-     * @CouchDB\Field(type="string")
+     * @CouchDB\Field(type="boolean")
      */
     private $status;
 
@@ -76,10 +76,9 @@ class LabeledBlockInFrame extends Base
 
     /**
      * LabeledBlockInFrame constructor.
-     * @param LabeledBlock $labeledThing
+     * @param LabeledBlock $labeledBlock
+     * @param LabelingTask $task
      * @param $frameIndex
-     * @param array $classes
-     * @param array $shapes
      */
     public function __construct(
         LabeledBlock $labeledBlock,
@@ -88,7 +87,7 @@ class LabeledBlockInFrame extends Base
     ) {
         $labeledBlock->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
 
-        $this->taskId         = $labeledBlock->getTaskId();
+        $this->taskId        = $labeledBlock->getTaskId();
         $this->projectId     = $labeledBlock->getProjectId();
         $this->frameIndex    = (int) $frameIndex;
         $this->frameRange      = new FrameIndexRange(
