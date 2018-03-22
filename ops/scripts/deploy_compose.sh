@@ -18,8 +18,8 @@ docker-machine scp .env $MONITORING_MACHINE:/home/$MACHINE_USER/
 
 docker-machine ssh $MONITORING_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f monitoring.yml pull && docker-compose -f monitoring.yml up -d"
 
-docker-machine ssh $MONITORING_MACHINE "monitoring.yml"
-docker-machine ssh $MONITORING_MACHINE ".env"
+###docker-machine ssh $MONITORING_MACHINE "rm monitoring.yml"
+###docker-machine ssh $MONITORING_MACHINE "rm .env"
 
 #################### MONITORING DEPLOYMENT END ####################
 
@@ -36,8 +36,8 @@ docker-machine scp .env $COUCHDB_MACHINE:/home/$MACHINE_USER/
 
 docker-machine ssh $COUCHDB_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f couchdb.yml pull && docker-compose -f couchdb.yml up -d"
 
-docker-machine ssh $COUCHDB_MACHINE "couchdb.yml"
-docker-machine ssh $COUCHDB_MACHINE ".env"
+###docker-machine ssh $COUCHDB_MACHINE "rm couchdb.yml"
+###docker-machine ssh $COUCHDB_MACHINE "rm .env"
 
 #################### COUCHDB DEPLOYMENT END ####################
 
@@ -54,13 +54,13 @@ docker-machine scp .env $API_MACHINE:/home/$MACHINE_USER/
 
 docker-machine ssh $API_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f api.yml pull && docker-compose -f api.yml up -d"
 
-docker-machine ssh $API_MACHINE "api.yml"
-docker-machine ssh $API_MACHINE ".env"
+###docker-machine ssh $API_MACHINE "rm api.yml"
+###docker-machine ssh $API_MACHINE "rm .env"
 
 #################### API DEPLOYMENT END ####################
 
 
-#################### MONITORING DEPLOYMENT BEGIN ####################
+#################### VIDEO DEPLOYMENT BEGIN ####################
 
 #Make yml for docker video
 export COMPOSE_FILE=ops/docker/compose/env/compose/prod-video.yml:ops/docker/compose/service/video.yml:ops/docker/compose/monitoring/logspout.yml
@@ -72,7 +72,7 @@ docker-machine scp .env $VIDEO_MACHINE:/home/$MACHINE_USER/
 
 docker-machine ssh $VIDEO_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f video.yml pull && docker-compose -f video.yml up -d"
 
-docker-machine ssh $VIDEO_MACHINE "video.yml"
-docker-machine ssh $VIDEO_MACHINE ".env"
+###docker-machine ssh $VIDEO_MACHINE "rm video.yml"
+###docker-machine ssh $VIDEO_MACHINE "rm .env"
 
-#################### MONITORING DEPLOYMENT END ####################
+#################### VIDEO DEPLOYMENT END ####################
