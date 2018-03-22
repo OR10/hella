@@ -51,6 +51,11 @@ class Trapezoid extends Model\Shape
      */
     private $handleBottom;
 
+    /*
+     * rectangle/trapezoid
+     */
+    private $trapezoidType;
+
     /**
      * @param array $shape
      * @return Trapezoid
@@ -66,6 +71,7 @@ class Trapezoid extends Model\Shape
             || !isset($shape['handleTop']['y'])
             || !isset($shape['handleBottom']['x'])
             || !isset($shape['handleBottom']['y'])
+            || !isset($shape['trapezoidType'])
         ) {
             throw new \RuntimeException(
                 sprintf(
@@ -78,7 +84,8 @@ class Trapezoid extends Model\Shape
                     isset($shape['handleTop']['x']) ? $shape['handleTop']['x'] : '',
                     isset($shape['handleTop']['y']) ? $shape['handleTop']['y'] : '',
                     isset($shape['handleBottom']['x']) ? $shape['handleBottom']['x'] : '',
-                    isset($shape['handleBottom']['y']) ? $shape['handleBottom']['y'] : ''
+                    isset($shape['handleBottom']['y']) ? $shape['handleBottom']['y'] : '',
+                    isset($shape['trapezoidType']) ? $shape['trapezoidType'] : ''
                 )
             );
         }
@@ -89,6 +96,7 @@ class Trapezoid extends Model\Shape
             $shape['topLeft']['y'],
             $shape['bottomRight']['x'],
             $shape['bottomRight']['y'],
+            $shape['trapezoidType'],
             [
                 'handleLeft' => $shape['handleTop']['x'],
                 'handleTop' => $shape['handleTop']['y'],
@@ -105,24 +113,47 @@ class Trapezoid extends Model\Shape
      * @param float  $right
      * @param float  $bottom
      */
-    public function __construct($id, $left, $top, $right, $bottom, array $handle)
+    public function __construct($id, $left, $top, $right, $bottom, $type, array $handle)
     {
-        $this->id     = (string) $id;
-        $this->left   = (float) $left;
-        $this->top    = (float) $top;
-        $this->right  = (float) $right;
-        $this->bottom = (float) $bottom;
-        $this->handleLeft = (isset($handle['handleLeft'])) ? (float)$handle['handleLeft'] : '';
-        $this->handleTop = (isset($handle['handleTop'])) ? (float)$handle['handleTop'] : '';
-        $this->handleRight = (isset($handle['handleRight'])) ? (float)$handle['handleRight'] : '';
-        $this->handleBottom = (isset($handle['handleBottom'])) ? (float)$handle['handleBottom'] : '';
+        $this->id            = (string) $id;
+        $this->left          = (float) $left;
+        $this->top           = (float) $top;
+        $this->right         = (float) $right;
+        $this->bottom        = (float) $bottom;
+        $this->trapezoidType = (string) $type;
+        $this->handleLeft    = (isset($handle['handleLeft'])) ? (float)$handle['handleLeft'] : '';
+        $this->handleTop     = (isset($handle['handleTop'])) ? (float)$handle['handleTop'] : '';
+        $this->handleRight   = (isset($handle['handleRight'])) ? (float)$handle['handleRight'] : '';
+        $this->handleBottom  = (isset($handle['handleBottom'])) ? (float)$handle['handleBottom'] : '';
     }
 
+    /**
+     * @return string
+     */
+    public function getTrapezoidType()
+    {
+        return $this->trapezoidType;
+    }
+
+    /**
+     * @param $type
+     */
+    public function setTrapezoidType($type)
+    {
+        $this->trapezoidType = $type;
+    }
+
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return 'trapezoid';
@@ -234,7 +265,8 @@ class Trapezoid extends Model\Shape
             'handleBottom' => [
                 'x' => $this->getHandleRight(),
                 'y' => $this->getHandleBottom(),
-            ]
+            ],
+            'trapezoidType' => $this->getTrapezoidType()
         ];
     }
 }

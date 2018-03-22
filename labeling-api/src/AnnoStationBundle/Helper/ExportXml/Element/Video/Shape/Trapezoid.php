@@ -36,15 +36,18 @@ class Trapezoid extends ExportXml\Element
         $bottomRight->setAttribute('y', $this->trapezoid->getBottom());
         $trapezoid->appendChild($bottomRight);
 
-        $bottomRight = $document->createElementNS($this->namespace, 'handle-top');
-        $bottomRight->setAttribute('x', $this->trapezoid->getHandleLeft());
-        $bottomRight->setAttribute('y', $this->trapezoid->getHandleTop());
-        $trapezoid->appendChild($bottomRight);
+        //if trapezoid
+        if ($this->trapezoid->getTrapezoidType() == 'trapezoid') {
+            $bottomRight = $document->createElementNS($this->namespace, 'handle-top');
+            $bottomRight->setAttribute('x', $this->trapezoid->getHandleLeft());
+            $bottomRight->setAttribute('y', $this->trapezoid->getHandleTop());
+            $trapezoid->appendChild($bottomRight);
 
-        $bottomRight = $document->createElementNS($this->namespace, 'handle-bottom');
-        $bottomRight->setAttribute('x', $this->trapezoid->getHandleRight());
-        $bottomRight->setAttribute('y', $this->trapezoid->getHandleBottom());
-        $trapezoid->appendChild($bottomRight);
+            $bottomRight = $document->createElementNS($this->namespace, 'handle-bottom');
+            $bottomRight->setAttribute('x', $this->trapezoid->getHandleRight());
+            $bottomRight->setAttribute('y', $this->trapezoid->getHandleBottom());
+            $trapezoid->appendChild($bottomRight);
+        }
 
         return $trapezoid;
     }
