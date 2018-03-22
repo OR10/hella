@@ -2,16 +2,10 @@ version: "3.1"
 
 services:
   api-nginx:
-    build:
-      dockerfile: 'ops/docker/api/nginx/Dockerfile'
-      context: ../../../../
     depends_on:
         - api-fpm
 
   api-fpm:
-    build:
-      dockerfile: 'ops/docker/api/fpm/Dockerfile'
-      context: ../../../../
     depends_on:
       - rmq
     environment:
@@ -47,9 +41,6 @@ services:
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
 
   api-workerpool-low:
-    build:
-      dockerfile: 'ops/docker/api/cli/Dockerfile'
-      context: ../../../../
     restart: unless-stopped
     command: bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
     depends_on:
@@ -87,9 +78,6 @@ services:
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
 
   api-workerpool-normallow:
-    build:
-      dockerfile: 'ops/docker/api/cli/Dockerfile'
-      context: ../../../../
     restart: unless-stopped
     command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     depends_on:
@@ -127,9 +115,6 @@ services:
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
 
   api-workerpool-normal:
-    build:
-      dockerfile: 'ops/docker/api/cli/Dockerfile'
-      context: ../../../../
     restart: unless-stopped
     command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     depends_on:
@@ -167,9 +152,6 @@ services:
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
 
   api-workerpool-high:
-    build:
-      dockerfile: 'ops/docker/api/cli/Dockerfile'
-      context: ../../../../
     restart: unless-stopped
     command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
     depends_on:
@@ -207,9 +189,6 @@ services:
       - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
 
   api-cron:
-    build:
-      dockerfile: 'ops/docker/api/cron/Dockerfile'
-      context: ../../../../
     restart: unless-stopped
     command: bash -c "app/AnnoStation/console cache:clear -vvv && service cron start && tail -f /dev/null"
     depends_on:
