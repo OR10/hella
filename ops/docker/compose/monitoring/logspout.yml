@@ -9,6 +9,4 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8070:80"
-    depends_on:
-      - monitoring-logstash
     restart: on-failure
