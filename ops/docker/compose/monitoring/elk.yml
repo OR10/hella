@@ -19,7 +19,7 @@ services:
     depends_on:
       - monitoring-elasticsearch
     ports:
-      - 5044:5044
+      - 5000:5000/udp
 
   monitoring-kibana:
     image: docker.elastic.co/kibana/kibana:5.3.2
