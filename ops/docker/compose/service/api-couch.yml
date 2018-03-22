@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+
+  api-couchdb:
+    image: couchdb:1.7
+    environment:
+      - COUCHDB_USER=${COUCHDB_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
+    healthcheck:
+      test: "curl -f -s http://localhost:5984/_users || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 6
+#      start_period: 2s
+    restart: unless-stopped
+    ports:
+      - 5984:5984
+    volumes:
+      - api_couchdb_dbdata:/usr/local/var/lib/couchdb
+
+
+volumes:
+    api_couchdb_dbdata:
+      driver: local

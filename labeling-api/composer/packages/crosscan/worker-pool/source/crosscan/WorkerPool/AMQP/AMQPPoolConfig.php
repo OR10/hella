@@ -26,15 +26,15 @@ class AMQPPoolConfig
     public $numberOfHighNormalWorkers = 8;
     public $numberOfLowNormalWorkers  = 2;
 
-    public $host       = '127.0.0.1';
+    public $host       = 'rmq';
     public $port       = 5672;
     public $vhost      = '/';
     public $webApiPort = 15672;
 
     public $heartBeatSeconds = 15;
 
-    private $username = 'guest';
-    private $password = 'guest';
+    private $username;
+    private $password;
 
     public $useAlternateExchange  = true;
     public $useDeadLetterExchange = true;
@@ -70,6 +70,9 @@ class AMQPPoolConfig
 
     public function __construct()
     {
+        $this->username = getenv('SYMFONY__RABBITMQ__USER');
+        $this->password = getenv('SYMFONY__RABBITMQ__PASS');
+
         ini_set('amqp.auto_ack', 0);
         ini_set('amqp.min_messages', 0);
         ini_set('amqp.max_messages', 1);

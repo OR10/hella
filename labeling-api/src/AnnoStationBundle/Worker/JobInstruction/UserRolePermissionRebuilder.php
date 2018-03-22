@@ -39,11 +39,20 @@ class UserRolePermissionRebuilder extends WorkerPoolBundle\JobInstruction
      */
     protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $loggerFacade)
     {
-        $this->userRolesRebuilder->rebuildForUser(
-            $this->userFacade->getUserById(
-                $job->getUserId()
-            )
-        );
+        try {
+            $user = $this->userFacade->getUserById($job->getUserId());
+            if($user instanceof Model\User) {
+                $this->userRolesRebuilder->rebuildForUser($user);
+            } else {
+                throw new \Exception(sprintf('User not exist "%s"', $job->getUserId()));
+            }
+        } catch (\Exception $exception) {
+            $loggerFacade->logString(
+                $exception->getMessage(),
+                \cscntLogPayload::SEVERITY_WARNING
+            );
+        }
+        
     }
 
     /**

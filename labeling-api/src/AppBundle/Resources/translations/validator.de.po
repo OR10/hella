@@ -10,3 +10,6 @@ msgstr "Wert muss mindestens ein Sonderzeichen enthalten"
 
 msgid "validator.uppercase.required"
 msgstr "Wert muss mindestens einen Großbuchstaben enthalten"
+
+msgid "validator.minlength.required"
+msgstr "Feld darf nicht leer sein"

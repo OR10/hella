@@ -53,9 +53,9 @@ class Worker
      * @param int $maxSeconds number of seconds to work on before this method will exit.
      *                        The elapsed time is checked *after* a job was fetched and if the elapsed time exceeds
      *                        $maxSeconds, the job will be NACK'ed and the method will exit.
-     *                        defaults to 1800 (30 minutes).
+     *                        defaults to 600 (10 minutes).
      */
-    public function work($cycles = 500, $maxSeconds = 1800)
+    public function work($cycles = 500, $maxSeconds = 600)
     {
         $this->eventHandler->workerStarted();
 
@@ -64,17 +64,22 @@ class Worker
         $startTimestamp = time();
 
         while ($this->running) {
+            //trying to fix CPU loading on empty queue
+            usleep(50);
+
             $this->newRelicWrapper->startTransaction("Crosscan\\WorkerPool\\Worker::work_JobPreparation", true);
             $this->eventHandler->beforeJob();
             $cycle++;
+
+            $this->logger->newGroup();
+
             try {
-                $jobDelivery = $this->jobSource->getNext();
+                $jobDelivery = $this->jobSource->getNext(0, 60);
             } catch (Exception\UnserializeFailed $e) {
+                $this->logger->logException($e, \cscntLogPayload::SEVERITY_WARNING);
                 $this->rescheduleManager->handleUnserializeFailed($e);
                 break;
             }
-
-            $this->logger->newGroup();
 
             if (time() - $startTimestamp > $maxSeconds) {
                 $this->logger->logString("Max seconds reached", \cscntLogPayload::SEVERITY_DEBUG);

@@ -1,0 +1,12 @@
+version: "3.1"
+
+services:
+  video-nginx:
+    build:
+      dockerfile: 'ops/docker/video/nginx/Dockerfile'
+      context: ../../../../
+
+  video-fpm:
+    build:
+      dockerfile: 'ops/docker/video/fpm/Dockerfile'
+      context: ../../../../

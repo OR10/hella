@@ -1,0 +1,17 @@
+version: "3.1"
+
+services:
+  video-nginx:
+    depends_on:
+        - video-fpm
+
+  video-fpm:
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - S3_BASE_URL
+      - S3_HOST
+      - S3_KEY
+      - S3_SECRET
+      - S3_BUCKET_FRAME
+      - S3_BUCKET_VIDEO

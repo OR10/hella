@@ -5,14 +5,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Process\Process;
 
 
-$app->get('/', function (Request $request) use ($app) {
+$app->put('/', function (Request $request) use ($app) {
 
     $frameSizesInBytes = $app['VideoFrameSplitter']->splitVideoInFrames(
-        (string)$request->query->get('videoId'),
-        (string)$request->query->get('videoName'),
-        $request->query->get('sourceFileFilename'),
-        $request->query->get('type'),
-        $app['cacheDirectory']
+        (string)$request->get('videoId'),
+        (string)$request->get('videoName'),
+        (string)$request->get('sourceFileFilename'),
+        (string)$request->get('type'),
+        (string)$app['cacheDirectory']
     );
     $imageSizes = $app['VideoFrameSplitter']->getImageSizes();
 

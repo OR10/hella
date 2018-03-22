@@ -20,22 +20,21 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
-            entry_point: annostation.labeling_api.authentication_handler
-            http_basic:
-                realm: "Annostation"
-            form_login:
-                provider: fos_userbundle
-                csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
-                default_target_path: /labeling
-                always_use_default_target_path: true
-                success_handler: annostation.labeling_api.authentication_handler
-                failure_handler: annostation.labeling_api.authentication_handler
+        unsecure:
+            # will be redirected to FE (/labeling)
+            pattern: ^(/|/login_check)$
+            methods: [GET]
+            security: false
 
-            logout:       true
+        main:
+            guard:
+              authenticators:
+                - annostation.labeling_api.authenticator
+            logout:
+                path: logout
+                handlers: [annostation.labeling_api.logout_handler]
+
             anonymous:    true
-            simple_preauth:
-                authenticator: annostation.labeling_api.security.apikey_authenticator
 
             # activate different ways to authenticate
 
@@ -49,9 +48,11 @@ security:
         strategy: unanimous
 
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, role: ROLE_SUPER_ADMIN } #TODO: remove it
+        - { path: ^/login_check, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
         - { path: ^/admin/, role: ROLE_SUPER_ADMIN }
         - { path: ^/monitor/, role: ROLE_SUPER_ADMIN }
+        - { path: ^/doc/, role: ROLE_SUPER_ADMIN }

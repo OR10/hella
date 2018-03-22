@@ -1,0 +1,419 @@
+version: "3.1"
+
+services:
+  proxy:
+    command: bash -c '/bin/sed -i "s/api-couchdb/${COUCHDB_HOST}/" /etc/nginx/conf.d/default.conf.tpl && /usr/local/bin/boot.sh'
+    # ADD image option like this for pushing image to registry or docker hub
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/proxy:${DOCKER_BE_TAG}
+    ports:
+      - 80:80
+
+  ############# API SECTION BEGIN #############
+
+  api-nginx:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_nginx:${DOCKER_BE_TAG}
+
+  api-fpm:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_fpm:${DOCKER_BE_TAG}
+
+  api-workerpool-low:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-low2:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+    restart: unless-stopped
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
+    depends_on:
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-low3:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+    restart: unless-stopped
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
+    depends_on:
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normallow:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-normallow2:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+    restart: unless-stopped
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    depends_on:
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normallow3:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+    restart: unless-stopped
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    depends_on:
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normallow4:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+    restart: unless-stopped
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    depends_on:
+      - rmq
+    environment:
+      - APP_ENV
+      - SYMFONY_ENV=${APP_ENV}
+      - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+      - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+      - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+      - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+      - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+      - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+      - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+      - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+      - SYMFONY__MAILER__HOST=${MAILER_HOST}
+      - SYMFONY__MAILER__USER=${MAILER_USER}
+      - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+      - SYMFONY__MAILER__FROM=${MAILER_FROM}
+      - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+      - SYMFONY__S3__HOST=${S3_HOST}
+      - SYMFONY__S3__REGION=${S3_REGION}
+      - SYMFONY__S3__KEY=${S3_KEY}
+      - SYMFONY__S3__SECRET=${S3_SECRET}
+      - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+      - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+      - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+      - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+      - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+      - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normal:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-normal2:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normal3:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-normal4:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-high:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+
+  api-workerpool-high2:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-high3:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-workerpool-high4:
+      image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
+      restart: unless-stopped
+      command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
+      depends_on:
+        - rmq
+      environment:
+        - APP_ENV
+        - SYMFONY_ENV=${APP_ENV}
+        - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+        - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+        - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
+        - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
+        - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
+        - SYMFONY__COUCHDB__PASSWORD__READ__ONLY=${COUCHDB_PASSWORD_READ_ONLY}
+        - SYMFONY__COUCHDB__EXTERNAL__URL=${COUCHDB_EXTERNAL_URL}
+        - SYMFONY__APP__SECRET=${SYMFONY_SECRET}
+        - SYMFONY__VIDEO__HOST=${HELLA_VIDEO_HOST}
+        - SYMFONY__MAILER__TRANSPORT=${MAILER_TRANSPORT}
+        - SYMFONY__MAILER__HOST=${MAILER_HOST}
+        - SYMFONY__MAILER__USER=${MAILER_USER}
+        - SYMFONY__MAILER__PASSWORD=${MAILER_PASSWORD}
+        - SYMFONY__MAILER__FROM=${MAILER_FROM}
+        - SYMFONY__S3__BASE__URL=${S3_BASE_URL}
+        - SYMFONY__S3__HOST=${S3_HOST}
+        - SYMFONY__S3__REGION=${S3_REGION}
+        - SYMFONY__S3__KEY=${S3_KEY}
+        - SYMFONY__S3__SECRET=${S3_SECRET}
+        - SYMFONY__S3__BUCKET__FRAME=${S3_BUCKET_FRAME}
+        - SYMFONY__S3__BUCKET__VIDEO=${S3_BUCKET_VIDEO}
+        - SYMFONY__CDN__BASE__URL=${CDN_BASE_URL}
+        - SYMFONY__RABBITMQ__USER=${RABBITMQ_DEFAULT_USER}
+        - SYMFONY__RABBITMQ__PASS=${RABBITMQ_DEFAULT_PASS}
+        - SYMFONY__USER__PASSWORD=${USER_PASSWORD}
+
+  api-cron:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cron:${DOCKER_BE_TAG}
+
+  ############# API SECTION END #############

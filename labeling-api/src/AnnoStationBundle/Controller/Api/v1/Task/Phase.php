@@ -27,11 +27,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class Phase extends Controller\Base
 {
     /**
-     * @var Facade\LabelingTask
-     */
-    private $labelingTaskFacade;
-
-    /**
      * @var Facade\Project
      */
     private $projectFacade;
@@ -42,6 +37,11 @@ class Phase extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var Service\v1\Task\PhaseService
+     */
+    private $taskPhaseService;
+
+    /**
      * Phase constructor.
      *
      * @param Facade\LabelingTask            $labelingTaskFacade
@@ -49,13 +49,13 @@ class Phase extends Controller\Base
      * @param Service\Authorization          $authorizationService
      */
     public function __construct(
-        Facade\LabelingTask $labelingTaskFacade,
         Facade\Project $projectFacade,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        Service\v1\Task\PhaseService $taskPhaseService
     ) {
-        $this->labelingTaskFacade   = $labelingTaskFacade;
         $this->projectFacade        = $projectFacade;
         $this->authorizationService = $authorizationService;
+        $this->taskPhaseService     = $taskPhaseService;
     }
 
     /**
@@ -71,70 +71,8 @@ class Phase extends Controller\Base
     {
         $project = $this->projectFacade->find($task->getProjectId());
         $this->authorizationService->denyIfProjectIsNotWritable($project);
-
-        $newPhase      = $request->request->get('phase');
-        $currentStatus = $task->getStatus($task->getCurrentPhase());
-
-        if (!$task->isAllPhasesDone()) {
-            if ($task->getLatestAssignedUserIdForPhase($task->getCurrentPhase()) !== null) {
-                throw new Exception\PreconditionFailedHttpException();
-            }
-
-            if ($currentStatus !== Model\LabelingTask::STATUS_TODO &&
-                $currentStatus !== Model\LabelingTask::STATUS_DONE
-            ) {
-                throw new Exception\PreconditionFailedHttpException();
-            }
-        }
-
-        switch ($newPhase) {
-            case Model\LabelingTask::PHASE_LABELING:
-                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
-                $task->addAssignmentHistory(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_TODO);
-                if ($task->hasReviewPhase()) {
-                    $task->setStatus(
-                        Model\LabelingTask::PHASE_REVIEW,
-                        Model\LabelingTask::STATUS_WAITING_FOR_PRECONDITION
-                    );
-                }
-                if ($task->hasRevisionPhase()) {
-                    $task->setStatus(
-                        Model\LabelingTask::PHASE_REVISION,
-                        Model\LabelingTask::STATUS_DONE
-                    );
-                }
-                break;
-            case Model\LabelingTask::PHASE_REVIEW:
-                if (!$task->hasReviewPhase()) {
-                    throw new Exception\BadRequestHttpException();
-                }
-                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
-                $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
-                $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_TODO);
-                if ($task->hasRevisionPhase()) {
-                    $task->setStatus(
-                        Model\LabelingTask::PHASE_REVISION,
-                        Model\LabelingTask::STATUS_DONE
-                    );
-                }
-                break;
-            case Model\LabelingTask::PHASE_REVISION:
-                $task->setStatus(Model\LabelingTask::PHASE_LABELING, Model\LabelingTask::STATUS_DONE);
-                if ($task->hasReviewPhase()) {
-                    $task->setStatus(Model\LabelingTask::PHASE_REVIEW, Model\LabelingTask::STATUS_DONE);
-                }
-                $task->setStatus(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
-                $task->addAssignmentHistory(Model\LabelingTask::PHASE_REVISION, Model\LabelingTask::STATUS_TODO);
-                break;
-            case Model\LabelingTask::STATUS_ALL_PHASES_DONE:
-                foreach ($task->getRawStatus() as $phase => $status) {
-                    $task->setStatus($phase, Model\LabelingTask::STATUS_DONE);
-                }
-                break;
-        }
-
-        $this->labelingTaskFacade->save($task);
-
+        /** update task phase/status */
+        $this->taskPhaseService->updateTaskPhase($request, $task);
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
 }

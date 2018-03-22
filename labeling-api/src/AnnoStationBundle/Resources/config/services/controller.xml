@@ -37,6 +37,7 @@
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.project.batch_upload"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project.attention"
@@ -68,6 +69,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.task.status"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.task.user"
@@ -87,9 +89,9 @@
 
         <service id="annostation.labeling_api.controller.api.task.phase"
                  class="AnnoStationBundle\Controller\Api\v1\Task\Phase">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.phase"/>
         </service>
 
         <service
@@ -151,6 +153,7 @@
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.service.task"/>
         </service>
 
         <service
@@ -170,6 +173,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.service.project"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\v1\Status">
@@ -184,6 +188,7 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.service.validation"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument type="service" id="annostation.labeling_api.service.header_converter"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project_count"
@@ -224,6 +229,7 @@
         <service id="annostation.labeling_api.controller.custom_exception" class="AnnoStationBundle\Controller\CustomException">
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
+            <argument type="service" id="logger"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.ui_log" class="AnnoStationBundle\Controller\Api\v1\UiLog">
@@ -254,6 +260,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.service.validation"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.campaign" class="AnnoStationBundle\Controller\Api\v1\Organisation\Campaign">
@@ -278,6 +285,10 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+        </service>
+
+        <service id="annostation.labeling_api.controller.auth"
+                 class="AnnoStationBundle\Controller\SecurityController">
         </service>
     </services>
 </container>

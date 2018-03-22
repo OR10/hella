@@ -96,7 +96,7 @@ class StatusTest extends Tests\WebTestCase
             ->withCredentialsFromUsername($this->labelManager)
             ->execute();
 
-        $this->assertSame($response->getResponse()->getStatusCode(), 400);
+        $this->assertSame($response->getResponse()->getStatusCode(), 200);
     }
 
     /**

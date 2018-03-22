@@ -1,6 +1,13 @@
 _main:
     resource: "../../config/routing.yml"
 
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /labeling
+        permanent: true
+
 app:
     resource: "@AnnoStationBundle/Resources/config/routing.yml"
     type: rest
@@ -10,6 +17,6 @@ check_login_redirect:
     path: /login_check
     methods: [GET]
     defaults:
-        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
-        path: /login
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /labeling
         permanent: true

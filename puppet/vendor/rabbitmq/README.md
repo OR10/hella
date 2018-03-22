@@ -1,2 +1,0 @@
-puppet_rabbitmq
-===============

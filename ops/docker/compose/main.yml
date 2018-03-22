@@ -1,0 +1,32 @@
+version: "3.1"
+
+services:
+
+  proxy:
+    depends_on:
+      - api-nginx
+#      - front disabled for separate BE and FE build
+    restart: on-failure
+
+  rmq:
+    image: rabbitmq:management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - HOSTNAME=localhost
+      - NODENAME=rabbit@localhost
+    healthcheck:
+      test: "rabbitmqctl status || exit 1"
+      interval: 5s
+      timeout: 25s
+      retries: 6
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rmq_data:/var/lib/rabbitmq
+    restart: on-failure
+
+volumes:
+  rmq_data:
+    driver: local

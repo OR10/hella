@@ -7,12 +7,17 @@ use Symfony\Component\HttpKernel\Exception\FlattenException;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Monolog\Logger;
 
 class CustomException extends ExceptionController
 {
-    public function __construct(\Twig_Environment $twig, $debug)
+    protected $logger;
+
+    public function __construct(\Twig_Environment $twig, $debug, Logger $logger)
     {
         parent::__construct($twig, $debug);
+
+        $this->logger = $logger;
     }
 
     /**
@@ -37,6 +42,8 @@ class CustomException extends ExceptionController
         $code          = $exception->getStatusCode();
         $exceptionName = join('', array_slice(explode('\\', $exception->getClass()), -1));
 
+        $this->logError($request, $exception, $logger);
+
         return new Response(
             $this->twig->render(
                 (string) $this->findTemplate($request, 'json', $code, $showException),
@@ -50,5 +57,25 @@ class CustomException extends ExceptionController
                 )
             )
         );
+    }
+
+    private function logError(Request $request, FlattenException $exception, DebugLoggerInterface $logger = null)
+    {
+        $currentContent = $this->getAndCleanOutputBuffering($request->headers->get('X-Php-Ob-Level', -1));
+        $showException  = $request->attributes->get('showException', true);
+
+        $code = $exception->getStatusCode();
+        $exceptionName = join('', array_slice(explode('\\', $exception->getClass()), -1));
+
+        $data = $this->twig->render((string) $this->findTemplate($request, 'json', $code, $showException), [
+            'type'           => $exceptionName,
+            'status_code'    => $code,
+            'status_text'    => $exception->getMessage(),
+            'exception'      => $exception,
+            'logger'         => $logger,
+            'currentContent' => $currentContent,
+        ]);
+
+        $this->logger->log(Logger::CRITICAL, $data);
     }
 }

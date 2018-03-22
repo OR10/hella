@@ -69,7 +69,7 @@ class RemoveExpiredUserAssignmentsAndMemberships extends Base
         $expiredUsers = array_filter(
             $this->userFacade->getUserList(),
             function (Model\User $user) {
-                return $user->isExpired();
+                return !$user->isAccountNonExpired();
             }
         );
 

@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1;
 
+use AnnoStationBundle\Type\CurrentUserType;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Controller;
 use AppBundle\Database\Facade;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
 use Symfony\Component\Security\Core\Encoder;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices;
 
 /**
  * @Version("v1")
@@ -63,6 +66,11 @@ class CurrentUser extends Controller\Base
     private $userRolesRebuilderService;
 
     /**
+     * @var Service\HeaderConverter
+     */
+    private $headerConverter;
+
+    /**
      * CurrentUser constructor.
      *
      * @param Storage\TokenStorage                 $tokenStorage
@@ -72,6 +80,7 @@ class CurrentUser extends Controller\Base
      * @param Authentication\UserPermissions       $currentUserPermissions
      * @param Validation\ValidationService         $validationService
      * @param Service\UserRolesRebuilder           $userRolesRebuilderService
+     * @param Service\HeaderConverter              $headerConverter
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -80,7 +89,8 @@ class CurrentUser extends Controller\Base
         AnnoStationBundleFacade\Organisation $organisation,
         Authentication\UserPermissions $currentUserPermissions,
         Validation\ValidationService $validationService,
-        Service\UserRolesRebuilder $userRolesRebuilderService
+        Service\UserRolesRebuilder $userRolesRebuilderService,
+        Service\HeaderConverter $headerConverter
     ) {
         $this->tokenStorage              = $tokenStorage;
         $this->userFacade                = $userFacade;
@@ -89,26 +99,37 @@ class CurrentUser extends Controller\Base
         $this->organisation              = $organisation;
         $this->validationService         = $validationService;
         $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->headerConverter           = $headerConverter;
     }
 
     /**
+     * return user profile param with OAuth token
+     *
      * @Rest\Get("/profile")
      *
      * @return View\View
      */
-    public function profileAction()
+    public function profileAction(HttpFoundation\Request $request)
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
+        //get oAuth token
+        $token = $user->getToken();
+        if(!$token) {
+            $token = uniqid(bin2hex($user->getUsername()));
+            $user->setToken($token);
+            $this->userFacade->updateUser($user);
+        }
 
         return View\View::create()->setData(
             [
                 'result' => [
-                    'id'        => $user->getId(),
-                    'username'  => $user->getUsername(),
-                    'email'     => $user->getEmail(),
-                    'roles'     => $user->getRoles(),
-                    'expiresAt' => $user->getExpiresAt(),
+                    'id'         => $user->getId(),
+                    'username'   => $user->getUsername(),
+                    'email'      => $user->getEmail(),
+                    'roles'      => $user->getRoles(),
+                    'expiresAt'  => $user->getExpiresAt(),
+                    'oAuthToken' => $token
                 ],
             ]
         );
@@ -150,20 +171,19 @@ class CurrentUser extends Controller\Base
     {
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
-
-        $oldPassword = $request->request->get('oldPassword');
-        $newPassword = $request->request->get('newPassword');
-
+        $userParam = [];
+        $userParam['password'] = $request->request->get('oldPassword');
+        $userParam['plainPassword'] = $request->request->get('newPassword');
         $encoder = $this->encoderFactory->getEncoder($user);
 
-        if (!$encoder->isPasswordValid($user->getPassword(), $oldPassword, $user->getSalt())) {
+        if (!$encoder->isPasswordValid($user->getPassword(), $userParam['password'], $user->getSalt())) {
             return View\View::create()->setData(
                 [
                     'result' =>
                         [
                             'error' => [
                                 [
-                                    'field'   => 'password',
+                                    'field'   => 'newPassword',
                                     'message' => 'Failed to save the new password. The current password is not correct',
                                 ],
                             ],
@@ -172,7 +192,8 @@ class CurrentUser extends Controller\Base
             );
         }
 
-        $user->setPlainPassword($newPassword);
+        $user->setPlainPassword($userParam['plainPassword']);
+        /** validate request */
         $validationResult = $this->validationService->validate($user);
         if ($validationResult->hasErrors()) {
             return View\View::create()->setData(
