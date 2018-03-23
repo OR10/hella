@@ -83,8 +83,8 @@ class S3Cmd implements StorageInterface
         $accessKey,
         $secretKey,
         $hostBase,
-        $hostBucket,
-        $frameCdnBaseUrl
+        $hostBucket
+//        $frameCdnBaseUrl
     ) {
         $this->s3CmdExecutable             = $s3CmdExecutable;
         $this->parallelExecutable          = $parallelExecutable;
@@ -95,7 +95,7 @@ class S3Cmd implements StorageInterface
         $this->secretKey                   = $secretKey;
         $this->hostBase                    = $hostBase;
         $this->hostBucket                  = $hostBucket;
-        $this->frameCdnBaseUrl             = $frameCdnBaseUrl;
+//        $this->frameCdnBaseUrl             = $frameCdnBaseUrl;
     }
 
     public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3, $acl = 'private')
