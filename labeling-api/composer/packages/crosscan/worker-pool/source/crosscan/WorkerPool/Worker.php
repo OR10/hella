@@ -53,9 +53,9 @@ class Worker
      * @param int $maxSeconds number of seconds to work on before this method will exit.
      *                        The elapsed time is checked *after* a job was fetched and if the elapsed time exceeds
      *                        $maxSeconds, the job will be NACK'ed and the method will exit.
-     *                        defaults to 1800 (30 minutes).
+     *                        defaults to 600 (10 minutes).
      */
-    public function work($cycles = 500, $maxSeconds = 1800)
+    public function work($cycles = 500, $maxSeconds = 600)
     {
         $this->eventHandler->workerStarted();
 
@@ -74,7 +74,7 @@ class Worker
             $this->logger->newGroup();
 
             try {
-                $jobDelivery = $this->jobSource->getNext();
+                $jobDelivery = $this->jobSource->getNext(0, 60);
             } catch (Exception\UnserializeFailed $e) {
                 $this->logger->logException($e, \cscntLogPayload::SEVERITY_WARNING);
                 $this->rescheduleManager->handleUnserializeFailed($e);

@@ -1,0 +1,37 @@
+version: "3.1"
+
+services:
+  api-nginx:
+    build:
+      dockerfile: 'ops/docker/api/nginx/Dockerfile'
+      context: ../../../../
+
+  api-fpm:
+    build:
+      dockerfile: 'ops/docker/api/fpm/Dockerfile'
+      context: ../../../../
+
+  api-workerpool-low:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+
+  api-workerpool-normallow:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+
+  api-workerpool-normal:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+
+  api-workerpool-high:
+    build:
+      dockerfile: 'ops/docker/api/cli/Dockerfile'
+      context: ../../../../
+
+  api-cron:
+    build:
+      dockerfile: 'ops/docker/api/cron/Dockerfile'
+      context: ../../../../

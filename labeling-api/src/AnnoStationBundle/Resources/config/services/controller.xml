@@ -229,6 +229,7 @@
         <service id="annostation.labeling_api.controller.custom_exception" class="AnnoStationBundle\Controller\CustomException">
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
+            <argument type="service" id="logger"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.ui_log" class="AnnoStationBundle\Controller\Api\v1\UiLog">

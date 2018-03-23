@@ -2,25 +2,10 @@ version: "3.1"
 
 services:
   video-nginx:
-    build:
-      dockerfile: 'ops/docker/video/nginx/Dockerfile'
-      context: ../../../../
     depends_on:
         - video-fpm
-    deploy:
-      placement:
-        constraints:
-          - node.labels.video == 1
-      resources:
-        limits:
-          cpus: '0.75'
-      restart_policy:
-        condition: any
 
   video-fpm:
-    build:
-      dockerfile: 'ops/docker/video/fpm/Dockerfile'
-      context: ../../../../
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
@@ -30,13 +15,3 @@ services:
       - S3_SECRET
       - S3_BUCKET_FRAME
       - S3_BUCKET_VIDEO
-    deploy:
-      placement:
-        constraints:
-          - node.labels.video == 1
-      resources:
-        limits:
-          cpus: '0.75'
-      restart_policy:
-        condition: any
-
