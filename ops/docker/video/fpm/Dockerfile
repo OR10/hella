@@ -93,9 +93,9 @@ COPY ops/docker/video/fpm/config/conf.d/custom.ini /usr/local/etc/php/conf.d/cus
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-RUN AZ_REPO=$(lsb_release -cs)
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
-        sudo tee /etc/apt/sources.list.d/azure-cli.list
+RUN apt-get update
+
+RUN AZ_REPO=$(lsb_release -cs) echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
 
 RUN apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893 && \
     apt-get install -y \
