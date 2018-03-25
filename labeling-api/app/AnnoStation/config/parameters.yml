@@ -138,6 +138,7 @@ services:
             - '%frame_cdn_s3_secret%'
             - '%frame_cdn_s3_host_base%'
             - '%frame_cdn_s3_host_bucket%'
+            - '%frame_cdn_base_url%'
     annostation.labeling_api.service.frame_cdn.s3_cmd:
         class: AnnoStationBundle\Service\FrameCdn\S3Cmd
         arguments:
@@ -160,6 +161,7 @@ services:
             - '%video_cdn_s3_secret%'
             - '%video_cdn_s3_host_base%'
             - '%video_cdn_s3_host_bucket%'
+            - '%frame_cdn_base_url%'
     annostation.labeling_api.service.video_cdn.s3_cmd:
         class: AnnoStationBundle\Service\VideoCdn\S3Cmd
         arguments:
