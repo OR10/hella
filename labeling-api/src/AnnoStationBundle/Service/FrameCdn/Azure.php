@@ -17,9 +17,9 @@ class Azure extends Service\FrameCdn
     protected $frameCdnBaseUrlAzure;
 
     /**
-     * @var Service\S3Cmd
+     * @var Service\Azure
      */
-    private $s3CmdFrameCdn;
+    private $azureFrameCdn;
 
     /**
      * @var Filesystem
@@ -46,19 +46,19 @@ class Azure extends Service\FrameCdn
      *
      * @param string        $frameCdnBaseUrlAzure
      * @param string        $cacheDirectory
-     * @param Service\Azure $s3CmdFrameCdn
+     * @param Service\Azure $azureFrameCdn
      * @param \cscntLogger  $logger
      */
     public function __construct(
         $frameCdnBaseUrlAzure,
         $cacheDirectory,
-        Service\Azure $s3CmdFrameCdn,
+        Service\Azure $azureFrameCdn,
         \cscntLogger $logger
     ) {
         parent::__construct();
 
         $this->frameCdnBaseUrlAzure = $frameCdnBaseUrlAzure;
-        $this->s3CmdFrameCdn   = $s3CmdFrameCdn;
+        $this->azureFrameCdn   = $azureFrameCdn;
         $this->cacheDirectory  = $cacheDirectory;
         $this->loggerFacade    = new LoggerFacade($logger, self::class);
 
@@ -127,7 +127,7 @@ class Azure extends Service\FrameCdn
             $imageType->getExtension()
         );
 
-        $this->s3CmdFrameCdn->deleteObject($cdnPath);
+        $this->azureFrameCdn->deleteObject($cdnPath);
     }
 
     /**
@@ -161,7 +161,7 @@ class Azure extends Service\FrameCdn
                 $imageType->getName()
             );
             try {
-                $this->s3CmdFrameCdn->deleteObject($imageTypeDir);
+                $this->azureFrameCdn->deleteObject($imageTypeDir);
             } catch (\Exception $exception) {
                 $this->loggerFacade->logString(
                     sprintf(
@@ -178,7 +178,7 @@ class Azure extends Service\FrameCdn
             $video->getId()
         );
         try {
-            $this->s3CmdFrameCdn->deleteObject($videoDir);
+            $this->azureFrameCdn->deleteObject($videoDir);
         } catch (\Exception $exception) {
             $this->loggerFacade->logString(
                 sprintf(
@@ -195,7 +195,7 @@ class Azure extends Service\FrameCdn
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->s3CmdFrameCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
+            $this->azureFrameCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
