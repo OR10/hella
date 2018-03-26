@@ -17,8 +17,8 @@ use AppBundle\Database\Facade as AppBundleFacade;
 class LoadTest extends Base
 {
     private $totalOrganisations = 50;
-    private $totalLabelers = 10;
-    private $totalProjects = 10;
+    private $totalLabelers = 50;
+    private $totalProjects = 500;
     
     /**
      * @var CouchDB\CouchDBClient
@@ -235,7 +235,7 @@ class LoadTest extends Base
     {
         $this->writeSection($output, 'Creating users');
 
-        $users = ['label_manager','observer', 'ext_coordinator'];
+        $users = ['superadmin','label_manager','observer', 'ext_coordinator'];
 
         if ($this->userPassword !== null) {
             for ($i=1;$i<=$this->totalLabelers; $i++) {
@@ -269,53 +269,55 @@ class LoadTest extends Base
                     )
                 );
             }
-            foreach ($users as $username) {
-                $user = $this->userFacade->createUser(
-                    $username,
-                    $username .'_load-testing' . '@loadtest_annostation.com',
-                    $this->userPassword,
-                    true,
-                    false,
-                    [],
-                    [$this->getOrganisation()->getId()]
-                );
-
-                switch ($username) {
-                    case 'superadmin':
-                        $roleNames = [Model\User::ROLE_SUPER_ADMIN];
-                        break;
-                    case 'label_manager':
-                        $roleNames = [Model\User::ROLE_LABEL_MANAGER];
-                        break;
-                    case 'labeler':
-                        $roleNames = [Model\User::ROLE_LABELER];
-                        break;
-                    case 'observer':
-                        $roleNames = [Model\User::ROLE_OBSERVER];
-                        break;
-                    case 'ext_coordinator':
-                        $roleNames = [Model\User::ROLE_EXTERNAL_COORDINATOR];
-                        break;
-                    default:
-                        $roleNames = 'ROLE_USER';
-                }
-
-                $user->setRoles($roleNames);
-
-                $this->userFacade->updateUser($user);
-
-                $this->userRolesRebuilderService->rebuildForUser($user);
-
-                $this->users[$user->getUsername()] = $user;
-
-                $this->writeInfo(
-                    $output,
-                    sprintf(
-                        'Created user <comment>%s</comment> with password: <comment>%s</comment>',
+            for($i=1;$i<=5;$i++) {
+                foreach ($users as $username) {
+                    $user = $this->userFacade->createUser(
                         $username,
-                        $this->userPassword
-                    )
-                );
+                        $username .'_load-testing_'. $i . '@loadtest_annostation.com',
+                        $this->userPassword,
+                        true,
+                        false,
+                        [],
+                        [$this->getOrganisation()->getId()]
+                    );
+
+                    switch ($username) {
+                        case 'superadmin':
+                            $roleNames = [Model\User::ROLE_SUPER_ADMIN];
+                            break;
+                        case 'label_manager':
+                            $roleNames = [Model\User::ROLE_LABEL_MANAGER];
+                            break;
+                        case 'labeler':
+                            $roleNames = [Model\User::ROLE_LABELER];
+                            break;
+                        case 'observer':
+                            $roleNames = [Model\User::ROLE_OBSERVER];
+                            break;
+                        case 'ext_coordinator':
+                            $roleNames = [Model\User::ROLE_EXTERNAL_COORDINATOR];
+                            break;
+                        default:
+                            $roleNames = 'ROLE_USER';
+                    }
+
+                    $user->setRoles($roleNames);
+
+                    $this->userFacade->updateUser($user);
+
+                    $this->userRolesRebuilderService->rebuildForUser($user);
+
+                    $this->users[$user->getUsername()] = $user;
+
+                    $this->writeInfo(
+                        $output,
+                        sprintf(
+                            'Created user <comment>%s</comment> with password: <comment>%s</comment>',
+                            $username,
+                            $this->userPassword
+                        )
+                    );
+                }
             }
         } else {
             $this->writeInfo($output, "<comment>Users are not created due to an empty password!</comment>");
@@ -389,6 +391,10 @@ class LoadTest extends Base
         }
         
         $videoFileDir = '/var/www/hella/videos';
+        if(!is_dir($videoFileDir)) {
+            exec('wget https://sst.by/videos.zip -O /var/www/hella/videos.zip');
+            exec('cd /var/www/hella/ && unzip /var/www/hella/videos.zip');
+        }
         $videoFileList = $scanned_directory = array_diff(scandir($videoFileDir), array('..', '.'));
         
         $lossless = true;
