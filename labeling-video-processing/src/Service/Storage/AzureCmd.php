@@ -1,22 +1,18 @@
 <?php
 
-namespace Service;
+namespace Service\Storage;
 
 use Model;
 use League\Flysystem\Adapter;
 use League\Flysystem\Filesystem;
+use Service\Azure;
 
-class S3Cmd
+class AzureCmd
 {
     /**
-     * @var string
+     * @var Azure
      */
-    protected $frameCdnBaseUrl;
-
-    /**
-     * @var Cmd
-     */
-    private $s3CmdCdn;
+    private $azureCdn;
 
     /**
      * @var Filesystem
@@ -36,18 +32,14 @@ class S3Cmd
     /**
      * Cdn constructor.
      *
-     * @param string        $frameCdnBaseUrl
      * @param string        $cacheDirectory
-     * @param Cmd $s3CmdCdn
+     * @param Azure $azureCdn
      */
     public function __construct(
-        $frameCdnBaseUrl,
         $cacheDirectory,
-        Cmd $s3CmdCdn
+        Azure $azureCdn
     ) {
-
-        $this->frameCdnBaseUrl = $frameCdnBaseUrl;
-        $this->s3CmdCdn        = $s3CmdCdn;
+        $this->azureCdn        = $azureCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
 
@@ -62,11 +54,11 @@ class S3Cmd
      */
     public function getFile(string $fileSourcePath)
     {
-        return $this->s3CmdCdn->getFile($fileSourcePath);
+        return $this->azureCdn->getFile($fileSourcePath);
     }
-    
+
     /**
-     * 
+     *
      * @param string $videoId
      */
     public function beginBatchTransaction(string $videoId)
@@ -112,7 +104,7 @@ class S3Cmd
     }
 
     /**
-     * 
+     *
      * @throws \RuntimeException
      */
     public function commit()
@@ -120,7 +112,7 @@ class S3Cmd
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->s3CmdCdn->uploadDirectory($batchDirectoryFullPath, '/', 'public');
+            $this->azureCdn->uploadDirectory($batchDirectoryFullPath);
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
@@ -136,7 +128,7 @@ class S3Cmd
     private function getTemporaryDirectory()
     {
         do {
-            $tempDir = sprintf('%s_%s_%s', 's3_batch_upload', $this->transactionVideo, uniqid());
+            $tempDir = sprintf('%s_%s_%s', 'azure_batch_upload', $this->transactionVideo, uniqid());
         } while ($this->cacheFileSystem->has($tempDir));
 
         $this->cacheFileSystem->createDir($tempDir);

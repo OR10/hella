@@ -88,4 +88,12 @@ class S3Cmd extends Service\VideoCdn
             );
         }
     }
+
+    /**
+     * @return Service\S3Cmd
+     */
+    public function getStorageData()
+    {
+        return $this->s3CmdVideoCdn;
+    }
 }
