@@ -54,8 +54,8 @@ class VideoFrameSplitter
      * @param Flysystem\Filesystem $fileSystem
      */
     public function __construct(
-        Service\FrameCdn $frameCdn,
-        Service\VideoCdn $videoCdn,
+        $frameCdn,
+        $videoCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {
@@ -188,7 +188,7 @@ class VideoFrameSplitter
      *
      * The temporary file will have the same file extension as the original video.
      *
-     * @param string $video
+     * @param string $videoName
      *
      * @return string
      */

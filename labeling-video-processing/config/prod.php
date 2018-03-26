@@ -16,3 +16,14 @@ $app['base_url'] = getenv('S3_BASE_URL');
 $app['cacheDir'] = '/code/var/cache/labeling_api';
 
 $app['ffmpeg_executable'] = 'avconv';
+
+$app['azureCmdExecutable'] = getenv('AZURE_CMD_EXECUTABLE');
+$app['azureDefaultEndpointsProtocol'] = getenv('AZURE_DEFAULT_ENDPOINTS_PROTOCOL');
+$app['azureAccountName'] = getenv('AZURE_ACCOUNT_NAME');
+$app['azureContainer'] = getenv('AZURE_CONTAINER');
+$app['azureDirVideo'] = getenv('AZURE_DIR_VIDEO');
+$app['azureDirFrame'] = getenv('AZURE_DIR_FRAME');
+$app['azureAccountKey'] = getenv('AZURE_ACCOUNT_KEY');
+$app['azureBlobEndpoint'] = getenv('AZURE_BLOB_ENDPOINT');
+
+$app['storage_type'] = getenv('STORAGE_TYPE');
