@@ -14,7 +14,7 @@ class StorageFactory
     /**
      * @var S3Cmd
      */
-    private $videoCdnService;
+    private $videoCdnServiceS3;
 
     /**
      * @var Azure
@@ -27,11 +27,11 @@ class StorageFactory
     private $container;
 
     public function __construct(
-        S3Cmd $videoCdnService,
+        S3Cmd $videoCdnServiceS3,
         Azure $videoCdnServiceAzure,
         ContainerInterface $container
     ) {
-        $this->videoCdnService = $videoCdnService;
+        $this->videoCdnServiceS3 = $videoCdnServiceS3;
         $this->videoCdnServiceAzure = $videoCdnServiceAzure;
         $this->container = $container;
     }
@@ -47,7 +47,7 @@ class StorageFactory
                 return $this->videoCdnServiceAzure;
                 break;
             case self::S3CMD:
-                return $this->videoCdnService;
+                return $this->videoCdnServiceS3;
                 break;
             default:
                 throw new \RuntimeException('Wrong storage type');

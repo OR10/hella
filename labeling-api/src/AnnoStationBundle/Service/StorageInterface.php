@@ -14,11 +14,11 @@ interface StorageInterface
 
     /**
      * @param $sourceFile
-     * @param $targetFileOnS3
+     * @param $targetFileOnStorage
      * @param $acl
      * @return mixed
      */
-    public function uploadFile($sourceFile, $targetFileOnS3, $acl);
+    public function uploadFile($sourceFile, $targetFileOnStorage, $acl);
 
     /**
      * @param $filePath

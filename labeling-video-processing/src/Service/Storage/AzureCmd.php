@@ -12,7 +12,7 @@ class AzureCmd
     /**
      * @var Azure
      */
-    private $s3CmdCdn;
+    private $azureCdn;
 
     /**
      * @var Filesystem
@@ -33,13 +33,13 @@ class AzureCmd
      * Cdn constructor.
      *
      * @param string        $cacheDirectory
-     * @param Azure $s3CmdCdn
+     * @param Azure $azureCdn
      */
     public function __construct(
         $cacheDirectory,
-        Azure $s3CmdCdn
+        Azure $azureCdn
     ) {
-        $this->s3CmdCdn        = $s3CmdCdn;
+        $this->azureCdn        = $azureCdn;
         $this->cacheDirectory  = $cacheDirectory;
 
 
@@ -54,7 +54,7 @@ class AzureCmd
      */
     public function getFile(string $fileSourcePath)
     {
-        return $this->s3CmdCdn->getFile($fileSourcePath);
+        return $this->azureCdn->getFile($fileSourcePath);
     }
 
     /**
@@ -112,7 +112,7 @@ class AzureCmd
         $batchDirectoryFullPath = sprintf('%s/%s', $this->cacheDirectory, $this->currentBatchDirectory);
 
         try {
-            $this->s3CmdCdn->uploadDirectory($batchDirectoryFullPath);
+            $this->azureCdn->uploadDirectory($batchDirectoryFullPath);
         } finally {
             if (!$this->cacheFileSystem->deleteDir($this->currentBatchDirectory)) {
                 throw new \RuntimeException("Error removing temporary directory '{$this->currentBatchDirectory}'");
