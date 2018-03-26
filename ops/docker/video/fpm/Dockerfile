@@ -20,6 +20,15 @@ WORKDIR /code
 CMD ["bash", "/usr/local/bin/boot.sh"]
 
 
+RUN apt-get update && \
+    apt-get install lsb-release -y && \
+    AZ_REPO=$(lsb_release -cs) && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" >> /etc/apt/sources.list.d/azure-cli.list && \
+    apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893 && \
+    apt-get install apt-transport-https -y && \
+    apt-get update && \
+    apt-get install azure-cli -y
+
 RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
     apt-get update -y && \
