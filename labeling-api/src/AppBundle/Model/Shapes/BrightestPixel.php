@@ -128,6 +128,30 @@ class BrightestPixel extends Model\Shape
         // TODO: Implement getBoundingBox() method.
     }
 
+    public static function createFromArray(array $shape)
+    {
+        if (!isset($shape['id'])
+            || !isset($shape['topLeft']['x'])
+            || !isset($shape['topLeft']['y'])
+            || !isset($shape['bottomRight']['x'])
+            || !isset($shape['bottomRight']['y'])
+            || !isset($shape['pixel'])
+        ) {
+            throw new \RuntimeException(
+                sprintf('BrightestPixel shape with id "%s" is invalid', isset($shape['id']) ? $shape['id'] : '')
+            );
+        }
+
+        return new BrightestPixel(
+            $shape['id'],
+            $shape['topLeft']['x'],
+            $shape['topLeft']['y'],
+            $shape['bottomRight']['x'],
+            $shape['bottomRight']['y'],
+            $shape['pixel']
+        );
+    }
+
     public function toArray()
     {
         return [
