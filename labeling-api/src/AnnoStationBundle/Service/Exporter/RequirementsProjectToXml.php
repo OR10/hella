@@ -108,8 +108,17 @@ class RequirementsProjectToXml
     private $campaignFacade;
 
     /**
+     * @var Facade\LabeledBlock
+     */
+    private $labelBlockFacade;
+
+    /**
+     * @var Facade\LabeledBlockInFrame
+     */
+    private $blockInFrameFacade;
+
+    /**
      * RequirementsProjectToXml constructor.
-     *
      * @param Facade\Exporter                                         $exporterFacade
      * @param Facade\Project                                          $projectFacade
      * @param Facade\Video                                            $videoFacade
@@ -128,6 +137,8 @@ class RequirementsProjectToXml
      * @param LabeledThingGroup\FacadeInterface                       $labeledThingGroupFacadeFactory
      * @param LabeledThingGroupInFrame\FacadeInterface                $labeledThingGroupInFrameFacadeFactory
      * @param Service\DepthBuffer                                     $depthBufferService
+     * @param Facade\LabeledBlock                                     $labeledBlock
+     * @param Facade\LabeledBlockInFrame                              $labeledBlockInFrame
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -147,7 +158,9 @@ class RequirementsProjectToXml
         LabeledThing\FacadeInterface $labeledThingFacadeFactory,
         LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
         LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFacadeFactory,
-        Service\DepthBuffer $depthBufferService
+        Service\DepthBuffer $depthBufferService,
+        Facade\LabeledBlock $labeledBlock,
+        Facade\LabeledBlockInFrame $labeledBlockInFrame
     ) {
         $this->exporterFacade                                  = $exporterFacade;
         $this->projectFacade                                   = $projectFacade;
@@ -167,6 +180,8 @@ class RequirementsProjectToXml
         $this->depthBufferService                              = $depthBufferService;
         $this->calibrationDataFacade                           = $calibrationDataFacade;
         $this->campaignFacade                                  = $campaignFacade;
+        $this->labelBlockFacade                                = $labeledBlock;
+        $this->blockInFrameFacade                              = $labeledBlockInFrame;
     }
 
     /**
@@ -311,6 +326,7 @@ class RequirementsProjectToXml
                         $labeledThingInFramesInRanges = $this->getLabeledThingInFramesInRanges(
                             $labeledThingInFrameForLabeledThing
                         );
+
                         foreach ($labeledThingInFramesInRanges as $labeledThingInFramesInRange) {
                             /** @var Model\LabeledThingInFrame $labeledThingInFrame */
                             $labeledThingInFrame = $labeledThingInFramesInRange['labeledThingInFrame'];
@@ -350,6 +366,39 @@ class RequirementsProjectToXml
                         }
                         $xmlVideo->addThing($thing);
                     }
+
+                    //add blocked areas into frame
+                    $labeledFrameBlockIterator = new Iterator\LabeledBlockInFrame(
+                        $this->blockInFrameFacade,
+                        $task
+                    );
+
+                    foreach ($labeledFrameBlockIterator as $frameBlocks) {
+                        //blocked area in one frame
+                        $references = new ExportXml\Element\Video\References(
+                            new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
+                            self::XML_NAMESPACE
+                        );
+                        $block = new ExportXml\Element\Video\Block(
+                            $frameMapping,
+                            $frameBlocks,
+                            $references,
+                            self::XML_NAMESPACE
+                        );
+                        //parts of the blocked area to xml
+                        $labeledBlocksInFrame = new Iterator\LabeledBlock($this->labelBlockFacade, $frameBlocks);
+                        foreach ($labeledBlocksInFrame as $blockPart) {
+                            $part = new ExportXml\Element\Video\BlockPart(
+                                $frameMapping,
+                                $blockPart,
+                                $references,
+                                self::XML_NAMESPACE
+                            );
+                            $block->addBlock($part);
+                        }
+                        $xmlVideo->addBlock($block);
+                    }
+                    /*end blockage*/
 
                     $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
                     if (count(iterator_to_array($labeledFrames, false)) > 0) {
@@ -397,7 +446,6 @@ class RequirementsProjectToXml
                 'export_%s.zip',
                 $date->format('Y-m-d-H-i-s')
             );
-
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
             $this->exporterFacade->save($export);
@@ -697,6 +745,7 @@ class RequirementsProjectToXml
 
         return $labeledThingInFrames;
     }
+
 
     /**
      * @param Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator

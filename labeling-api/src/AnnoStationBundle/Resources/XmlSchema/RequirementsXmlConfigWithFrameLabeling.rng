@@ -29,6 +29,9 @@
                 <optional>
                     <ref name="Private"/>
                 </optional>
+                <optional>
+                    <ref name="Blockage"/>
+                </optional>
             </interleave>
         </element>
     </define>
@@ -76,6 +79,11 @@
     <define name="Group">
         <element name="r:group">
             <ref name="ThingLikeStructure"/>
+        </element>
+    </define>
+    <define name="Blockage">
+        <element name="r:blockage">
+            <ref name="Class"/>
         </element>
     </define>
     <define name="Class">
