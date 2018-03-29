@@ -23,6 +23,11 @@ class Video extends ExportXml\Element
     private $groups = [];
 
     /**
+     * @var array
+     */
+    private $block = [];
+
+    /**
      * @var
      */
     private $namespace;
@@ -67,6 +72,9 @@ class Video extends ExportXml\Element
         foreach ($this->things as $thing) {
             $video->appendChild($thing->getElement($document));
         }
+        foreach ($this->block as $block) {
+            $video->appendChild($block->getElement($document));
+        }
 
         return $video;
     }
@@ -77,6 +85,14 @@ class Video extends ExportXml\Element
     public function addThing(Video\Thing $thing)
     {
         $this->things[] = $thing;
+    }
+
+    /**
+     * @param $block
+     */
+    public function addBlock($block)
+    {
+        $this->block[] = $block;
     }
 
     /**
