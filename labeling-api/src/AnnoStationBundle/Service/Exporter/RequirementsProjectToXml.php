@@ -222,6 +222,7 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
+                    //this facade allows you to connect data in the database "labeling_api" and the database in which to store frame figures
                     $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
