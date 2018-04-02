@@ -1,6 +1,4 @@
 <?php
-ini_set('memory_limit','512M');
-
 namespace AnnoStationBundle\Command;
 
 use AnnoStationBundle\Service;
@@ -160,6 +158,7 @@ class LoadTest extends Base
         $couchUser,
         $couchReadOnlyUser
     ) {
+		ini_set('memory_limit','512M');
         parent::__construct();
 
         $this->couchClient                      = $couchClient;
@@ -390,7 +389,7 @@ class LoadTest extends Base
 
             return true;
         }
-        
+
         $videoFileDir = '/code/videos';
         if(!is_dir($videoFileDir)) {
             exec('wget https://sst.by/videos.zip -O /code/videos.zip');
