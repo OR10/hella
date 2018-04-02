@@ -391,10 +391,10 @@ class LoadTest extends Base
             return true;
         }
         
-        $videoFileDir = '/var/www/hella/videos';
+        $videoFileDir = '/code/videos';
         if(!is_dir($videoFileDir)) {
-            exec('wget https://sst.by/videos.zip -O /var/www/hella/videos.zip');
-            exec('cd /var/www/hella/ && unzip /var/www/hella/videos.zip');
+            exec('wget https://sst.by/videos.zip -O /code/videos.zip');
+            exec('cd /code/ && unzip /code/videos.zip');
         }
         $videoFileList = $scanned_directory = array_diff(scandir($videoFileDir), array('..', '.'));
         
