@@ -32,6 +32,13 @@ class User extends BaseUser
     protected $token = '';
 
     /**
+     * @CouchDB\Field(type="datetime")
+     *
+     * @var \DateTime
+     */
+    protected $tokenExpireAt;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     protected $lockHistory = [];
@@ -349,5 +356,25 @@ class User extends BaseUser
     public function setLastModifiedAt($lastModifiedAt)
     {
         $this->lastModifiedAt = $lastModifiedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTokenExpired()
+    {
+        if (null !== $this->tokenExpireAt && $this->tokenExpireAt->getTimestamp() < time()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \DateTime $at
+     */
+    public function setTokenExpiresAt(\DateTime $at)
+    {
+        $this->tokenExpireAt = $at;
     }
 }
