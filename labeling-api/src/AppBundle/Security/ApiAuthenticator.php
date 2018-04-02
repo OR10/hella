@@ -165,7 +165,6 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-//        die ('zzzzzzzzz');
         if ($this->authenticated) {
             return null;
         }
