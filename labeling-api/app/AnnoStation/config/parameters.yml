@@ -3,6 +3,7 @@ parameters:
     video_processing_host: %video.host%
     cache_dir: /code/app/AnnoStation/cache/labeling_api/
 
+    auth_lifetime: %auth.lifetime%
     database_name: labeling_api
     database_name_read_only: labeling_api
 
