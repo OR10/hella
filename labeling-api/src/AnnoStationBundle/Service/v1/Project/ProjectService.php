@@ -139,7 +139,8 @@ class ProjectService
 
                 $taskTypeConfiguration = reset($taskTypeConfigurations);
 
-                if ($taskTypeConfiguration['taskConfigurationId'] === '' || $taskTypeConfiguration['type'] === '') {
+
+                if (!$taskTypeConfiguration['taskConfigurationId'] || !$taskTypeConfiguration['type']) {
                     throw new BadRequestHttpException('Invalid taskConfigurationId or taskType');
                 }
 
