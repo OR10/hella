@@ -46,28 +46,28 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    location /couch/ {
-        add_header 'Access-Control-Allow-Credentials' 'true' always;
-        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
-        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
-        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
-        add_header 'Access-Control-Max-Age' '1728000' always;
+    #location /couch/ {
+    #    add_header 'Access-Control-Allow-Credentials' 'true' always;
+    #    add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+    #    add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+    #    add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+    #    add_header 'Access-Control-Max-Age' '1728000' always;
 
-        if ($request_method = OPTIONS) {
-            add_header 'Access-Control-Allow-Credentials' 'true' always;
-            add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
-            add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
-            add_header 'Access-Control-Allow-Origin' "$http_origin" always;
-            add_header 'Access-Control-Max-Age' '1728000' always;
-            add_header Content-Length 0;
-            add_header Content-Type text/plain;
+    #    if ($request_method = OPTIONS) {
+    #        add_header 'Access-Control-Allow-Credentials' 'true' always;
+    #        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+    #        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+    #        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+    #        add_header 'Access-Control-Max-Age' '1728000' always;
+    #        add_header Content-Length 0;
+    #        add_header Content-Type text/plain;
 
-            return 204;
-        }
+    #        return 204;
+    #    }
 
-        proxy_pass       http://api-couchdb:5984/;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
+    #    proxy_pass       http://api-couchdb:5984/;
+    #    proxy_set_header X-Real-IP $remote_addr;
+    #}
 
     ######## FE Angular start ########
     location /labeling {
