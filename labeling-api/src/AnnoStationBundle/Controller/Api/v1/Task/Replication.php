@@ -82,13 +82,12 @@ class Replication extends Controller\Base
                     'taskId'         => $task->getId(),
                     'databaseName'   => $databaseName,
                     'databaseServer' => sprintf(
-                        '%s://%s:%s@%s:%d/%s',
+                        '%s://%s:%s@%s:%s',
                         $externalCouchDbProtocol,
                         $username,
                         $currentUser->getCouchDbPassword(),
                         $this->externalCouchDbHost,
-                        $externalCouchDbPort,
-                        $this->externalCouchDbPath
+                        $externalCouchDbPort
                     ),
                     'databaseUsername' => $username,
                     'databasePassword' => $currentUser->getCouchDbPassword(),

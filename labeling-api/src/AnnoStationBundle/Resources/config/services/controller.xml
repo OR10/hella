@@ -271,7 +271,7 @@
         <service id="annostation.labeling_api.controller.api.task.replication" class="AnnoStationBundle\Controller\Api\v1\Task\Replication">
             <argument type="service" id="security.token_storage"/>
             <argument>%couchdb_host_external%</argument>
-            <argument>%couchdb_port_external%</argument>
+            <argument>%couchdb_port%</argument>
             <argument>%couchdb_path_external%</argument>
         </service>
 
