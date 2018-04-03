@@ -410,7 +410,7 @@ class Project extends Controller\Base
     private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds) {
         
         //TODO Will be better for the future prevent empty elements.
-        if ($campaignIds === null || count(array_filter($campaignIds) < 1)) {
+        if ($campaignIds === null || count(array_filter($campaignIds)) < 1) {
             return [];
         }
 
