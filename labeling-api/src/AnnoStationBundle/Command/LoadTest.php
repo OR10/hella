@@ -18,8 +18,12 @@ class LoadTest extends Base
     private $totalOrganisations = 50;
     private $totalLabelers = 50;
     private $totalProjects = 500;
+
+    /**
+     * @var Model\LabelingGroup
+     */
     private $labelingGroup;
-    
+
     /**
      * @var CouchDB\CouchDBClient
      */
@@ -406,7 +410,7 @@ class LoadTest extends Base
                 Model\Project::STATUS_IN_PROGRESS,
                 Model\Project::STATUS_DELETED,
                 Model\Project::STATUS_DONE,
-                ];
+			];
             for($i=1;$i<=$this->totalProjects;$i++) {
                 $project = Model\Project::create('Example project '.$i, $this->getOrganisation());
                 $status = $projectStatuses[rand(0,count($projectStatuses)-1)];
