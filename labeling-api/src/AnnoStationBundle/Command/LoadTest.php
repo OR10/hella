@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use AppBundle\Database\Facade as AppBundleFacade;
+use GuzzleHttp;
 
 class LoadTest extends Base
 {
@@ -397,7 +398,9 @@ class LoadTest extends Base
 
         $videoFileDir = '/code/videos';
         if(!is_dir($videoFileDir)) {
-            exec('wget https://sst.by/videos.zip -O /code/videos.zip');
+            $httpClient = new GuzzleHttp\Client();
+            $resource = fopen('/code/videos.zip', 'w');
+            $httpClient->request('GET', 'https://sst.by/videos.zip', ['sink' => $resource]);
             exec('cd /code/ && unzip /code/videos.zip');
         }
         $videoFileList = $scanned_directory = array_diff(scandir($videoFileDir), array('..', '.'));
