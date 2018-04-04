@@ -9,7 +9,7 @@ export APP_ENV=prod
 #################### MONITORING DEPLOYMENT BEGIN ####################
 
 #Make yml for docker monitoring
-export COMPOSE_FILE=ops/docker/compose/env/compose/prod-monitoring.yml:ops/docker/compose/monitoring/elk.yml:ops/docker/compose/monitoring/logspout.yml
+export COMPOSE_FILE=ops/docker/compose/monitoring/elk.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/env/compose/prod-monitoring.yml
 docker-compose config > monitoring.yml
 
 #Copy docker-compose config
@@ -45,7 +45,7 @@ docker-machine ssh $COUCHDB_MACHINE "docker login --username=$DOCKER_HUB_USER --
 #################### API DEPLOYMENT BEGIN ####################
 
 #Make yml for docker api
-export COMPOSE_FILE=ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/prod_fe.yml:ops/docker/compose/main.yml:ops/docker/compose/service/api.yml:ops/docker/compose/monitoring/logspout.yml
+export COMPOSE_FILE=ops/docker/compose/service/api.yml:ops/docker/compose/main.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/prod_fe.yml
 docker-compose config > api.yml
 
 #Copy docker-compose config
@@ -63,7 +63,7 @@ docker-machine ssh $API_MACHINE "docker login --username=$DOCKER_HUB_USER --pass
 #################### VIDEO DEPLOYMENT BEGIN ####################
 
 #Make yml for docker video
-export COMPOSE_FILE=ops/docker/compose/env/compose/prod-video.yml:ops/docker/compose/service/video.yml:ops/docker/compose/monitoring/logspout.yml
+export COMPOSE_FILE=ops/docker/compose/service/video.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/env/compose/prod-video.yml
 docker-compose config > video.yml
 
 #Copy docker-compose config
