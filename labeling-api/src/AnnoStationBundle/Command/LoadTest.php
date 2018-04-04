@@ -18,6 +18,7 @@ class LoadTest extends Base
     private $totalOrganisations = 50;
     private $totalLabelers = 50;
     private $totalProjects = 500;
+    private $labelingGroup;
     
     /**
      * @var CouchDB\CouchDBClient
@@ -343,7 +344,7 @@ class LoadTest extends Base
         );
 
         $this->labelingGroupFacade->save($labelGroup);
-
+        $this->labelingGroup = $labelGroup;
         $this->writeSection($output, 'Added new LabelGroup for label_manager and user');
 
         return true;
@@ -399,8 +400,17 @@ class LoadTest extends Base
         
         $lossless = true;
         try {
+            
+            $projectStatuses = [
+                Model\Project::STATUS_TODO,
+                Model\Project::STATUS_IN_PROGRESS,
+                Model\Project::STATUS_DELETED,
+                Model\Project::STATUS_DONE,
+                ];
             for($i=1;$i<=$this->totalProjects;$i++) {
                 $project = Model\Project::create('Example project '.$i, $this->getOrganisation());
+                $status = $projectStatuses[rand(0,count($projectStatuses)-1)];
+                
                 for($a=1; $a<=100; $a++) {
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_CYCLIST, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE, 'rectangle');
@@ -409,6 +419,16 @@ class LoadTest extends Base
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');
                 }
+                $user = $this->userFacade->getUserByUsername('superadmin');
+                
+                $this->projectFacade->save($project);
+                $date = new \DateTime('now', new \DateTimeZone('UTC'));
+                $date->modify('+1 second');
+                 $project->addStatusHistory(
+                    $date,
+                    $status,
+                    $user
+                );
                 $this->projectFacade->save($project);
             }
             for($i=200;$i<=205;$i++) {
