@@ -2,13 +2,11 @@
 
 namespace AnnoStationBundle\Service\v1\Project;
 
-use AppBundle\Exception;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Database\Facade as AppFacade;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ProjectService
+class ProjectCreator
 {
 
     private  $taskConfigurationFacade;
