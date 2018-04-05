@@ -388,13 +388,16 @@ class RequirementsProjectToXml
                         //parts of the blocked area to xml
                         $labeledBlocksInFrame = new Iterator\LabeledBlock($this->labelBlockFacade, $frameBlocks);
                         foreach ($labeledBlocksInFrame as $blockPart) {
-                            $part = new ExportXml\Element\Video\BlockPart(
-                                $frameMapping,
-                                $blockPart,
-                                $references,
-                                self::XML_NAMESPACE
-                            );
-                            $block->addBlock($part);
+                            //add to xml if block part is disabled
+                            if(!$blockPart->getStatus()) {
+                                $part = new ExportXml\Element\Video\BlockPart(
+                                    $frameMapping,
+                                    $blockPart,
+                                    $references,
+                                    self::XML_NAMESPACE
+                                );
+                                $block->addBlock($part);
+                            }
                         }
                         $xmlVideo->addBlock($block);
                     }
