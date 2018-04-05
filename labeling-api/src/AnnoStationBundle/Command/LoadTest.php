@@ -401,7 +401,11 @@ class LoadTest extends Base
             $httpClient = new GuzzleHttp\Client();
             $resource = fopen('/code/videos.zip', 'w');
             $httpClient->request('GET', 'https://sst.by/videos.zip', ['sink' => $resource]);
-            exec('cd /code/ && unzip /code/videos.zip');
+            $zip = new \ZipArchive();
+            if ($zip->open('/code/videos.zip') === TRUE) {
+                $zip->extractTo('/code/');
+                $zip->close();
+            }
         }
         $videoFileList = $scanned_directory = array_diff(scandir($videoFileDir), array('..', '.'));
         
