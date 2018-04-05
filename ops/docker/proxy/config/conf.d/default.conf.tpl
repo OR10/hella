@@ -46,28 +46,28 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    #location /couch/ {
-    #    add_header 'Access-Control-Allow-Credentials' 'true' always;
-    #    add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
-    #    add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
-    #    add_header 'Access-Control-Allow-Origin' "$http_origin" always;
-    #    add_header 'Access-Control-Max-Age' '1728000' always;
+    location /couch/ {
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+        add_header 'Access-Control-Max-Age' '1728000' always;
 
-    #    if ($request_method = OPTIONS) {
-    #        add_header 'Access-Control-Allow-Credentials' 'true' always;
-    #        add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
-    #        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
-    #        add_header 'Access-Control-Allow-Origin' "$http_origin" always;
-    #        add_header 'Access-Control-Max-Age' '1728000' always;
-    #        add_header Content-Length 0;
-    #        add_header Content-Type text/plain;
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Headers' 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token' always;
+            add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH' always;
+            add_header 'Access-Control-Allow-Origin' "$http_origin" always;
+            add_header 'Access-Control-Max-Age' '1728000' always;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
 
-    #        return 204;
-    #    }
+            return 204;
+        }
 
-    #    proxy_pass       http://api-couchdb:5984/;
-    #    proxy_set_header X-Real-IP $remote_addr;
-    #}
+        proxy_pass       http://api-couchdb:5984/;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
 
     ######## FE Angular start ########
     location /labeling {
@@ -144,15 +144,17 @@ server {
 
     ######## logs #########
 
-        location /kibana/ {
-                proxy_http_version 1.1;
-                proxy_set_header Upgrade $http_upgrade;
-                proxy_set_header Connection 'upgrade';
-                proxy_pass http://monitoring-kibana:5601/;
+    location /kibana/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        resolver 127.0.0.1 valid=30s;
+        set $upstream_kibana monitoring-kibana;
+        proxy_pass http://$upstream_kibana:5601/;
 
-                auth_basic           "closed area";
-                auth_basic_user_file /etc/nginx/conf.d/htpasswd;
-        }
+        auth_basic           "closed area";
+        auth_basic_user_file /etc/nginx/conf.d/htpasswd;
+    }
 
     ######## logs end #########
 
