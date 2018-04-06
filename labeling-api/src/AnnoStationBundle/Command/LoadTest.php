@@ -412,15 +412,13 @@ class LoadTest extends Base
                 $this->projectFacade->save($project);
             }
             for($i=200;$i<=205;$i++) {
-                $project = Model\Project::create('Example project with videos '.$i, $this->getOrganisation());
-                for($a=1; $a<=100; $a++) {
+                    $project = Model\Project::create('Example project with videos '.$i, $this->getOrganisation());
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_CYCLIST, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');
-                }
                 $this->projectFacade->save($project);
                 $this->importVideos($project, $videoFileDir, $videoFileList, $output, $lossless);
             }
