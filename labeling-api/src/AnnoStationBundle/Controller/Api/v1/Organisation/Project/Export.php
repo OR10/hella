@@ -142,7 +142,7 @@ class Export extends Controller\Base
             $attachment->getRawData(),
             HttpFoundation\Response::HTTP_OK,
             [
-                'Content-Type'        => 'text/csv',
+                'Content-Type' => 'application/zip',
                 'Content-Disposition' => sprintf(
                     'attachment; filename="export_%s.zip"',
                     $export->getDate()->format('Y-m-d_H-i-s')
