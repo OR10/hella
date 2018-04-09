@@ -17,7 +17,7 @@ services:
     ports:
       - 5984:5984
     volumes:
-      - api_couchdb_dbdata:/usr/local/var/lib/couchdb
+      - api_couchdb_dbdata:/opt/couchdb/data
 
 
 volumes:
