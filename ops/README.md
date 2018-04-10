@@ -101,6 +101,11 @@ Build gulp
 $ docker-compose run --user $(id -u) --rm maintenance-node gulp
 ```
 
+Or you also can run gulp serve on docker
+```bash
+$ docker-compose run --user $(id -u) --rm maintenance-node gulp serve
+```
+
 Or just run bash in container if you need some else
 ```bash
 $ docker-compose run --rm maintenance-node bash
@@ -130,7 +135,7 @@ E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`
 $ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_fe.sh
 ```
 
-### Deployment
+### Deployment via swarm and docker stack
 
 Deployment configured with docker `swarm` [https://docs.docker.com/get-started/part4/]
 
@@ -175,11 +180,13 @@ $ docker-machine ssh myvm2 "sudo sysctl -w vm.max_map_count=262144"
 #### How to deploy
 
 ```bash
-$ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/deploy_swarm.sh
+$ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/scripts/deploy_swarm.sh
 ```
 
 #### Run once only after first deployment
-
+```bash
+$ docker exec -it $(docker ps -f name=cron -q) app/AnnoStation/console annostation:init -v
+```
 
 #### How to do something on swarm
 
@@ -196,4 +203,16 @@ docker logs $(docker ps -a -f name=api-cron -q)
 Run some command 
 ```bash
 docker exec -it $(docker ps -a -f name=api-fpm -q) bash
+```
+
+
+### Deployment via docker-compose
+
+```bash
+$ MACHINE_USER=softeq-dev API_MACHINE={machine-name} COUCHDB_MACHINE={machine-name} VIDEO_MACHINE={machine-name} MONITORING_MACHINE={machine-name} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/scripts/deploy_compose.sh
+```
+
+#### Run once only after first deployment
+```bash
+$ docker-compose run --rm api-cron app/AnnoStation/console annostation:init -v
 ```

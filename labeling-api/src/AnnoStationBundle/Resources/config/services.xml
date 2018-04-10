@@ -429,8 +429,8 @@
                  class="AnnoStationBundle\Service\GhostLabeledThingGroupInFrameClassesPropagation">
         </service>
 
-        <service id="annostation.labeling_api.service.project"
-                 class="AnnoStationBundle\Service\v1\Project\ProjectService">
+        <service id="annostation.labeling_api.service.project_creator"
+                 class="AnnoStationBundle\Service\v1\Project\ProjectCreator">
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
         </service>
 
