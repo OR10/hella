@@ -184,6 +184,6 @@ class Export extends Controller\Base
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
-            ->setData(['message' => 'Export started', 't' => $project->getId()]);
+            ->setData(['message' => 'Export started']);
     }
 }
