@@ -2,23 +2,52 @@
 
 namespace AnnoStationBundle\Service;
 
-
 use AnnoStationBundle\Database\Facade\Project;
+use AnnoStationBundle\Helper\Iterator\LabeledThing;
+use AnnoStationBundle\Helper\Iterator\LabelingTask;
 
 class KpiExport
 {
-
     /**
      * @var Project
      */
     private $projectFacade;
 
+    /**
+     * @var
+     */
+    private $labelingTask;
+
+    /**
+     * @var
+     */
+    private $labeledThingFacadeFactory;
+
+    /**
+     * @var
+     */
+    private $taskService;
+
+
+
+    /**
+     * @var array
+     */
+    private $defaultKpi = [];
+
     public function __construct
     (
-        Project $projectFacade
+        Project $projectFacade,
+        \AnnoStationBundle\Database\Facade\LabelingTask $labelingTask,
+        $labelingThingFactory,
+        $taskService
     )
     {
-        $this->projectFacade        = $projectFacade;
+        $this->projectFacade             = $projectFacade;
+        $this->labelingTask              = $labelingTask;
+        $this->labeledThingFacadeFactory = $labelingThingFactory;
+        $this->taskService               = $taskService;
+
     }
 
 
@@ -26,54 +55,113 @@ class KpiExport
     {
         $project = $this->projectFacade->find($projectId);
         $projectTask = $this->projectFacade->getTasksByProject($project);
-        return $projectTask;
 
 
-
-        $defaultKpi = [];
 
         //1
-        $defaultKpi['UUID_of_the_project'] = [$project->getId()];
+        $this->defaultKpi['UUID_of_the_project'] = [$project->getId()];
 
 
 
 
         //$defaultKpi['UUID_of_the_task'] = [];
         if($projectTask) {
+
+
+
+
+
+
+
             $exportTime = date('d/m/Y h:m:s');
+
             foreach ($projectTask as $task) {
+
+
+
+
+
                 //2
-                $defaultKpi['UUID_of_the_task'][] = $task->getId();
+                $this->defaultKpi['UUID_of_the_task'][] = $task->getId();
 
                 $lastUserAssignment = $task->getAssignmentHistory();
                 //3
-                $defaultKpi['UUID_of_last_user_per_task'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'] : '-' ;
+                $this->defaultKpi['UUID_of_last_user_per_task'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'] : '-' ;
 
                 //4
-                $defaultKpi['labeling_phase'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'] : '-' ;
+                $allPhaseTask = $this->taskService->getTaskByPhase($project->getId());
+                $taskPhase= '';
+                foreach ($allPhaseTask as $phaseName => $phaseTasks) {
+                    if(in_array($task->getId(), $phaseTasks)) {
+                        $taskPhase = $phaseName;
+                    }
+                }
+                $this->defaultKpi['labeling_phase'][] = $taskPhase;//(isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'] : '-' ;
 
                 //5
-                $defaultKpi['export_time'][] = $exportTime;
+                $this->defaultKpi['export_time'][] = $exportTime;
 
                 //6
-                $defaultKpi['UUID_of_user'][] = $project->getUserId();
+                $this->defaultKpi['UUID_of_user'][] = $project->getUserId();
 
                 //7
-                $defaultKpi['task_loading_time'][] = time();
+                $this->defaultKpi['task_loading_time'][] = time();
 
                 //8
-                $defaultKpi['user_label_task_net_time'][] = time();
+                $this->defaultKpi['user_label_task_net_time'][] = time();
 
                 //9
-                $defaultKpi['user_review_task_net_time'][] = time();
+                $this->defaultKpi['user_review_task_net_time'][] = time();
 
                 //10
-                $defaultKpi['user_revision_task_net_time'][] = time();
+                $this->defaultKpi['user_revision_task_net_time'][] = time();
+
+
+
+                //11
+
+                //get all total_objects_created_per_user_per_task_all_phases ->
+                $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+                    $project->getId(),
+                    $task->getId()
+                );
+                $labeledThingIterator = new LabeledThing(
+                    $task,
+                    $labeledThingFacade
+                );
+                //variable to get total_objects_created_per_user_per_task_all_phases ->
+                $labelThingsCreatedAllPhase = 0;
+                foreach ($labeledThingIterator as $thing) {
+                    //$labelThingsCreatedAllPhase[] = $thing->getId();
+                    $labelThingsCreatedAllPhase ++;
+                }
+                $this->defaultKpi['total_objects_created_per_user_per_task_all_phases'] = [$labelThingsCreatedAllPhase];
+
 
             };
         }
 
-        $defaultKpi['total_objects_created_per_user_per_task_all_phases'] = ['d'];
+        /*
+           $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+
+            $labeledThingIterator = new Iterator\LabeledThing(
+                        $task,
+                        $labeledThingFacade
+                    );
+
+            foreach($labeledThingIterator)
+
+
+         */
+
+
+
+
+
+
 
 
 
@@ -81,21 +169,21 @@ class KpiExport
 
         $maxArray = 0;
         $maxKey = '';
-        foreach ($defaultKpi as $k => $t) {
+        foreach ($this->defaultKpi as $k => $t) {
             if(count($t) >= $maxArray) {
                 $maxArray = count($t);
                 $maxKey = $k;
             }
         }
         $fields = [];
-        foreach ($defaultKpi as $k => $ad) {
+        foreach ($this->defaultKpi as $k => $ad) {
             $fields[$k] = [];
-            $lastElementValue = end($defaultKpi[$k]);
+            $lastElementValue = end($this->defaultKpi[$k]);
             $elementDiff = $maxArray-count($ad);
             if($elementDiff > 0) {
                 for ($i = 0; $i < $maxArray - count($ad); $i++) {
                     if ($k != $maxKey) {
-                        array_push($defaultKpi[$k], $lastElementValue);
+                        array_push($this->defaultKpi[$k], $lastElementValue);
                     }
                 }
             }
@@ -104,7 +192,7 @@ class KpiExport
         $dataForCsv = [];
         $i = 0;
         for ($ii =0; $ii < $maxArray; $ii++) {
-            foreach ($defaultKpi as $k => $t) {
+            foreach ($this->defaultKpi as $k => $t) {
                 $dataForCsv[$ii][$k] = $t[$ii];
                 $i++;
             }
