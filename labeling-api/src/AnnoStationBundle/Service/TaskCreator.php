@@ -145,6 +145,9 @@ class TaskCreator
                     'minHandles' => 3,
                     'maxHandles' => 15,
                 ],
+                'trapezoid'     => [
+                    'minimalHeight' => 15,
+                ],
             ];
 
             $taskVideoSettings              = $project->getTaskVideoSettings();
@@ -471,6 +474,7 @@ class TaskCreator
                 $drawingToolOptions['rectangle']['minimalHeight']  = (int) $minimalHeightResult->item(0)->nodeValue;
                 $drawingToolOptions['pedestrian']['minimalHeight'] = (int) $minimalHeightResult->item(0)->nodeValue;
                 $drawingToolOptions['cuboid']['minimalHeight']     = (int) $minimalHeightResult->item(0)->nodeValue;
+                $drawingToolOptions['trapezoid']['minimalHeight']  = (int) $minimalHeightResult->item(0)->nodeValue;
             }
         } else {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
