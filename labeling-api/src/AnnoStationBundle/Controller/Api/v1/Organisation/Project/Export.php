@@ -177,11 +177,13 @@ class Export extends Controller\Base
                 case 'requirementsXml':
                     $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
+                case 'kpi':
+                    $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export), WorkerPool\Facade::HIGH_PRIO);
             }
         }
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
-            ->setData(['message' => 'Export started']);
+            ->setData(['message' => 'Export started', 't' => $project->getId()]);
     }
 }
