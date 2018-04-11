@@ -131,7 +131,11 @@ class TaskService
         return $result;
     }
 
-    public function getTaskByPhase($projectId)
+    /**
+     * @param string $projectId
+     * @return array
+     */
+    public function getTaskByPhase(string $projectId)
     {
         $offset     = 0;
         $limit      = 100;
@@ -152,9 +156,7 @@ class TaskService
             throw new BadRequestHttpException('Invalid offset or limit');
         }
 
-        $result = [];
         $tasks = [];
-
         foreach ($taskPhase as $phase) {
 
             if (isset($phase)) {
