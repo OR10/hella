@@ -75,6 +75,11 @@ class LabeledThing extends Base
     private $lastModifiedByUserId;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $stopPropagation;
+
+    /**
      * @param LabelingTask $task
      * @param int          $lineColor
      * @param null         $createdByUserId
@@ -221,6 +226,22 @@ class LabeledThing extends Base
     public function getLineColor()
     {
         return $this->lineColor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStopPropagation()
+    {
+        return $this->stopPropagation;
+    }
+
+    /**
+     * @param $propagation
+     */
+    public function setStopPropagation($propagation)
+    {
+        $this->stopPropagation = $propagation;
     }
 
     /**

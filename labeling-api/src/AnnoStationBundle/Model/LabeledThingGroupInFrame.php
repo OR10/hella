@@ -50,6 +50,11 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     /**
      * @CouchDB\Field(type="boolean")
      */
+    private $stopPropagation;
+
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
     private $incomplete;
 
     public function __construct(AppBundleModel\LabelingTask $task, Model\LabeledThingGroup $labeledThingGroup, $frameIndex, $classes = [])
@@ -121,6 +126,22 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     public function setClasses($classes)
     {
         $this->classes = $classes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStopPropagation()
+    {
+        return $this->stopPropagation;
+    }
+
+    /**
+     * @param $propagation
+     */
+    public function setStopPropagation($propagation)
+    {
+        $this->stopPropagation = $propagation;
     }
 
     /**

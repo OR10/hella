@@ -66,6 +66,11 @@ class LabeledThingGroup extends AppBundleModel\Base
      */
     private $incomplete;
 
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $stopPropagation;
+
     public function __construct(
         AppBundleModel\LabelingTask $task,
         $lineColor,
@@ -135,6 +140,22 @@ class LabeledThingGroup extends AppBundleModel\Base
     public function getTaskId()
     {
         return $this->taskId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStopPropagation()
+    {
+        return $this->stopPropagation;
+    }
+
+    /**
+     * @param $propagation
+     */
+    public function setStopPropagation($propagation)
+    {
+        $this->stopPropagation = $propagation;
     }
 
     /**

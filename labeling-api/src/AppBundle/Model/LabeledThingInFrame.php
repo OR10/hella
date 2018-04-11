@@ -78,6 +78,11 @@ class LabeledThingInFrame extends Base
     private $importLineNo;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $stopPropagation;
+
+    /**
      * @param LabeledThing $labeledThing
      * @param int $frameIndex
      * @param array $classes
@@ -212,6 +217,22 @@ class LabeledThingInFrame extends Base
         $this->frameIndex = (int) $frameIndex;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStopPropagation()
+    {
+        return $this->stopPropagation;
+    }
+
+    /**
+     * @param $propagation
+     */
+    public function setStopPropagation($propagation)
+    {
+        $this->stopPropagation = $propagation;
     }
 
     /**
