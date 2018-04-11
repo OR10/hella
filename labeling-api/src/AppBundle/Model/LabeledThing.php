@@ -76,6 +76,7 @@ class LabeledThing extends Base
 
     /**
      * @CouchDB\Field(type="boolean")
+     * @var boolean
      */
     private $stopPropagation;
 
@@ -229,7 +230,7 @@ class LabeledThing extends Base
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getStopPropagation()
     {
@@ -237,9 +238,9 @@ class LabeledThing extends Base
     }
 
     /**
-     * @param $propagation
+     * @param bool $propagation
      */
-    public function setStopPropagation($propagation)
+    public function setStopPropagation(bool $propagation)
     {
         $this->stopPropagation = $propagation;
     }

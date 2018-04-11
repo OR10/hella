@@ -68,6 +68,7 @@ class LabeledThingGroup extends AppBundleModel\Base
 
     /**
      * @CouchDB\Field(type="boolean")
+     * @var boolean
      */
     private $stopPropagation;
 
@@ -143,7 +144,7 @@ class LabeledThingGroup extends AppBundleModel\Base
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getStopPropagation()
     {
@@ -151,9 +152,9 @@ class LabeledThingGroup extends AppBundleModel\Base
     }
 
     /**
-     * @param $propagation
+     * @param bool $propagation
      */
-    public function setStopPropagation($propagation)
+    public function setStopPropagation(bool $propagation)
     {
         $this->stopPropagation = $propagation;
     }
