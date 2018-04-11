@@ -26,10 +26,11 @@ class TotalTaskTime implements \IteratorAggregate
 
     /**
      * TotalTaskTime constructor.
-     * @param Model\TaskTimer $taskTime
+     * @param Model\LabelingTask $labelingTask
+     * @param string $userId
      * @param Facade\TaskTimer $taskTimeFacade
      */
-    public function __construct(Model\LabelingTask $labelingTask, $userId, Facade\TaskTimer $taskTimeFacade)
+    public function __construct(Model\LabelingTask $labelingTask, string $userId, Facade\TaskTimer $taskTimeFacade)
     {
         $this->task           = $labelingTask;
         $this->taskTimeFacade = $taskTimeFacade;
