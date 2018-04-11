@@ -4,7 +4,9 @@ namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade\Project;
 use AnnoStationBundle\Helper\Iterator\LabeledThing;
-use AnnoStationBundle\Helper\Iterator\LabelingTask;
+use AnnoStationBundle\Helper\Iterator\LabeledThingCreateByUser;
+use AnnoStationBundle\Helper\Iterator\LabeledThingModifyByUser;
+use AnnoStationBundle\Helper\Iterator\TotalTaskTime;
 
 class KpiExport
 {
@@ -28,6 +30,11 @@ class KpiExport
      */
     private $taskService;
 
+    /**
+     * @var
+     */
+    private $taskTimerFacadeFactory;
+
 
 
     /**
@@ -40,14 +47,15 @@ class KpiExport
         Project $projectFacade,
         \AnnoStationBundle\Database\Facade\LabelingTask $labelingTask,
         $labelingThingFactory,
-        $taskService
+        $taskService,
+        $taskTimerFactory
     )
     {
         $this->projectFacade             = $projectFacade;
         $this->labelingTask              = $labelingTask;
         $this->labeledThingFacadeFactory = $labelingThingFactory;
         $this->taskService               = $taskService;
-
+        $this->taskTimerFacadeFactory    = $taskTimerFactory;
     }
 
 
@@ -89,14 +97,15 @@ class KpiExport
                 $this->defaultKpi['UUID_of_last_user_per_task'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'] : '-' ;
 
                 //4
-                $allPhaseTask = $this->taskService->getTaskByPhase($project->getId());
+                //get all task of project by phase;
+                $allProjectPhaseTask = $this->taskService->getTaskByPhase($project->getId());
                 $taskPhase= '';
-                foreach ($allPhaseTask as $phaseName => $phaseTasks) {
+                foreach ($allProjectPhaseTask as $phaseName => $phaseTasks) {
                     if(in_array($task->getId(), $phaseTasks)) {
                         $taskPhase = $phaseName;
                     }
                 }
-                $this->defaultKpi['labeling_phase'][] = $taskPhase;//(isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'] : '-' ;
+                $this->defaultKpi['labeling_phase'][] = ($taskPhase) ? $taskPhase : '-';//(isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'] : '-' ;
 
                 //5
                 $this->defaultKpi['export_time'][] = $exportTime;
@@ -104,17 +113,34 @@ class KpiExport
                 //6
                 $this->defaultKpi['UUID_of_user'][] = $project->getUserId();
 
+
+
+
+                /*Task time counter*/
+                $taskTime = $this->taskTimerFacadeFactory->getFacadeByProjectIdAndTaskId(
+                    $project->getId(),
+                    $task->getId()
+                );
+                $taskTimeIterator = new TotalTaskTime($task, $project->getUserId(), $taskTime);
+                $totalTaskTime = 0;
+                foreach ($taskTimeIterator as $topTime) {
+                    $time = (int)$topTime->getTimeInSeconds($taskPhase);
+                    $totalTaskTime += $time;
+                }
+
                 //7
-                $this->defaultKpi['task_loading_time'][] = time();
+                $this->defaultKpi['task_loading_time'][] = $totalTaskTime;
 
                 //8
-                $this->defaultKpi['user_label_task_net_time'][] = time();
+                $this->defaultKpi['user_label_task_net_time'][] = $totalTaskTime;
 
                 //9
-                $this->defaultKpi['user_review_task_net_time'][] = time();
+                $this->defaultKpi['user_review_task_net_time'][] = $totalTaskTime;
 
                 //10
-                $this->defaultKpi['user_revision_task_net_time'][] = time();
+                $this->defaultKpi['user_revision_task_net_time'][] = $totalTaskTime;
+
+
 
 
 
@@ -125,17 +151,43 @@ class KpiExport
                     $project->getId(),
                     $task->getId()
                 );
-                $labeledThingIterator = new LabeledThing(
+                $userCreateThingIterator = new LabeledThingCreateByUser(
                     $task,
+                    $project->getUserId(),
                     $labeledThingFacade
                 );
                 //variable to get total_objects_created_per_user_per_task_all_phases ->
                 $labelThingsCreatedAllPhase = 0;
-                foreach ($labeledThingIterator as $thing) {
-                    //$labelThingsCreatedAllPhase[] = $thing->getId();
-                    $labelThingsCreatedAllPhase ++;
+                foreach ($userCreateThingIterator as $thing) {
+                    if($thing) {
+                        $labelThingsCreatedAllPhase++;
+                    }
                 }
                 $this->defaultKpi['total_objects_created_per_user_per_task_all_phases'] = [$labelThingsCreatedAllPhase];
+
+
+                //12
+
+                //'total_objects_modified_per_user_per_task_all_phases'
+                $userModifyThingIterator = new LabeledThingModifyByUser(
+                    $task,
+                    $project->getUserId(),
+                    $labeledThingFacade
+                );
+                $labelThingsModifyAllPhase = 0;
+                foreach ($userModifyThingIterator as $thing) {
+                    if($thing) {
+                        $labelThingsModifyAllPhase++;
+                    }
+                }
+
+                $this->defaultKpi['total_objects_modified_per_user_per_task_all_phases'] = [$labelThingsModifyAllPhase];
+
+
+                //13
+
+                //total_objects_created_per_user_per_task_labeling
+                $this->defaultKpi['total_objects_created_per_user_per_task_labeling'] = [0];
 
 
             };

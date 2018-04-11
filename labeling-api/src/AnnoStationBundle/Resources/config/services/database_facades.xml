@@ -179,6 +179,20 @@
             <argument>%database_name_read_only%</argument>
         </service>
 
+        <service id="annostation.labeling_api.database.facade.task_timer" class="AnnoStationBundle\Database\Facade\TaskTimer">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.task_timer"
+                 class="AnnoStationBundle\Database\Facade\TaskTimer\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\TaskTimer\FacadeFactory" method="get"/>
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_timer" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
         <service id="annostation.labeling_api.database.facade.additional_frame_number_mapping" class="AnnoStationBundle\Database\Facade\AdditionalFrameNumberMapping">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
