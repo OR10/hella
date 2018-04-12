@@ -137,6 +137,22 @@ class LabeledThingInFrame
 
     /**
      * @param Model\LabelingTask $labelingTask
+     * @return mixed
+     */
+    public function getLabeledThingsInFrameByTask(Model\LabelingTask $labelingTask)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_taskId')
+            ->setKey($labelingTask->getId())
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+
+        return $result;
+    }
+
+    /**
+     * @param Model\LabelingTask $labelingTask
      * @param int                $limit
      *
      * @return Model\LabeledThingInFrame[]

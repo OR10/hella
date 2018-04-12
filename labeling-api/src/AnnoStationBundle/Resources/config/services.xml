@@ -467,6 +467,9 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.service.task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.task_timer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
         </service>
     </services>
 </container>
