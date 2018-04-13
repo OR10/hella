@@ -17,4 +17,9 @@ services:
     ports:
       - 5984:5984
     volumes:
-      - /data/couchdb:/opt/couchdb/data
+      - api_couchdb_dbdata:/opt/couchdb/data
+
+
+volumes:
+    api_couchdb_dbdata:
+      driver: local

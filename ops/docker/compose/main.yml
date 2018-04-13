@@ -24,5 +24,9 @@ services:
       - 15672:15672
       - 5672:5672
     volumes:
-      - /data/rabbitmq:/var/lib/rabbitmq
+      - rmq_data:/var/lib/rabbitmq
     restart: on-failure
+
+volumes:
+  rmq_data:
+    driver: local
