@@ -11,17 +11,19 @@ use Hagl\WorkerPoolBundle;
 class KpiProjectToCsv extends WorkerPoolBundle\JobInstruction
 {
     /**
-     * @var Service\Exporter\LegacyProjectToCsv
+     * @var Service\KpiExport
      */
-  //  private $csvProjectExporter;
+    private $kpiExport;
 
     /**
-     * @param Service\Exporter\LegacyProjectToCsv $csvProjectExporter
+     * KpiProjectToCsv constructor.
+     *
+     * @param Service\KpiExport $kpiExporter
      */
-  //  public function __construct(Service\Exporter\LegacyProjectToCsv $csvProjectExporter)
- //   {
-      //  $this->csvProjectExporter = $csvProjectExporter;
- //   }
+    public function __construct(Service\KpiExport $kpiExporter)
+    {
+        $this->kpiExport = $kpiExporter;
+    }
 
     /**
      * @param WorkerPool\Job             $job
@@ -31,7 +33,7 @@ class KpiProjectToCsv extends WorkerPoolBundle\JobInstruction
     {
         try {
             // add Kpi export service
-           // $this->csvProjectExporter->exportProject($job->getExport());
+            $this->kpiExport->build($job->getExport());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
         } catch (\Throwable $throwable) {

@@ -3,16 +3,16 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade\Exporter;
+use AnnoStationBundle\Database\Facade\LabeledThing\TaskDatabase;
 use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 use AnnoStationBundle\Database\Facade\Project;
-use AnnoStationBundle\Helper\Iterator\LabeledThing;
 use AnnoStationBundle\Helper\Iterator\LabeledThingCreateByUser;
 use AnnoStationBundle\Helper\Iterator\LabeledThingModifyByUser;
 use AnnoStationBundle\Helper\Iterator\PhaseThingCreateByUser;
 use AnnoStationBundle\Helper\Iterator\PhaseThingInFrameByUser;
-use AnnoStationBundle\Helper\Iterator\PhaseThingInFrameCreateByUser;
 use AnnoStationBundle\Helper\Iterator\PhaseThingModifyByUser;
 use AnnoStationBundle\Helper\Iterator\TotalTaskTime;
+use AnnoStationBundle\Service\v1\TaskService;
 use AppBundle\Model\Export;
 
 class KpiExport
@@ -83,14 +83,26 @@ class KpiExport
      */
     private $defaultKpi = [];
 
+    /**
+     * KpiExport constructor.
+     *
+     * @param Project                                                   $projectFacade
+     * @param \AnnoStationBundle\Database\Facade\LabelingTask           $labelingTask
+     * @param TaskDatabase                                              $labelingThingFactory
+     * @param TaskService                                               $taskService
+     * @param \AnnoStationBundle\Database\Facade\TaskTimer\TaskDatabase $taskTimerFactory
+     * @param LabeledThingInFrame\TaskDatabase                          $labelingThingInFrame
+     * @param LabeledThingInFrame                                       $thingInFrameFacade
+     * @param Exporter                                                  $exporter
+     */
     public function __construct
     (
         Project $projectFacade,
         \AnnoStationBundle\Database\Facade\LabelingTask $labelingTask,
-        $labelingThingFactory,
-        $taskService,
-        $taskTimerFactory,
-        $labelingThingInFrame,
+        TaskDatabase $labelingThingFactory,
+        TaskService $taskService,
+        \AnnoStationBundle\Database\Facade\TaskTimer\TaskDatabase $taskTimerFactory,
+        LabeledThingInFrame\TaskDatabase $labelingThingInFrame,
         LabeledThingInFrame $thingInFrameFacade,
         Exporter $exporter
     )
@@ -106,682 +118,492 @@ class KpiExport
 
     }
 
-
-    public function build($projectId)
+    public function build($export)
     {
-        $project = $this->projectFacade->find($projectId);
+        $export = $this->exporterFacade->find($export->getId());
+        $export->setStatus(Export::EXPORT_STATUS_IN_PROGRESS);
+        $this->exporterFacade->save($export);
+        try {
+            $project = $this->projectFacade->find($export->getProjectId());
+            $projectTask = $this->projectFacade->getTasksByProject($project);
+            if($project && $projectTask) {
 
-        $projectTask = $this->projectFacade->getTasksByProject($project);
+                $this->defaultKpi['UUID_of_the_project'] = [$project->getId()];
+                $exportTime = date('d/m/Y h:m:s');
+                foreach ($projectTask as $task) {
+                    $this->defaultKpi['UUID_of_the_task'][] = $task->getId();
+                    $lastUserAssignment = $task->getAssignmentHistory();
 
+                    $this->defaultKpi['UUID_of_last_user_per_task'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'] : '-';
 
-
-        //1
-        $this->defaultKpi['UUID_of_the_project'] = [$project->getId()];
-
-
-
-
-        //$defaultKpi['UUID_of_the_task'] = [];
-        if($projectTask) {
-
-
-
-
-
-
-
-            $exportTime = date('d/m/Y h:m:s');
-
-            foreach ($projectTask as $task) {
-
-
-
-
-
-                //2
-                $this->defaultKpi['UUID_of_the_task'][] = $task->getId();
-
-                $lastUserAssignment = $task->getAssignmentHistory();
-                //3
-                $this->defaultKpi['UUID_of_last_user_per_task'][] = (isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['userId'] : '-' ;
-
-                //4
-                //get all task of project by phase;
-                $allProjectPhaseTask = $this->taskService->getTaskByPhase($project->getId());
-                $taskPhase= '';
-
-                foreach ($allProjectPhaseTask as $phaseName => $phaseTasks) {
-                    if(in_array($task->getId(), $phaseTasks)) {
-                        $taskPhase = $phaseName;
-                    }
-                    //get tasks per phase
-                    switch ($phaseName) {
-                        case 'labeling':
-                            $this->labelTasks = $phaseTasks;
-                            break;
-                        case 'review':
-                            $this->reviewTasks = $phaseTasks;
-                            break;
-                        case 'revision':
-                            $this->revisionTasks = $phaseTasks;
-                            break;
-                    }
-                }
-                $this->defaultKpi['labeling_phase'][] = ($taskPhase) ? $taskPhase : '-';//(isset($lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'])) ? $lastUserAssignment[max(array_keys($lastUserAssignment))]['phase'] : '-' ;
-
-                //5
-                $this->defaultKpi['export_time'][] = $exportTime;
-
-                //6
-                $this->defaultKpi['UUID_of_user'][] = $project->getUserId();
-
-
-
-
-                /*Task time counter*/
-                $taskTime = $this->taskTimerFacadeFactory->getFacadeByProjectIdAndTaskId(
-                    $project->getId(),
-                    $task->getId()
-                );
-                $taskTimeIterator = new TotalTaskTime($task, $project->getUserId(), $taskTime);
-                $totalTaskTime = 0;
-                foreach ($taskTimeIterator as $topTime) {
-                    $time = (int)$topTime->getTimeInSeconds($taskPhase);
-                    $totalTaskTime += $time;
-                }
-
-                //7
-                $this->defaultKpi['task_loading_time'][] = $totalTaskTime;
-
-                //8
-                $this->defaultKpi['user_label_task_net_time'][] = $totalTaskTime;
-
-                //9
-                $this->defaultKpi['user_review_task_net_time'][] = $totalTaskTime;
-
-                //10
-                $this->defaultKpi['user_revision_task_net_time'][] = $totalTaskTime;
-
-
-
-
-
-                //11  OBJECT
-
-                //get all total_objects_created_per_user_per_task_all_phases ->
-                $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
-                    $project->getId(),
-                    $task->getId()
-                );
-                $userCreateThingIterator = new LabeledThingCreateByUser(
-                    $task,
-                    $project->getUserId(),
-                    $labeledThingFacade
-                );
-                //variable to get total_objects_created_per_user_per_task_all_phases ->
-                $labelThingsCreatedAllPhase = 0;
-                foreach ($userCreateThingIterator as $thing) {
-                    if($thing) {
-                        $labelThingsCreatedAllPhase++;
-                    }
-                }
-                $this->defaultKpi['total_objects_created_per_user_per_task_all_phases'] = [$labelThingsCreatedAllPhase];
-
-
-                //12
-
-                //'total_objects_modified_per_user_per_task_all_phases'
-                $userModifyThingIterator = new LabeledThingModifyByUser(
-                    $task,
-                    $project->getUserId(),
-                    $labeledThingFacade
-                );
-                $labelThingsModifyAllPhase = 0;
-                foreach ($userModifyThingIterator as $thing) {
-                    if($thing) {
-                        $labelThingsModifyAllPhase++;
-                    }
-                }
-
-                $this->defaultKpi['total_objects_modified_per_user_per_task_all_phases'] = [$labelThingsModifyAllPhase];
-
-
-
-                //13 labeling
-                //all task in labeled phase
-                $thingsInLabeledPhaseCreate = 0;
-                $thingsInLabeledPhaseModify = 0;
-                $userCreateLabelThingsIds = [];
-                if(!empty($this->labelTasks)) {
-                    foreach ($this->labelTasks as $taskId) {
-                        //loop all task thing in "labeling" phase
-                        $task = $this->labelingTask->find($taskId);
-                        //get count create by user
-                        $userCreateThingLabelingPhaseIterator = new PhaseThingCreateByUser(
-                            $task,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userCreateThingLabelingPhaseIterator as $thing) {
-                            if ($thing) {
-                                $userCreateLabelThingsIds[] = $thing->getId();
-                                $thingsInLabeledPhaseCreate++;
+                    //get all task of project by phase;
+                    $taskPhase = '';
+                    $allProjectPhaseTask = $this->taskService->getTaskByPhase($project->getId());
+                    if (is_array($allProjectPhaseTask)) {
+                        foreach ($allProjectPhaseTask as $phaseName => $phaseTasks) {
+                            if (in_array($task->getId(), $phaseTasks)) {
+                                $taskPhase = $phaseName;
                             }
-                        }
-                        //get count modify by user
-                        $userModifyThingLabelingPhaseIterator = new PhaseThingModifyByUser(
-                            $task,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userModifyThingLabelingPhaseIterator as $thing) {
-                            if ($thing) {
-                                $thingsInLabeledPhaseModify++;
-                            }
-                        }
-
-                    }
-                }
-                //total_objects_created_per_user_per_task_labeling
-                $this->defaultKpi['total_objects_created_per_user_per_task_labeling'] = [$thingsInLabeledPhaseCreate];
-
-                //14
-                //all task in labeled phase
-                $this->defaultKpi['total_objects_modified_per_user_per_task_labeling'] = [$thingsInLabeledPhaseModify];
-
-
-
-
-                //15 review phase
-                $thingsInReviewPhaseCreate = 0;
-                $thingsInReviewPhaseModify = 0;
-                $userCreateReviewThingsIds = [];
-                $userModifyReviewThingsIds = [];
-                if(!empty($this->reviewTasks)) {
-                    foreach ($this->reviewTasks as $taskId) {
-                        //loop all task thing in "review" phase
-                        $task = $this->labelingTask->find($taskId);
-                        //get count create by user
-                        $userCreateThingReviewPhaseIterator = new PhaseThingCreateByUser(
-                            $task,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userCreateThingReviewPhaseIterator as $thing) {
-                            if ($thing) {
-                                $userCreateReviewThingsIds[] = $thing->getId();
-                                $thingsInReviewPhaseCreate++;
-                            }
-                        }
-                        //get count modify by user
-                        $userModifyThingReviewPhaseIterator = new PhaseThingModifyByUser(
-                            $task,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userModifyThingReviewPhaseIterator as $thing) {
-                            if ($thing) {
-                                $userModifyReviewThingsIds[] = $thing->getId();
-                                $thingsInReviewPhaseModify++;
-                            }
-                        }
-
-                    }
-                }
-                $this->defaultKpi['total_objects_created_per_user_per_task_review'] = [$thingsInReviewPhaseCreate];
-
-
-                //16
-                $this->defaultKpi['total_objects_modified_per_user_per_task_review'] = [$thingsInReviewPhaseModify];
-
-
-                //17 revision
-                $thingsInRevisionPhaseCreate = 0;
-                $thingsInRevisionPhaseModify = 0;
-                $userCreateRevisionThingsIds = [];
-                $userModifyRevisionThingsIds = [];
-                if(!empty($this->revisionTasks)) {
-                    foreach ($this->revisionTasks as $taskId) {
-                        //loop all task thing in "review" phase
-                        $revTask = $this->labelingTask->find($taskId);
-                        //get count create by user
-                        $userCreateThingRevisionPhaseIterator = new PhaseThingCreateByUser(
-                            $revTask,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userCreateThingRevisionPhaseIterator as $thing) {
-                            if ($thing) {
-                                $userCreateRevisionThingsIds[] = $thing->getId();
-                                $thingsInRevisionPhaseCreate++;
-                            }
-                        }
-                        //get count modify by user
-                        $userModifyThingRevisionPhaseIterator = new PhaseThingModifyByUser(
-                            $revTask,
-                            $project->getUserId(),
-                            $labeledThingFacade
-                        );
-                        foreach ($userModifyThingRevisionPhaseIterator as $thing) {
-                            if ($thing) {
-                                $userModifyRevisionThingsIds[] = $thing->getId();
-                                $thingsInRevisionPhaseModify++;
-                            }
-                        }
-
-                    }
-                }
-                $this->defaultKpi['total_objects_created_per_user_per_task_revision'] = [$thingsInRevisionPhaseCreate];
-
-
-                //18
-                $this->defaultKpi['total_objects_modified_per_user_per_task_revision'] = [$thingsInRevisionPhaseModify];
-
-
-
-
-
-                //BOXES labelingThingInFrame
-
-
-                //19 | real 17
-                $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
-                    $project->getId(),
-                    $task->getId()
-                );
-
-                $boxesInLabeledPhaseCreate = 0;
-                //task ib "labeling" phase
-                if(!empty($this->labelTasks)) {
-                    foreach ($this->labelTasks as $taskId) {
-                        //loop all task thing in "labeling" phase
-                        $labTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES created by user
-                        $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $labTask
-                        );
-
-                        foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // check if box create by needed object
-                            if(in_array($thingInFrame->getLabeledThingId(), $userCreateLabelThingsIds)) {
-                                $boxesInLabeledPhaseCreate++;
+                            //get tasks per phase
+                            switch ($phaseName) {
+                                case 'labeling':
+                                    $this->labelTasks = $phaseTasks;
+                                    break;
+                                case 'review':
+                                    $this->reviewTasks = $phaseTasks;
+                                    break;
+                                case 'revision':
+                                    $this->revisionTasks = $phaseTasks;
+                                    break;
                             }
                         }
                     }
-                }
 
-                $this->defaultKpi['total_object_frames_set_per_user_per_task_in_labeling'] = [$boxesInLabeledPhaseCreate];
+                    $this->defaultKpi['labeling_phase'][] = ($taskPhase) ? $taskPhase : '-';
 
+                    $this->defaultKpi['export_time'][] = $exportTime;
 
-                //20 | real 18 review phase
+                    $this->defaultKpi['UUID_of_user'][] = $project->getUserId();
 
-                $boxesInReviewPhaseCreate = 0;
-                $boxesInReviewPhaseModify = 0;
-                //task ib "review" phase
-                if(!empty($this->reviewTasks)) {
-                    foreach ($this->reviewTasks as $taskId) {
-                        //loop all task thing in "labeling" phase
-                        $boxRevTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES by task
-                        $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $boxRevTask
-                        );
-
-                        foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // check if box create by needed object and user
-                            if(in_array($thingInFrame->getLabeledThingId(), $userCreateReviewThingsIds)) {
-                                $boxesInReviewPhaseCreate++;
-                            }
-                            // check if box modify by needed object and user
-                            if(in_array($thingInFrame->getLabeledThingId(), $userModifyReviewThingsIds)) {
-                                $boxesInReviewPhaseCreate++;
-                            }
-                        }
-                    }
-                }
-                $this->defaultKpi['total_objects_frames_created_per_user_in_review'] = [$boxesInReviewPhaseCreate];
-
-
-                //21
-
-                $this->defaultKpi['total_objects_frames_modified_per_user_in_review'] = [$boxesInReviewPhaseModify];
-
-
-
-                //22 | real 19 revision phase
-
-                $boxesInRevisionPhaseCreate = 0;
-                $boxesInRevisionPhaseModify = 0;
-                //task ib "review" phase
-                if(!empty($this->revisionTasks)) {
-                    foreach ($this->revisionTasks as $taskId) {
-                        //loop all task thing in "labeling" phase
-                        $boxRevTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES by task
-                        $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $boxRevTask
-                        );
-
-                        foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // check if box create by needed object and user
-                            if(in_array($thingInFrame->getLabeledThingId(), $userCreateRevisionThingsIds)) {
-                                $boxesInRevisionPhaseCreate++;
-                            }
-                            // check if box modify by needed object and user
-                            if(in_array($thingInFrame->getLabeledThingId(), $userModifyRevisionThingsIds)) {
-                                $boxesInRevisionPhaseModify++;
-                            }
-                        }
-                    }
-                }
-
-                $this->defaultKpi['total_objects_frames_created_per_user_in_revision'] = [$boxesInRevisionPhaseCreate];
-
-
-                //23
-
-                $this->defaultKpi['total_objects_frames_modified_per_user_in_revision'] = [$boxesInRevisionPhaseModify];
-
-
-                //24 | real 20
-                $userModifyInRevisionReview = $boxesInRevisionPhaseModify + $boxesInReviewPhaseModify;
-                $this->defaultKpi['total_object_frames_modified_per_user_per_task'] = [$userModifyInRevisionReview];
-
-
-
-                //25 | real 21
-
-                $totalBoxInTask = 0;
-                $allThingInFrameIterator = new PhaseThingInFrameByUser(
-                    $labeledThingInFrameFacade,
-                    $task
-                );
-
-                foreach ($allThingInFrameIterator as $taskBox) {
-                    if($taskBox) {
-                        $totalBoxInTask++;
-                    }
-                }
-
-                $this->defaultKpi['total_object_frames_currently_per_task'] = [$totalBoxInTask];
-
-
-
-                //Attributes
-
-
-                //26 | real 22
-                $totalSelectAttr = 0;
-                $allThingInFrameAllPhaseIterator = new PhaseThingInFrameByUser(
-                    $labeledThingInFrameFacade,
-                    $task
-                );
-
-                foreach ($allThingInFrameAllPhaseIterator as $thingInFrame) {
-                    if($thingInFrame) {
-                        if($thingInFrame->getClasses()) {
-                            $totalSelectAttr += count($thingInFrame->getClasses());
-                        }
-                    }
-                }
-
-                $this->defaultKpi['total_attributes_currently_set_per_task'] = [$totalSelectAttr];
-
-
-                //27 | real 23 labeling phase
-
-                $totalSelectAttrLabel = 0;
-                if(!empty($this->labelTasks)) {
-                    foreach ($this->labelTasks as $taskId) {
-                        //loop all task thing in "labeling" phase
-                        $attrLabTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES by task
-                        $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $attrLabTask
-                        );
-                        //each all thing in frame
-                        foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // get box attribute
-                            if($thingInFrame) {
-                                if($thingInFrame->getClasses()) {
-                                    $totalSelectAttrLabel += count($thingInFrame->getClasses());
-                                }
-                            }
-                        }
-                    }
-                }
-                $this->defaultKpi['total_attributes_set_per_task_in_labeling'] = [$totalSelectAttrLabel];
-
-
-                //28 | real 24 review phase
-
-                $totalSelectAttrReview = 0;
-
-
-                if(!empty($this->reviewTasks)) {
-                    foreach ($this->reviewTasks as $taskId) {
-                        //loop all task thing in "review" phase
-                        $attrRevTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES by task
-                        $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $attrRevTask
-                        );
-                        //each all thing in frame
-                        foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // get box attribute
-                            if($thingInFrame) {
-                                if($thingInFrame->getClasses()) {
-                                    $totalSelectAttrReview += count($thingInFrame->getClasses());
-                                }
-                            }
-                        }
-                    }
-                }
-
-                $this->defaultKpi['total_changed_attributes_per_task_review'] = [$totalSelectAttrReview];
-
-
-                //29 | real 25 revision phase
-
-                $totalSelectAttrRevision = 0;
-
-                if(!empty($this->revisionTasks)) {
-                    foreach ($this->revisionTasks as $taskId) {
-                        //loop all task thing in "revision" phase
-                        $attrRevisionTask = $this->labelingTask->find($taskId);
-
-                        //get BOXES by task
-                        $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
-                            $labeledThingInFrameFacade,
-                            $attrRevisionTask
-                        );
-                        //each all thing in frame
-                        foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
-                            // get box attribute
-                            if($thingInFrame) {
-                                if($thingInFrame->getClasses()) {
-                                    $totalSelectAttrRevision += count($thingInFrame->getClasses());
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                $this->defaultKpi['total_changed_attributes_per_task_revision'] = [$totalSelectAttrRevision];
-
-
-
-
-
-
-
-
-            };
-        }
-
-        /*
-           $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+                    /*Task time counter*/
+                    $taskTime = $this->taskTimerFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
+                    $taskTimeIterator = new TotalTaskTime($task, $project->getUserId(), $taskTime);
+                    $totalTaskTime = 0;
+                    foreach ($taskTimeIterator as $topTime) {
+                        $time = (int)$topTime->getTimeInSeconds($taskPhase);
+                        $totalTaskTime += $time;
+                    }
 
-            $labeledThingIterator = new Iterator\LabeledThing(
+                    $this->defaultKpi['task_loading_time'][] = $totalTaskTime;
+
+                    $this->defaultKpi['user_label_task_net_time'][] = $totalTaskTime;
+
+                    $this->defaultKpi['user_review_task_net_time'][] = $totalTaskTime;
+
+                    $this->defaultKpi['user_revision_task_net_time'][] = $totalTaskTime;
+
+                    //OBJECT
+                    $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    $userCreateThingIterator = new LabeledThingCreateByUser(
                         $task,
+                        $project->getUserId(),
                         $labeledThingFacade
                     );
+                    //variable to get total_objects_created_per_user_per_task_all_phases ->
+                    $labelThingsCreatedAllPhase = 0;
+                    foreach ($userCreateThingIterator as $thing) {
+                        if ($thing) {
+                            $labelThingsCreatedAllPhase++;
+                        }
+                    }
+                    $this->defaultKpi['total_objects_created_per_user_per_task_all_phases'] = [$labelThingsCreatedAllPhase];
 
-            foreach($labeledThingIterator)
+                    $userModifyThingIterator = new LabeledThingModifyByUser(
+                        $task,
+                        $project->getUserId(),
+                        $labeledThingFacade
+                    );
+                    $labelThingsModifyAllPhase = 0;
+                    foreach ($userModifyThingIterator as $thing) {
+                        if ($thing) {
+                            $labelThingsModifyAllPhase++;
+                        }
+                    }
+                    $this->defaultKpi['total_objects_modified_per_user_per_task_all_phases'] = [$labelThingsModifyAllPhase];
 
+                    //object in labeling phase
+                    $thingsInLabeledPhaseCreate = 0;
+                    $thingsInLabeledPhaseModify = 0;
+                    $userCreateLabelThingsIds = [];
+                    if (!empty($this->labelTasks)) {
+                        foreach ($this->labelTasks as $taskId) {
+                            //loop all task thing in "labeling" phase
+                            $task = $this->labelingTask->find($taskId);
+                            //get count create by user
+                            $userCreateThingLabelingPhaseIterator = new PhaseThingCreateByUser(
+                                $task,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userCreateThingLabelingPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $userCreateLabelThingsIds[] = $thing->getId();
+                                    $thingsInLabeledPhaseCreate++;
+                                }
+                            }
+                            //get count modify by user
+                            $userModifyThingLabelingPhaseIterator = new PhaseThingModifyByUser(
+                                $task,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userModifyThingLabelingPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $thingsInLabeledPhaseModify++;
+                                }
+                            }
 
-         */
+                        }
+                    }
+                    //create object
+                    $this->defaultKpi['total_objects_created_per_user_per_task_labeling'] = [$thingsInLabeledPhaseCreate];
+                    //modify object
+                    $this->defaultKpi['total_objects_modified_per_user_per_task_labeling'] = [$thingsInLabeledPhaseModify];
 
+                    //review phase
+                    $thingsInReviewPhaseCreate = 0;
+                    $thingsInReviewPhaseModify = 0;
+                    $userCreateReviewThingsIds = [];
+                    $userModifyReviewThingsIds = [];
+                    if (!empty($this->reviewTasks)) {
+                        foreach ($this->reviewTasks as $taskId) {
+                            //loop all task thing (object) in "review" phase
+                            $task = $this->labelingTask->find($taskId);
+                            //get count create by user
+                            $userCreateThingReviewPhaseIterator = new PhaseThingCreateByUser(
+                                $task,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userCreateThingReviewPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $userCreateReviewThingsIds[] = $thing->getId();
+                                    $thingsInReviewPhaseCreate++;
+                                }
+                            }
+                            //get count modify by user
+                            $userModifyThingReviewPhaseIterator = new PhaseThingModifyByUser(
+                                $task,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userModifyThingReviewPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $userModifyReviewThingsIds[] = $thing->getId();
+                                    $thingsInReviewPhaseModify++;
+                                }
+                            }
+                        }
+                    }
+                    //create object
+                    $this->defaultKpi['total_objects_created_per_user_per_task_review'] = [$thingsInReviewPhaseCreate];
+                    //modify object
+                    $this->defaultKpi['total_objects_modified_per_user_per_task_review'] = [$thingsInReviewPhaseModify];
 
-        $this->defaultKpi['Exporter_name'] = ['expoprt file name'];
+                    //object in revision phase
+                    $thingsInRevisionPhaseCreate = 0;
+                    $thingsInRevisionPhaseModify = 0;
+                    $userCreateRevisionThingsIds = [];
+                    $userModifyRevisionThingsIds = [];
+                    if (!empty($this->revisionTasks)) {
+                        foreach ($this->revisionTasks as $taskId) {
+                            //loop all task thing (object) in "revision" phase
+                            $revTask = $this->labelingTask->find($taskId);
+                            //get count create by user
+                            $userCreateThingRevisionPhaseIterator = new PhaseThingCreateByUser(
+                                $revTask,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userCreateThingRevisionPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $userCreateRevisionThingsIds[] = $thing->getId();
+                                    $thingsInRevisionPhaseCreate++;
+                                }
+                            }
+                            //get count modify by user
+                            $userModifyThingRevisionPhaseIterator = new PhaseThingModifyByUser(
+                                $revTask,
+                                $project->getUserId(),
+                                $labeledThingFacade
+                            );
+                            foreach ($userModifyThingRevisionPhaseIterator as $thing) {
+                                if ($thing) {
+                                    $userModifyRevisionThingsIds[] = $thing->getId();
+                                    $thingsInRevisionPhaseModify++;
+                                }
+                            }
+                        }
+                    }
+                    //object create
+                    $this->defaultKpi['total_objects_created_per_user_per_task_revision'] = [$thingsInRevisionPhaseCreate];
 
+                    //object modify
+                    $this->defaultKpi['total_objects_modified_per_user_per_task_revision'] = [$thingsInRevisionPhaseModify];
 
+                    //BOXES labelingThingInFrame
+                    $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    //labeling phase
+                    $boxesInLabeledPhaseCreate = 0;
+                    if (!empty($this->labelTasks)) {
+                        foreach ($this->labelTasks as $taskId) {
+                            //loop all task thing in "labeling" phase
+                            $labTask = $this->labelingTask->find($taskId);
+                            //get BOXES created by user
+                            $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $labTask
+                            );
+                            foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // check if box create by needed object
+                                if (in_array($thingInFrame->getLabeledThingId(), $userCreateLabelThingsIds)) {
+                                    $boxesInLabeledPhaseCreate++;
+                                }
+                            }
+                        }
+                    }
+                    //object create
+                    $this->defaultKpi['total_object_frames_set_per_user_per_task_in_labeling'] = [$boxesInLabeledPhaseCreate];
 
+                    //review phase
+                    $boxesInReviewPhaseCreate = 0;
+                    $boxesInReviewPhaseModify = 0;
+                    //task in "review" phase
+                    if (!empty($this->reviewTasks)) {
+                        foreach ($this->reviewTasks as $taskId) {
+                            //loop all task thing in "review" phase
+                            $boxRevTask = $this->labelingTask->find($taskId);
+                            //get boxes by task
+                            $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $boxRevTask
+                            );
+                            foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // check if box create by needed object and user
+                                if (in_array($thingInFrame->getLabeledThingId(), $userCreateReviewThingsIds)) {
+                                    $boxesInReviewPhaseCreate++;
+                                }
+                                // check if box modify by needed object and user
+                                if (in_array($thingInFrame->getLabeledThingId(), $userModifyReviewThingsIds)) {
+                                    $boxesInReviewPhaseCreate++;
+                                }
+                            }
+                        }
+                    }
+                    //boxes create
+                    $this->defaultKpi['total_objects_frames_created_per_user_in_review'] = [$boxesInReviewPhaseCreate];
+                    //boxes modify
+                    $this->defaultKpi['total_objects_frames_modified_per_user_in_review'] = [$boxesInReviewPhaseModify];
 
+                    //revision phase
+                    $boxesInRevisionPhaseCreate = 0;
+                    $boxesInRevisionPhaseModify = 0;
+                    if (!empty($this->revisionTasks)) {
+                        foreach ($this->revisionTasks as $taskId) {
+                            //loop all task thing in "revision" phase
+                            $boxRevTask = $this->labelingTask->find($taskId);
+                            //get boxes by task
+                            $createThingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $boxRevTask
+                            );
+                            foreach ($createThingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // check if box create by needed object and user
+                                if (in_array($thingInFrame->getLabeledThingId(), $userCreateRevisionThingsIds)) {
+                                    $boxesInRevisionPhaseCreate++;
+                                }
+                                // check if box modify by needed object and user
+                                if (in_array($thingInFrame->getLabeledThingId(), $userModifyRevisionThingsIds)) {
+                                    $boxesInRevisionPhaseModify++;
+                                }
+                            }
+                        }
+                    }
+                    //boxes create
+                    $this->defaultKpi['total_objects_frames_created_per_user_in_revision'] = [$boxesInRevisionPhaseCreate];
+                    //boxes modify
+                    $this->defaultKpi['total_objects_frames_modified_per_user_in_revision'] = [$boxesInRevisionPhaseModify];
 
+                    $userModifyInRevisionReview = $boxesInRevisionPhaseModify + $boxesInReviewPhaseModify;
+                    $this->defaultKpi['total_object_frames_modified_per_user_per_task'] = [$userModifyInRevisionReview];
 
+                    $totalBoxInTask = 0;
+                    $allThingInFrameIterator = new PhaseThingInFrameByUser(
+                        $labeledThingInFrameFacade,
+                        $task
+                    );
+                    foreach ($allThingInFrameIterator as $taskBox) {
+                        if ($taskBox) {
+                            $totalBoxInTask++;
+                        }
+                    }
+                    $this->defaultKpi['total_object_frames_currently_per_task'] = [$totalBoxInTask];
 
+                    //Attributes
+                    $totalSelectAttr = 0;
+                    $allThingInFrameAllPhaseIterator = new PhaseThingInFrameByUser(
+                        $labeledThingInFrameFacade,
+                        $task
+                    );
+                    foreach ($allThingInFrameAllPhaseIterator as $thingInFrame) {
+                        if ($thingInFrame) {
+                            if ($thingInFrame->getClasses()) {
+                                $totalSelectAttr += count($thingInFrame->getClasses());
+                            }
+                        }
+                    }
+                    $this->defaultKpi['total_attributes_currently_set_per_task'] = [$totalSelectAttr];
 
+                    //labeling phase
+                    $totalSelectAttrLabel = 0;
+                    if (!empty($this->labelTasks)) {
+                        foreach ($this->labelTasks as $taskId) {
+                            //loop all task thing in "labeling" phase
+                            $attrLabTask = $this->labelingTask->find($taskId);
+                            //get thing in frame by task
+                            $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $attrLabTask
+                            );
+                            //each all thing in frame
+                            foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // get box attribute
+                                if ($thingInFrame) {
+                                    if ($thingInFrame->getClasses()) {
+                                        $totalSelectAttrLabel += count($thingInFrame->getClasses());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $this->defaultKpi['total_attributes_set_per_task_in_labeling'] = [$totalSelectAttrLabel];
+
+                    //review phase
+                    $totalSelectAttrReview = 0;
+                    if (!empty($this->reviewTasks)) {
+                        foreach ($this->reviewTasks as $taskId) {
+                            //loop all task thing in "review" phase
+                            $attrRevTask = $this->labelingTask->find($taskId);
+                            //get labeling thing in frame by task
+                            $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $attrRevTask
+                            );
+                            //each all thing in frame
+                            foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // get box attribute
+                                if ($thingInFrame) {
+                                    if ($thingInFrame->getClasses()) {
+                                        $totalSelectAttrReview += count($thingInFrame->getClasses());
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    $this->defaultKpi['total_changed_attributes_per_task_review'] = [$totalSelectAttrReview];
+
+                    //revision phase
+                    $totalSelectAttrRevision = 0;
+                    if (!empty($this->revisionTasks)) {
+                        foreach ($this->revisionTasks as $taskId) {
+                            //loop all task thing in "revision" phase
+                            $attrRevisionTask = $this->labelingTask->find($taskId);
+                            //get labeling thin in frame by task
+                            $thingInFrameLabelingPhaseIterator = new PhaseThingInFrameByUser(
+                                $labeledThingInFrameFacade,
+                                $attrRevisionTask
+                            );
+                            //each all thing in frame
+                            foreach ($thingInFrameLabelingPhaseIterator as $thingInFrame) {
+                                // get box attribute
+                                if ($thingInFrame) {
+                                    if ($thingInFrame->getClasses()) {
+                                        $totalSelectAttrRevision += count($thingInFrame->getClasses());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $this->defaultKpi['total_changed_attributes_per_task_revision'] = [$totalSelectAttrRevision];
+                };
+                $filename = sprintf(
+                    'export_%s_%s.csv',
+                    $project->getName(),
+                    '_labelteam_KPI'
+                );
+                $this->defaultKpi['Exporter_name'] = [$filename];
+                //conver array to needed format
+                $dataForCsv = $this->csvToExportFormat();
+                //prepare csv data
+                $this->createCsv($dataForCsv);
+
+                //save csv to couchDB
+                return $this->saveExportModel($project, $filename);
+            } else {
+                $export->setStatus(Export::EXPORT_STATUS_ERROR);
+                $this->exporterFacade->save($export);
+
+                return $export;
+            }
+        } catch (\Exception $exception) {
+            $export->setStatus(Export::EXPORT_STATUS_ERROR);
+            $this->exporterFacade->save($export);
+
+            throw $exception;
+        }
+    }
+
+    //convert data to correct kpi csv format
+    private function csvToExportFormat()
+    {
         $maxArray = 0;
         $maxKey = '';
-        foreach ($this->defaultKpi as $k => $t) {
+        foreach ($this->defaultKpi as $key => $t) {
             if(count($t) >= $maxArray) {
                 $maxArray = count($t);
-                $maxKey = $k;
+                $maxKey = $key;
             }
         }
         $fields = [];
-        foreach ($this->defaultKpi as $k => $ad) {
-            $fields[$k] = [];
-            $lastElementValue = end($this->defaultKpi[$k]);
+        foreach ($this->defaultKpi as $key => $ad) {
+            $fields[$key] = [];
+            $lastElementValue = end($this->defaultKpi[$key]);
             $elementDiff = $maxArray-count($ad);
             if($elementDiff > 0) {
                 for ($i = 0; $i < $maxArray - count($ad); $i++) {
-                    if ($k != $maxKey) {
-                        array_push($this->defaultKpi[$k], $lastElementValue);
+                    if ($key != $maxKey) {
+                        array_push($this->defaultKpi[$key], $lastElementValue);
                     }
                 }
             }
         }
 
         $dataForCsv = [];
-        $i = 0;
-        for ($ii =0; $ii < $maxArray; $ii++) {
-            foreach ($this->defaultKpi as $k => $t) {
-                $dataForCsv[$ii][$k] = $t[$ii];
-                $i++;
+        for ($csvCounter =0; $csvCounter < $maxArray; $csvCounter++) {
+            foreach ($this->defaultKpi as $field => $value) {
+                $dataForCsv[$csvCounter][$field] = $value[$csvCounter];
             }
         }
 
+        return $dataForCsv;
+    }
 
-
-
-
-
-
-        $this->createCsv($dataForCsv);
-
-
-
-
-
-
-
-
-
-
-
-        $filename = sprintf(
-            'export_%s_%s.csv',
-            $project->getName(),
-            '_labelteam_KPI'
-        );
-
+    private function saveExportModel($project, string $filename)
+    {
         $zipData[$filename] = $this->csv;
-
-
-
-
-
-        /*
-        if (!isset($zipData[$filename])) {
-            $zipData[$filename] = $this->getCsv($videoData);
-        } else {
-            $filename = sprintf(
-                'export_%s_%s_%s_duplicate_%s.csv',
-                str_replace(' ', '_', $project->getName()),
-                $groupName,
-                str_replace(' ', '_', $video->getName()),
-                substr(base64_encode(random_bytes(10)), 0, 10)
-            );
-            $zipData[$filename] = $this->getCsv($videoData);
-        }
-        */
-
-        /*
-        if (count($errors) > 0) {
-            $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
-            $export->setErrorMessage(implode("\n", $errors));
-            $this->exporterFacade->save($export);
-
-            throw new Exception\TaskIncomplete(implode("\n", $errors));
-        }
-        */
-
         $zipContent = $this->compressData($zipData);
         $date       = new \DateTime('now', new \DateTimeZone('UTC'));
         $filename   = sprintf('export_%s.zip', $date->format('Y-m-d-H-i-s'));
-
-
         $export = new Export($project);
-
-
-
         $export->addAttachment($filename, $zipContent, 'application/zip');
         $export->setStatus(Export::EXPORT_STATUS_DONE);
-        if (!empty($warnings)) {
-            $export->setWarningMessage(implode("\n", $warnings));
-        }
 
-        return  $this->exporterFacade->save($export);
-
-        //return $export;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       // return $dataForCsv;
+        return $this->exporterFacade->save($export);
     }
 
     private function createCsv(array $data)
     {
         $output = fopen('php://temp', 'r+');
-
-
         fputcsv($output, [
             'UUID_of_the_project',
             'UUID_of_the_task',
@@ -794,9 +616,27 @@ class KpiExport
             'user_review_task_net_time',
             'user_revision_task_net_time',
             'total_objects_created_per_user_per_task_all_phases',
-            'total_objects_modified_per_user_per_task_all_phases'
+            'total_objects_modified_per_user_per_task_all_phases',
+            'total_objects_created_per_user_per_task_labeling',
+            'total_objects_modified_per_user_per_task_labeling',
+            'total_objects_created_per_user_per_task_review',
+            'total_objects_modified_per_user_per_task_review',
+            'total_objects_created_per_user_per_task_revision',
+            'total_objects_modified_per_user_per_task_revision',
+            'total_object_frames_set_per_user_per_task_in_labeling',
+            'total_objects_frames_created_per_user_in_review',
+            'total_objects_frames_modified_per_user_in_review',
+            'total_objects_frames_created_per_user_in_revision',
+            'total_objects_frames_modified_per_user_in_revision',
+            'total_object_frames_modified_per_user_per_task',
+            'total_object_frames_currently_per_task',
+            'total_attributes_currently_set_per_task',
+            'total_attributes_set_per_task_in_labeling',
+            'total_changed_attributes_per_task_review',
+            'total_changed_attributes_per_task_revision',
+            'Exporter_name'
         ],';');
-        $i = 0;
+
         foreach ($data as $row) {
             fputcsv($output,
                 [
@@ -812,18 +652,33 @@ class KpiExport
                     $row['user_revision_task_net_time'],
                     $row['total_objects_created_per_user_per_task_all_phases'],
                     $row['total_objects_modified_per_user_per_task_all_phases'],
-
+                    $row['total_objects_created_per_user_per_task_labeling'],
+                    $row['total_objects_modified_per_user_per_task_labeling'],
+                    $row['total_objects_created_per_user_per_task_review'],
+                    $row['total_objects_modified_per_user_per_task_review'],
+                    $row['total_objects_created_per_user_per_task_revision'],
+                    $row['total_objects_modified_per_user_per_task_revision'],
+                    $row['total_object_frames_set_per_user_per_task_in_labeling'],
+                    $row['total_objects_frames_created_per_user_in_review'],
+                    $row['total_objects_frames_modified_per_user_in_review'],
+                    $row['total_objects_frames_created_per_user_in_revision'],
+                    $row['total_objects_frames_modified_per_user_in_revision'],
+                    $row['total_object_frames_modified_per_user_per_task'],
+                    $row['total_object_frames_currently_per_task'],
+                    $row['total_attributes_currently_set_per_task'],
+                    $row['total_attributes_set_per_task_in_labeling'],
+                    $row['total_changed_attributes_per_task_review'],
+                    $row['total_changed_attributes_per_task_revision'],
+                    $row['Exporter_name']
                 ]);
-            $i++;
         }
-
-
 
         rewind($output);
         $this->csv = '';
         while ($line = fgets($output)) {
             $this->csv .= $line;
         }
+
         $this->csv .= fgets($output);
     }
 

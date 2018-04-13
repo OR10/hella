@@ -3,27 +3,29 @@
 namespace AnnoStationBundle\Worker\Jobs;
 
 use crosscan\WorkerPool;
-use AppBundle\Model;
 
 class KpiProjectToCsv extends WorkerPool\Job
 {
+
     /**
-     * @var Model\Export
+     * @var
      */
     private $export;
 
     /**
-     * @param Model\Export $export
+     * KpiProjectToCsv constructor.
+     *
+     * @param $export
      */
-    public function __construct(Model\Export $export)
+    public function __construct( $export)
     {
         $this->export = $export;
     }
 
     /**
-     * @return Model\Export
+     * @return mixed
      */
-    public function getExport(): Model\Export
+    public function getExport()
     {
         return $this->export;
     }
