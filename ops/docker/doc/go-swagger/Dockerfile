@@ -1,4 +1,5 @@
 FROM quay.io/goswagger/swagger
 
-RUN mkdir /apiDoc
+RUN mkdir -p /apiDoc
+
 COPY ./labeling-api/doc/swagger/api.yml /apiDoc/api.yml

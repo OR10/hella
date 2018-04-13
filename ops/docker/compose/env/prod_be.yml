@@ -61,3 +61,10 @@ services:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}
 
   ############# MONITORING SECTION END #############
+
+  ############# DOCUMENTATION SECTION BEGIN #############
+
+  doc-go-swagger:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/doc_go_swagger:${DOCKER_BE_TAG}
+
+  ############# DOCUMENTATION SECTION END #############
