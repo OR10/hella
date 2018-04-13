@@ -603,7 +603,7 @@ class KpiExport
 
     private function createCsv(array $data)
     {
-        $output = fopen('php://temp', 'r+');
+        $output = fopen('php://temp', 'w');
         fputcsv($output, [
             'UUID_of_the_project',
             'UUID_of_the_task',
@@ -635,7 +635,7 @@ class KpiExport
             'total_changed_attributes_per_task_review',
             'total_changed_attributes_per_task_revision',
             'Exporter_name'
-        ],';');
+        ],',');
 
         foreach ($data as $row) {
             fputcsv($output,
@@ -670,7 +670,7 @@ class KpiExport
                     $row['total_changed_attributes_per_task_review'],
                     $row['total_changed_attributes_per_task_revision'],
                     $row['Exporter_name']
-                ]);
+                ], ',');
         }
 
         rewind($output);
