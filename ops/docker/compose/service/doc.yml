@@ -1,0 +1,12 @@
+version: "3.1"
+
+services:
+  doc-swagger-ui:
+    image: swaggerapi/swagger-ui
+    environment:
+      - API_URL=${SWAGGER_API_URL}
+
+  doc-go-swagger:
+    image: quay.io/goswagger/swagger
+    command: serve --no-open --no-ui --port=80 /apiDoc/api.yml
+#    network_mode: host

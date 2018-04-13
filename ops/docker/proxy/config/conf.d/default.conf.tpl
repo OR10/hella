@@ -141,4 +141,16 @@ server {
         proxy_pass http://api-nginx/api;
     }
     ######## API monolith end ########
+
+    ######## Documentation begin ########
+    location /swagger/api/ {
+        proxy_pass       http://doc-go-swagger:80/;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /swagger/ui/ {
+        proxy_pass       http://doc-swagger-ui:8080/;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    ######## Documentation end ########
 }

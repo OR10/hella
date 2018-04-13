@@ -1,0 +1,7 @@
+version: "3.1"
+
+services:
+  doc-go-swagger:
+    build:
+      dockerfile: 'ops/docker/doc/go-swagger/Dockerfile'
+      context: ../../../../
