@@ -7,6 +7,5 @@ services:
       - API_URL=${SWAGGER_API_URL}
 
   doc-go-swagger:
-    image: quay.io/goswagger/swagger
     command: serve --no-open --no-ui --port=80 /apiDoc/api.yml
 #    network_mode: host

@@ -43,7 +43,7 @@ docker-machine ssh $COUCHDB_MACHINE "docker login --username=$DOCKER_HUB_USER --
 #################### API DEPLOYMENT BEGIN ####################
 
 #Make yml for docker api
-export COMPOSE_FILE=ops/docker/compose/service/api.yml:ops/docker/compose/service/doc.yml:ops/docker/compose/main.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/prod_fe.yml
+export COMPOSE_FILE=ops/docker/compose/service/api.yml:ops/docker/compose/service/doc.yml:ops/docker/compose/main.yml:ops/docker/compose/monitoring/logspout.yml:ops/docker/compose/env/compose/prod-api.yml:ops/docker/compose/env/compose/prod-doc.yml:ops/docker/compose/env/prod_fe.yml
 docker-compose config > api.yml
 
 #Copy docker-compose config

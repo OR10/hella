@@ -22,7 +22,7 @@ docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance-c
 
 #Build images
 docker-compose stop
-docker-compose build proxy api-nginx api-fpm api-workerpool-low api-cron video-nginx video-fpm monitoring-logstash
+docker-compose build proxy api-nginx api-fpm api-workerpool-low api-cron video-nginx video-fpm monitoring-logstash doc-go-swagger
 
 #Push images
 docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD
