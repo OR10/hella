@@ -17,7 +17,7 @@ use GuzzleHttp;
 class LoadTest extends Base
 {
     private $totalOrganisations = 50;
-    private $totalLabelers = 50;
+    private $totalLabelers = 150;
     private $totalProjects = 500;
 
     /**
@@ -207,31 +207,33 @@ class LoadTest extends Base
 
             return 1;
         }
-        
-         if (!$this->addXmlConfiguration($output)) {
+
+        if (!$this->addXmlConfiguration($output)) {
             $output->writeln("addXmlConfiguration failed");
 
             return 1;
         }
-        //Disabled because it is broken for more than 1 year
+
         if (!$this->downloadSampleVideo(
             $output
         )
         ) {
             return 1;
         }
-
     }
-    private function getOrganisation()
+
+    private function getOrganisation(OutputInterface $output)
     {
         if ($this->organisation === null) {
+            $this->writeSection($output, 'Creating organizations');
             for($i=1;$i<= $this->totalOrganisations;$i++) {
-               
+                $this->writeInfo($output, sprintf('#%d', $i));
                 $organisation       = new AnnoStationBundleModel\Organisation('Load Test Empty Organisation '.$i);
                 $this->organisationFacade->save($organisation);
             }
             $organisation       = new AnnoStationBundleModel\Organisation('Load Test Organisation');
             $this->organisation = $this->organisationFacade->save($organisation);
+            $this->writeSection($output, 'Done');
         }
 
         return $this->organisation;
@@ -244,6 +246,7 @@ class LoadTest extends Base
         $users = ['superadmin','label_manager','observer', 'ext_coordinator'];
 
         if ($this->userPassword !== null) {
+            //#################### Create labeleres start
             for ($i=1;$i<=$this->totalLabelers; $i++) {
                 $username = 'labeler_'.$i;
                 $user = $this->userFacade->createUser(
@@ -253,7 +256,7 @@ class LoadTest extends Base
                     true,
                     false,
                     [],
-                    [$this->getOrganisation()->getId()]
+                    [$this->getOrganisation($output)->getId()]
                 );
 
                         
@@ -275,16 +278,19 @@ class LoadTest extends Base
                     )
                 );
             }
+            //#################### Create labeleres end
+
+            //#################### Create other users start
             for($i=1;$i<=5;$i++) {
                 foreach ($users as $username) {
                     $user = $this->userFacade->createUser(
-                        $username,
+                        $username . '_'. $i,
                         $username .'_load-testing_'. $i . '@loadtest_annostation.com',
                         $this->userPassword,
                         true,
                         false,
                         [],
-                        [$this->getOrganisation()->getId()]
+                        [$this->getOrganisation($output)->getId()]
                     );
 
                     switch ($username) {
@@ -319,12 +325,13 @@ class LoadTest extends Base
                         $output,
                         sprintf(
                             'Created user <comment>%s</comment> with password: <comment>%s</comment>',
-                            $username,
+                            $user->getUsername(),
                             $this->userPassword
                         )
                     );
                 }
             }
+            //#################### Create other users end
         } else {
             $this->writeInfo($output, "<comment>Users are not created due to an empty password!</comment>");
         }
@@ -334,23 +341,27 @@ class LoadTest extends Base
 
     private function createLabelGroup(OutputInterface $output)
     {
-        if (!isset($this->users['label_manager'])) {
+        if (!isset($this->users['label_manager_1'])) {
+            $output->writeln('label_manager is not found');
+
             return false;
         }
-        $labelers = [];
-        for($i=1;$i<=$this->totalLabelers;$i++) {
-            $labelers[] = $this->users['labeler_'.$i]->getId();
+
+        $memberIds = [];
+        foreach ($this->users as $user) {
+            $memberIds[] = $user->getId();
         }
+
         $labelGroup = new Model\LabelingGroup(
-            $this->getOrganisation(),
-            [$this->users['label_manager']->getId()],
-            $labelers,
+            $this->getOrganisation($output),
+            [$this->users['label_manager_1']->getId()],
+            $memberIds,
             'Example Labeling Group'
         );
 
         $this->labelingGroupFacade->save($labelGroup);
         $this->labelingGroup = $labelGroup;
-        $this->writeSection($output, 'Added new LabelGroup for label_manager and user');
+        $this->writeSection($output, 'Added new LabelGroup for label_manager and all of users');
 
         return true;
     }
@@ -370,12 +381,12 @@ class LoadTest extends Base
             Model\TaskConfiguration\SimpleXml::TYPE
         );
         $config = new TaskConfiguration\SimpleXml(
-            $this->getOrganisation(),
+            $this->getOrganisation($output),
             'Sample Configuration',
             'example.xml',
             'application/xml',
             $xmlData,
-            $this->users['label_manager']->getId(),
+            $this->users['label_manager_1']->getId(),
             $taskConfigurationXmlConverter->convertToJson()
         );
 
@@ -384,6 +395,32 @@ class LoadTest extends Base
         $this->writeSection($output, 'Added new Sample Task Configuration for the LabelManager User');
 
         return true;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $videoFileDir
+     * @param string $zipFile
+     * @return string[] files
+     */
+    private function receiveVideos(OutputInterface $output, string $videoFileDir, string $zipFile)
+    {
+        $this->writeInfo($output, 'downloading started');
+        if (!file_exists($videoFileDir)) {
+            mkdir($videoFileDir, 0777, true);
+        }
+
+        $httpClient = new GuzzleHttp\Client();
+        $resource = fopen($zipFile, 'w');
+        $httpClient->request('GET', 'https://sst.by/videos.zip', ['sink' => $resource]);
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFile) === true) {
+            $zip->extractTo(realpath($videoFileDir . '/../'));
+            $zip->close();
+        }
+        $this->writeInfo($output, 'downloading finished');
+
+        return array_diff(scandir($videoFileDir), ['..', '.']);
     }
 
     private function downloadSampleVideo(OutputInterface $output)
@@ -396,19 +433,9 @@ class LoadTest extends Base
             return true;
         }
 
-        $videoFileDir = '/code/videos';
-        if(!is_dir($videoFileDir)) {
-            $httpClient = new GuzzleHttp\Client();
-            $resource = fopen('/code/videos.zip', 'w');
-            $httpClient->request('GET', 'https://sst.by/videos.zip', ['sink' => $resource]);
-            $zip = new \ZipArchive();
-            if ($zip->open('/code/videos.zip') === TRUE) {
-                $zip->extractTo('/code/');
-                $zip->close();
-            }
-        }
-        $videoFileList = $scanned_directory = array_diff(scandir($videoFileDir), array('..', '.'));
-        
+        $videoFileDir = '/tmp/hella/videos';
+        $videoFileList = $this->receiveVideos($output, $videoFileDir, '/tmp/hella/videos.zip');
+
         $lossless = true;
         try {
             
@@ -417,9 +444,13 @@ class LoadTest extends Base
                 Model\Project::STATUS_IN_PROGRESS,
                 Model\Project::STATUS_DELETED,
                 Model\Project::STATUS_DONE,
-			];
+            ];
+
+            $user = $this->userFacade->getUserByUsername('superadmin');
+
+            $this->writeInfo($output, 'Creation of projects without video');
             for($i=1;$i<=$this->totalProjects;$i++) {
-                $project = Model\Project::create('Example project '.$i, $this->getOrganisation());
+                $project = Model\Project::create('Example project '.$i, $this->getOrganisation($output));
                 $status = $projectStatuses[rand(0,count($projectStatuses)-1)];
                 
                 for($a=1; $a<=100; $a++) {
@@ -430,8 +461,7 @@ class LoadTest extends Base
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');
                 }
-                $user = $this->userFacade->getUserByUsername('superadmin');
-                
+
                 $this->projectFacade->save($project);
                 $date = new \DateTime('now', new \DateTimeZone('UTC'));
                 $date->modify('+1 second');
@@ -442,22 +472,38 @@ class LoadTest extends Base
                 );
                 $this->projectFacade->save($project);
             }
+            $this->writeInfo($output, 'Creation of projects without video... done');
+
+            $this->writeInfo($output, 'Creation of projects with video');
             for($i=200;$i<=205;$i++) {
-                    $project = Model\Project::create('Example project with videos '.$i, $this->getOrganisation());
+                $project = Model\Project::create('Example project with videos ' . $i, $this->getOrganisation($output));
+                for($a=1; $a<=100; $a++) {
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_CYCLIST, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PERSON, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_IGNORE_VEHICLE, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_PARKED_CARS, 'rectangle');
                     $project->addLegacyTaskInstruction(Model\LabelingTask::INSTRUCTION_VEHICLE, 'rectangle');
+                }
+
+                if (rand(0, 1)) {
+                    $date = new \DateTime('now', new \DateTimeZone('UTC'));
+                    $date->modify('+1 second');
+                    $project->addStatusHistory( $date, Model\Project::STATUS_IN_PROGRESS, $user);
+                }
+
                 $this->projectFacade->save($project);
                 $this->importVideos($project, $videoFileDir, $videoFileList, $output, $lossless);
             }
+
+            $this->writeInfo($output, 'Creation of projects with video... done');
         } catch (\Exception $e) {
             $this->writeError($output, $e->getMessage());
 
             return false;
         }
+
+        $this->writeSection($output, 'Video Import is done');
 
         return true;
     }
@@ -468,6 +514,8 @@ class LoadTest extends Base
      * @param array           $fileNames
      * @param OutputInterface $output
      * @param                 $lossless
+     * @throws \Doctrine\ODM\CouchDB\UpdateConflictException
+     * @throws \Exception
      */
     private function importVideos(
         Model\Project $project,
@@ -476,15 +524,17 @@ class LoadTest extends Base
         OutputInterface $output,
         $lossless
     ) {
+        $this->writeInfo($output, sprintf('Videos count in folder: %d', count($fileNames)));
         foreach ($fileNames as $fileName) {
             $sourcePath = sprintf('%s/%s', $videoBasePath, $fileName);
             $this->writeInfo($output, sprintf('Importing default video <comment>%s</comment>', $sourcePath));
             $path = tempnam($this->cacheDir, 'anno_sample_videos');
             file_put_contents($path, file_get_contents($sourcePath));
 
-            $video = $this->videoImporterService->importVideo($this->getOrganisation(), $project, $fileName, $path, $lossless);
+            $video = $this->videoImporterService
+                ->importVideo($this->getOrganisation($output), $project, $fileName, $path, $lossless);
 
-            $this->taskCreator->createTasks($project, $video, $this->users['label_manager']);
+            $this->taskCreator->createTasks($project, $video, $this->users['label_manager_1']);
         }
     }
 }

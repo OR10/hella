@@ -44,7 +44,6 @@
         "maennchen/zipstream-php": "^0.4.1",
         "mtdowling/cron-expression": "^1.2",
         "beberlei/assert": "^2.7",
-        "nelmio/api-doc-bundle": "2.x-dev",
         "microsoft/azure-storage-blob": "*"
     },
     "require-dev": {

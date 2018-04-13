@@ -55,4 +55,3 @@ security:
         - { path: ^/, role: ROLE_USER }
         - { path: ^/admin/, role: ROLE_SUPER_ADMIN }
         - { path: ^/monitor/, role: ROLE_SUPER_ADMIN }
-        - { path: ^/doc/, role: ROLE_SUPER_ADMIN }
