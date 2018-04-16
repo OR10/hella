@@ -118,7 +118,12 @@ class KpiExport
 
     }
 
-    public function build($export)
+    /**
+     * @param Export $export
+     *
+     * @throws \Exception
+     */
+    public function build(Export $export)
     {
         $export = $this->exporterFacade->find($export->getId());
         $export->setStatus(Export::EXPORT_STATUS_IN_PROGRESS);
@@ -536,14 +541,11 @@ class KpiExport
                 $dataForCsv = $this->csvToExportFormat();
                 //prepare csv data
                 $this->createCsv($dataForCsv);
-
                 //save csv to couchDB
-                return $this->saveExportModel($project, $filename);
+                $this->saveExportModel($export, $filename);
             } else {
                 $export->setStatus(Export::EXPORT_STATUS_ERROR);
                 $this->exporterFacade->save($export);
-
-                return $export;
             }
         } catch (\Exception $exception) {
             $export->setStatus(Export::EXPORT_STATUS_ERROR);
@@ -588,17 +590,16 @@ class KpiExport
         return $dataForCsv;
     }
 
-    private function saveExportModel($project, string $filename)
+    private function saveExportModel(Export $export, string $filename)
     {
         $zipData[$filename] = $this->csv;
         $zipContent = $this->compressData($zipData);
         $date       = new \DateTime('now', new \DateTimeZone('UTC'));
         $filename   = sprintf('export_%s.zip', $date->format('Y-m-d-H-i-s'));
-        $export = new Export($project);
         $export->addAttachment($filename, $zipContent, 'application/zip');
         $export->setStatus(Export::EXPORT_STATUS_DONE);
 
-        return $this->exporterFacade->save($export);
+        $this->exporterFacade->save($export);
     }
 
     private function createCsv(array $data)

@@ -32,7 +32,7 @@ class KpiProjectToCsv extends WorkerPoolBundle\JobInstruction
     protected function runJob(WorkerPool\Job $job, Logger\Facade\LoggerFacade $logger)
     {
         try {
-            // add Kpi export service
+            /** @var Jobs\KpiProjectToCsv $job */
             $this->kpiExport->build($job->getExport());
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);

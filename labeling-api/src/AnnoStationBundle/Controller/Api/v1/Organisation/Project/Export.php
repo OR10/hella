@@ -205,12 +205,13 @@ class Export extends Controller\Base
         $user = $this->tokenStorage->getToken()->getUser();
 
         $export = new Model\Export($project, $user);
+        $export->setStatus(Model\Export::EXPORT_STATUS_IN_WAITING);
         $this->exporterFacade->save($export);
 
         $this->amqpFacade->addJob(new Jobs\KpiProjectToCsv($export), WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
-            ->setData(['message' => 'Export started']);
+            ->setData(['message' => 'Export started  '.' '.$export->getId()]);
     }
 }
