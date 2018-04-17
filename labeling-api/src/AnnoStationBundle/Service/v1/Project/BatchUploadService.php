@@ -3,6 +3,7 @@
 namespace AnnoStationBundle\Service\v1\Project;
 
 use AnnoStationBundle\Service\VideoImporter;
+use AppBundle\Exception;
 use Flow\Config;
 use Flow\File;
 use Flow\Request;
@@ -22,6 +23,11 @@ class BatchUploadService
      * @var VideoImporter
      */
     private $videoImporter;
+
+    /**
+     * @var array
+     */
+    private $zipPngImages = [];
 
     /**
      * BatchUploadService constructor.
@@ -56,6 +62,7 @@ class BatchUploadService
 
         //upload video
         $uploadedFileChunk = $request->files->get('file');
+
         $flowRequest       = new Request(
             $request->request->all(),
             [
@@ -104,56 +111,138 @@ class BatchUploadService
                     sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
                 );
             }
+        } elseif ($this->isZipFile($flowRequest->getFileName())) {
+            //unzip and check
+            $file->saveChunk();
+            if ($file->validateFile()) {
+                $file->save($targetPath);
+                $zip = new \ZipArchive();
+                $res = $zip->open($targetPath);
+                if ($res === TRUE) {
+                    $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip';
+                    if ($zip->extractTo($zipDir)) {
+                        $zip->close();
+                        //validate image
+                        $handle = opendir($zipDir);
+                        while ($pngFile = readdir($handle)) {
+                            if ($pngFile !== '.' && $pngFile !== '..') {
+                                $imagePath = $zipDir . DIRECTORY_SEPARATOR . $pngFile;
+                                $imagick = new \Imagick($imagePath);
+                                //validate in color depth
+                                if (/*$imagick->getImageDepth()*/16 < 16
+                                ) {
+                                    //delete do not need files in zip archive
+                                    @unlink($targetPath);
+                                    $this->deleteDir($zipDir);
+                                    throw new ConflictHttpException(
+                                        sprintf('Invalid color depth in the picture: %s', $pngFile)
+                                    );
+                                }
+                                //validate image extension
+                                if (pathinfo($imagePath, PATHINFO_EXTENSION) !== 'png') {
+                                    @unlink($targetPath);
+                                    $this->deleteDir($zipDir);
+                                    throw new ConflictHttpException(
+                                        sprintf('Invalid image expansion in: %s', $pngFile)
+                                    );
+                                }
+                                //check if project already have image
+                                if ($project->hasVideo($pngFile)) {
+                                    throw new ConflictHttpException(
+                                        sprintf('Zip content exists in project (either as video or image file): %s', $pngFile)
+                                    );
+                                }
+                                $this->zipPngImages[$imagePath] = $pngFile;
+                            }
+                        }
+                        //delete zip file
+                        @unlink($targetPath);
+                    } else {
+                        throw new ConflictHttpException(
+                            sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                        );
+                    }
+                } else {
+                    throw new ConflictHttpException(
+                        sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                    );
+                }
+            } else {
+                throw new ConflictHttpException(
+                    sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                );
+            }
         } else {
             throw new BadRequestHttpException(
                 sprintf('Invalid file: %s', $flowRequest->getFileName())
             );
         }
 
-        $file->saveChunk();
+        if($this->isZipFile($flowRequest->getFileName())){
+            foreach ($this->zipPngImages as $path => $pngFile) {
+                //import image
+               return $this->videoImporter->importVideo(
+                    $organisation,
+                    $project,
+                    $pngFile,
+                    $path,
+                    false
+                );
+            }
+            //delete do not need image
+            $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
+        } else {
+            $file->saveChunk();
+            if ($file->validateFile()) {
+                try {
+                    if(!$this->isZipFile($flowRequest->getFileName())) {
+                        $file->save($targetPath);
+                    }
 
-        if ($file->validateFile()) {
-            try {
-                $file->save($targetPath);
 
-                if ($this->isVideoFile($flowRequest->getFileName())) {
-                    // for now, we always use compressed images
-                    $this->videoImporter->importVideo(
-                        $organisation,
-                        $project,
-                        basename($targetPath),
-                        $targetPath,
-                        false
-                    );
-                } elseif ($this->isImageFile($flowRequest->getFileName())) {
-                    // Image compression is determined by their input image type
-                    // PNG -> lossless, jpeg -> compressed.
-                    $this->videoImporter->importImage(
-                        $organisation,
-                        $project,
-                        basename($targetPath),
-                        $targetPath
-                    );
-                } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
-                    $this->videoImporter->importAdditionalFrameNumberMapping(
-                        $organisation,
-                        $project,
-                        $targetPath
-                    );
-                } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-                    $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
-                } else {
-                    throw new BadRequestHttpException(
-                        sprintf('Invalid file: %s', $flowRequest->getFileName())
-                    );
+                    if ($this->isVideoFile($flowRequest->getFileName())) {
+                        // for now, we always use compressed images
+                        $this->videoImporter->importVideo(
+                            $organisation,
+                            $project,
+                            basename($targetPath),
+                            $targetPath,
+                            false
+                        );
+                    } elseif ($this->isImageFile($flowRequest->getFileName())) {
+                        // Image compression is determined by their input image type
+                        // PNG -> lossless, jpeg -> compressed.
+                        $this->videoImporter->importImage(
+                            $organisation,
+                            $project,
+                            basename($targetPath),
+                            $targetPath
+                        );
+                    } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
+                        $this->videoImporter->importAdditionalFrameNumberMapping(
+                            $organisation,
+                            $project,
+                            $targetPath
+                        );
+                    } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
+                        $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
+                    } else {
+                        throw new BadRequestHttpException(
+                            sprintf('Invalid file: %s', $flowRequest->getFileName())
+                        );
+                    }
+                } catch (\InvalidArgumentException $exception) {
+                    throw new ConflictHttpException($exception->getMessage(), $exception);
+                } finally {
+                    // we ignore errors here since this directory will be cleaned up periodically anyway
+                    @unlink($targetPath);
                 }
-            } catch (\InvalidArgumentException $exception) {
-                throw new ConflictHttpException($exception->getMessage(), $exception);
-            } finally {
-                // we ignore errors here since this directory will be cleaned up periodically anyway
-                @unlink($targetPath);
             }
         }
+
+
+
+
     }
 
     /**
@@ -204,10 +293,38 @@ class BatchUploadService
      *
      * @return bool
      */
+    private function isZipFile(string $filename)
+    {
+        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['zip']);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return bool
+     */
     private function isAdditionalFrameNumberMappingFile(string $filename)
     {
         preg_match('/\.(frame-index\.csv)$/', $filename, $matches);
 
         return !empty($matches);
+    }
+
+    private function deleteDir($dirPath) {
+        if (! is_dir($dirPath)) {
+            throw new Exception("$dirPath must be a directory");
+        }
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
     }
 }
