@@ -10,6 +10,7 @@ export COMPOSE_FILE=ops/docker/compose/swarm.yml:ops/docker/compose/env/prod_be.
 docker-compose config > tmp.yml
 
 #Copy docker stack config
+docker-machine ssh $SWARM_MASTER "rm -f /home/$SWARM_USER/tmp.yml"
 docker-machine scp tmp.yml $SWARM_MASTER:/home/$SWARM_USER/
 
 #Deployment
