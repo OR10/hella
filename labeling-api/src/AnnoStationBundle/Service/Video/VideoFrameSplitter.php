@@ -90,10 +90,35 @@ class VideoFrameSplitter
         );
        
         $response = json_decode($response->getBody()->getContents(), true);
+
         $this->imageSizes = $response['image'];
 
         return $response['frame'];
 
+    }
+
+    public function imageToFrame(string $projectId, array $imagesParam, ImageType\Base $type)
+    {
+
+        $httpClient = new GuzzleHttp\Client();
+        $response = $httpClient->put(
+            $this->processingHost,
+            [
+                'form_params' => [
+                    'imagesParam' => $imagesParam,
+                    'projectId' => $projectId,
+                    'type' => $type->getName(),
+                    'fileType' => 'images'
+                ],
+                'timeout' => self::TIMEOUT
+            ]
+        );
+
+        $response = json_decode($response->getBody()->getContents(), true);
+
+        $this->imageSizes = $response['image'];
+
+        return $response['frame'];
     }
 
     /**

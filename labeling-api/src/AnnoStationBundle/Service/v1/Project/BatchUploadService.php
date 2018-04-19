@@ -63,6 +63,9 @@ class BatchUploadService
         //upload video
         $uploadedFileChunk = $request->files->get('file');
 
+        //if zip
+        $isZip = ($request->files->get('isZip')) ? true : false;
+
         $flowRequest       = new Request(
             $request->request->all(),
             [
@@ -179,16 +182,12 @@ class BatchUploadService
         }
 
         if($this->isZipFile($flowRequest->getFileName())){
-            foreach ($this->zipPngImages as $path => $pngFile) {
-                //import image
-               return $this->videoImporter->importVideo(
-                    $organisation,
-                    $project,
-                    $pngFile,
-                    $path,
-                    false
-                );
-            }
+            return $this->videoImporter->importZipImage(
+                $organisation,
+                $project,
+                $this->zipPngImages,
+                false
+            );
             //delete do not need image
             $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
         } else {
@@ -198,7 +197,6 @@ class BatchUploadService
                     if(!$this->isZipFile($flowRequest->getFileName())) {
                         $file->save($targetPath);
                     }
-
 
                     if ($this->isVideoFile($flowRequest->getFileName())) {
                         // for now, we always use compressed images
@@ -225,7 +223,7 @@ class BatchUploadService
                             $targetPath
                         );
                     } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-                        $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
+                        $this->videoImporter->importCalibrationData($organisation, $project, $targetPath, $isZip);
                     } else {
                         throw new BadRequestHttpException(
                             sprintf('Invalid file: %s', $flowRequest->getFileName())
@@ -239,10 +237,6 @@ class BatchUploadService
                 }
             }
         }
-
-
-
-
     }
 
     /**

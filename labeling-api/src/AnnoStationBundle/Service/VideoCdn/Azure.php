@@ -29,11 +29,12 @@ class Azure extends Service\VideoCdn
      *
      * @return mixed
      */
-    public function saveVideo(Model\Video $video, $source)
+    public function saveVideo(Model\Video $video, $source, string $projectId = null)
     {
         $this->azureVideo->uploadFile(
             $video,
-            fopen($source, "r")
+            fopen($source, "r"),
+            $projectId
         );
     }
 

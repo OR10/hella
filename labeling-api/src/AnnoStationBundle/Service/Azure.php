@@ -74,9 +74,13 @@ class Azure
      * @param $source
      * @return string
      */
-    public function uploadFile($video, $source)
+    public function uploadFile($video, $source, string $projectId = null)
     {
-        $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
+        if($projectId) {
+            $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$projectId, 'source', $source);
+        } else {
+            $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
+        }
     }
 
     /**

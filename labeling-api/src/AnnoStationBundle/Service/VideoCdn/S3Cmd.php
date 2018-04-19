@@ -36,11 +36,11 @@ class S3Cmd extends Service\VideoCdn
      *
      * @return mixed
      */
-    public function saveVideo(Model\Video $video, $source)
+    public function saveVideo(Model\Video $video, $source, string $projectId = null)
     {
         $this->s3CmdVideoCdn->uploadFile(
             $source,
-            $video->getSourceVideoPath()
+            $video->getSourceVideoPath($projectId)
         );
     }
 

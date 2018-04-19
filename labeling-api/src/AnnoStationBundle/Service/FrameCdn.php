@@ -112,6 +112,7 @@ abstract class FrameCdn
     abstract public function getFrameLocations(
         Model\LabelingTask $labeledFrame,
         ImageType\Base $imageType,
-        array $frameNumbers
+        array $frameNumbers,
+        string $projectId = null
     );
 }

@@ -136,6 +136,93 @@ class VideoFrameSplitter
     }
 
     /**
+     * @param array $imagesParam
+     * @param string $projectId
+     * @param string $type
+     * @param string $cacheDir
+     * @return array
+     */
+    public function storeFrames(array $imagesParam, string $projectId, string $type, string $cacheDir)
+    {
+        $tmpToDelete = [];
+        $storageImageName = 1;
+
+        $type = Model\ImageType::create($type);
+        $tempDir = $this->getTempDirectory($type);
+
+        foreach ($imagesParam as $videoName => $sourceFileFilename) {
+            $tmpFile = $this->createTemporaryFileForVideo($videoName, $cacheDir);
+            $tmpToDelete[$tmpFile] = $tempDir;
+
+            if (file_put_contents($tmpFile, $this->videoCdn->getFile($sourceFileFilename)) === false) {
+                throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
+            }
+
+            $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
+
+            // place to call api
+            $command = sprintf(
+                "%s -i %s -v quiet %s/%s.%s",
+                $this->ffmpegExecutable,
+                $tmpFile,
+                $prefixedTempDir,
+                $storageImageName,
+                $type->getExtension());
+            $process = new Process($command);
+            $process->setTimeout(self::TIMEOUT);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new \RuntimeException($process->getErrorOutput());
+            }
+            $storageImageName++;
+        }
+
+        $files = array_filter(
+            $this->fileSystem->listContents($tempDir),
+            function ($file) use ($type) {
+                if ($file['extension'] === $type->getExtension()) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        $this->frameCdn->beginBatchTransaction((string)$projectId);
+        $frameSizesInBytes = [];
+        foreach ($files as $file) {
+            $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
+                $this->fileSystem->read($file['path'])
+            );
+            $cdnPath = $this->frameCdn->save(
+                $projectId,
+                $type,
+                (int) $file['basename'],
+                $this->fileSystem->read($file['path'])
+            );
+            $frameSizesInBytes[$cdnPath] = $this->fileSystem->getSize($file['path']);
+        }
+        $this->frameCdn->commit();
+
+
+        //delete temp dir
+        /*
+           if(!empty($tmpToDelete)) {
+               foreach ($tmpToDelete as $tmlFile => $tempDir) {
+                   if (!unlink($tmpFile)) {
+                       throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+                   }
+                   if (!$this->fileSystem->deleteDir($tempDir)) {
+                       throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
+                   }
+               }
+           }
+        */
+
+        return $frameSizesInBytes;
+    }
+
+    /**
      * @param                $sourceFileName
      * @param Model\ImageType $type
      * @param                $tempDir

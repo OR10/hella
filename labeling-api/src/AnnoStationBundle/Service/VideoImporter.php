@@ -166,6 +166,130 @@ class VideoImporter
 
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project $project
+     * @param array $imagesParam
+     * @param bool $lossless
+     * @return array
+     */
+    public function importZipImage(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        array $imagesParam,
+        bool $lossless
+    )
+    {
+        $newImages = [];
+        $videos = [];
+
+        foreach ($imagesParam as $videoFilePath => $videoName) {
+            $imageTypes = $this->getImageTypes($lossless);
+            $video = new Model\Video($organisation, $videoName);
+
+            $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
+            $this->videoFacade->save($video, $videoFilePath, $project->getId());
+
+
+            $this->couchDbUpdateConflictRetryService->save(
+                $project,
+                function (Model\Project $project) use ($video) {
+                    $project->addVideo($video);
+                    $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $video->getMetaData()->sizeInBytes);
+                }
+            );
+
+            foreach ($imageTypes as $imageTypeName) {
+                $video->setImageType($imageTypeName, 'converted', false);
+                $this->videoFacade->update();
+            }
+
+            $newImages[$video->getName()] = $video->getSourceVideoPath($project->getId());
+            $videos []=$video;
+            // foreach ($imageTypes as $imageTypeName) {
+            /*
+            $job = new Jobs\VideoFrameSplitter(
+                $video->getId(),
+                $videoFilePath,
+                ImageType\Base::create($imageTypeName)
+            );
+
+            $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
+            */
+            //$video = $this->videoFacade->find($video->getId());
+
+            //video name + video source getSourceVideoPath
+        }
+
+        $frameSizesInBytes = $this->frameCdnSplitter->imageToFrame($project->getId(), $newImages, ImageType\Base::create('source'));
+
+        $imageSizes        = $this->frameCdnSplitter->getImageSizes();
+        $videoIndex = 1;
+        foreach ($videos as $video) {
+            $this->updateDocument(
+                $video,
+                ImageType\Base::create('source'),
+                $imageSizes[$videoIndex][0],
+                $imageSizes[$videoIndex][1],
+                array_sum($frameSizesInBytes)
+            );
+
+
+
+            //find task by video id
+            //NEED TO FIND TASK BY VIDEO IDS BY ALL Video in Task (In this case video is image)
+            $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+
+
+            $projectIds = [];
+            //change task video status
+            foreach ($tasks as $task) {
+                $projectIds[] = $task->getProjectId();
+                $this->videoFacade->refresh($video);
+                $this->couchDbUpdateConflictRetryService->save(
+                    $task,
+                    function (Model\LabelingTask $task) use ($video) {
+                        $task->setStatusIfAllImagesAreConverted($video);
+                    }
+                );
+            }
+            $videoIndex++;
+        }
+        //foreach (array_unique($projectIds) as $projectId) {
+        //    $job = new Jobs\CalculateProjectDiskSize($projectId);
+        //    $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        //}
+        // }
+
+        return $videos;
+    }
+
+    private function updateDocument(
+        Model\Video $video,
+        ImageType\Base $imageType,
+        $width,
+        $height,
+        $frameSizesInBytes,
+        $retryCount = 0,
+        $maxRetries = 1
+    ) {
+        $imageTypeName = $imageType->getName();
+        try {
+            $this->videoFacade->refresh($video);
+            $video->setImageType($imageTypeName, 'converted', true);
+            $video->setImageType($imageTypeName, 'failed', false);
+            $video->setImageType($imageTypeName, 'width', $width);
+            $video->setImageType($imageTypeName, 'height', $height);
+            $video->setAccumulatedSizeInBytesForType($imageTypeName, $frameSizesInBytes);
+            $this->videoFacade->update();
+        } catch (CouchDB\UpdateConflictException $updateConflictException) {
+            if ($retryCount > $maxRetries) {
+                throw $updateConflictException;
+            }
+            $this->updateDocument($video, $imageType, $retryCount + 1, $width, $height, $frameSizesInBytes);
+        }
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
      * @param string                              $imageName
      * @param string                              $imageFilePath
@@ -204,7 +328,8 @@ class VideoImporter
     public function importCalibrationData(
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
-        string $calibrationFilePath
+        string $calibrationFilePath,
+        bool $isZip = false
     ) {
         $calibrationName = basename($calibrationFilePath);
 
@@ -222,8 +347,8 @@ class VideoImporter
 
         $this->couchDbUpdateConflictRetryService->save(
             $project,
-            function (Model\Project $project) use ($calibration) {
-                $project->addCalibrationData($calibration);
+            function (Model\Project $project) use ($calibration, $isZip) {
+                $project->addCalibrationData($calibration, $isZip);
             }
         );
 
