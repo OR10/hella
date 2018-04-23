@@ -51,6 +51,10 @@ class CalculateProjectDiskUsage extends WorkerPoolBundle\JobInstruction
     {
         $this->documentManager->clear();
         $project = $this->projectFacade->find($job->getProjectId());
+        if (!$project) {
+            //Project and related entities can be deleted
+            return;
+        }
 
         $oldSize = $project->getDiskUsageInBytes();
         $newSize = $this->videoFacade->calculateAggregatedeVideoSizeForProject($project);
