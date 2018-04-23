@@ -44,7 +44,7 @@ docker-compose config > api.yml
 docker-machine ssh $MONITORING_MACHINE "rm -f /home/$MACHINE_USER/api.yml"
 docker-machine scp api.yml $API_MACHINE:/home/$MACHINE_USER/
 docker-machine ssh $API_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f api.yml pull && docker-compose -f api.yml up -d"
-docker-machine ssh $API_MACHINE "docker-compose run --rm api-cron app/AnnoStation/console doctrine:couchdb:update-design-doc -v"
+docker-machine ssh $API_MACHINE "docker-compose -f api.yml run --rm api-cron app/AnnoStation/console doctrine:couchdb:update-design-doc -v"
 
 #################### API DEPLOYMENT END ####################
 
