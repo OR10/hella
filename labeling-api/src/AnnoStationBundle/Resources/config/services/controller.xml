@@ -154,6 +154,8 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.labeled.frame.service"/>
         </service>
 
         <service
