@@ -460,5 +460,8 @@
 
         <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
         </service>
+
+        <service id="annostation.labeling_api.service.labeled.frame.service" class="AnnoStationBundle\Service\LabeledFrameService">
+        </service>
     </services>
 </container>
