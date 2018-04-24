@@ -10,6 +10,8 @@ services:
       - rmq
     environment:
       - APP_ENV
+      - DOCKER_BE_TAG
+      - DOCKER_FE_TAG
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
       - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
