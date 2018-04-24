@@ -61,7 +61,11 @@ class CalculateProjectDiskUsage extends WorkerPoolBundle\JobInstruction
 
         if ($oldSize !== $newSize) {
             $project->setDiskUsageInBytes($newSize);
-            $this->projectFacade->save($project);
+            try {
+                $this->projectFacade->save($project);
+            } catch (CouchDB\UpdateConflictException $e) {
+                $loggerFacade->logException($e, \cscntLogPayload::SEVERITY_ERROR);
+            }
         }
     }
 

@@ -530,7 +530,7 @@ class Project extends Controller\Base
         $this->projectFacade->save($project);
 
         $job = new Jobs\ProjectDeleter($project->getId());
-        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
