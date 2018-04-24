@@ -68,6 +68,16 @@ class Task extends Controller\Base
     private $taskService;
 
     /**
+     * @var Facade\LabeledFrame\TaskDatabase
+     */
+    private $labeledFrameFactory;
+
+    /**
+     * @var Service\LabeledFrameService
+     */
+    private $labeledFrameService;
+
+    /**
      * Task constructor.
      *
      * @param Facade\Video            $videoFacade
@@ -87,7 +97,9 @@ class Task extends Controller\Base
         Facade\Project $projectFacade,
         Storage\TokenStorage $tokenStorage,
         Service\Authorization $authorizationService,
-        Service\v1\TaskService $taskService
+        Service\v1\TaskService $taskService,
+        Facade\LabeledFrame\TaskDatabase $labeledFrameFactory,
+        Service\LabeledFrameService $labeledFramService
     ) {
         $this->videoFacade          = $videoFacade;
         $this->labelingTaskFacade   = $labelingTaskFacade;
@@ -97,6 +109,9 @@ class Task extends Controller\Base
         $this->tokenStorage         = $tokenStorage;
         $this->authorizationService = $authorizationService;
         $this->taskService          = $taskService;
+        $this->labeledFrameFactory  = $labeledFrameFactory;
+        $this->labeledFrameService  = $labeledFramService;
+
     }
 
     /**
@@ -172,6 +187,31 @@ class Task extends Controller\Base
                     'task'  => $task,
                     'users' => $users->getResult(),
                 ],
+            ]
+        );
+    }
+
+    /**
+     * @Rest\Get("/{task}/taskAttribute")
+     *
+     * @param $task
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function checkTaskAttrAction(Model\LabelingTask $task, HttpFoundation\Request $request)
+    {
+        $projectId = $request->query->get('projectId');
+        $frameIndex = $request->query->getInt('frameIndex');
+        $labeledFrameFactory = $this->labeledFrameFactory->getFacadeByProjectIdAndTaskId(
+            $projectId,
+            $task->getId()
+        );
+        $labeledFrames = $labeledFrameFactory->findBylabelingTask($task, $frameIndex);
+        $lFrameAttr = $this->labeledFrameService->getFrameEmptyAttribute($labeledFrames);
+
+        return View\View::create()->setData(
+            [
+                'result' => $lFrameAttr,
             ]
         );
     }
