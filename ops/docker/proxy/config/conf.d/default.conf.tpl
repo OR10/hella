@@ -153,4 +153,27 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
     ######## Documentation end ########
+
+    ######## logs #########
+
+        location /kibana/ {
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_pass http://127.0.1.5:5601/;
+
+                auth_basic           "closed area";
+                auth_basic_user_file /etc/nginx/conf.d/htpasswd;
+        }
+
+    ######## logs end #########
+
+    ######## rabbitMQ web ########
+
+        location /rmq/ {
+        proxy_pass http://rmq:15672/;
+    }
+
+    ######## rabbitMQ web end ########
+
 }
