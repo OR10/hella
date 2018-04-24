@@ -8,8 +8,12 @@ root:
         path: /labeling
         permanent: true
 
-app:
+annostation:
     resource: "@AnnoStationBundle/Resources/config/routing.yml"
+    type: rest
+
+app:
+    resource: "@AppBundle/Resources/config/routing.yml"
     type: rest
 
 # redirect to login page if methot is GET (if try to open in browser)
