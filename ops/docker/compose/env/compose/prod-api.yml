@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   proxy:
-    command: bash -c '/bin/sed -i "s/api-couchdb/${COUCHDB_HOST}/;s/monitoring-kibana/${MONITORING_HOST}/" /etc/nginx/conf.d/default.conf.tpl && /usr/local/bin/boot.sh'
+    command: bash -c '/bin/sed -i "s/api-couchdb/${COUCHDB_HOST}/;s/127.0.1.5/${MONITORING_HOST}/" /etc/nginx/conf.d/default.conf.tpl && /usr/local/bin/boot.sh'
     # ADD image option like this for pushing image to registry or docker hub
     image: ${REGISTRY_URL}/${COMPANY_NAME}/proxy:${DOCKER_BE_TAG}
     ports:
