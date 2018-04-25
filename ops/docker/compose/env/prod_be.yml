@@ -13,21 +13,33 @@ services:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_nginx:${DOCKER_BE_TAG}
 
   api-fpm:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_fpm:${DOCKER_BE_TAG}
 
   api-workerpool-low:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
   api-workerpool-normallow:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
   api-workerpool-normal:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
   api-workerpool-high:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cli:${DOCKER_BE_TAG}
 
   api-cron:
+    depends_on:
+      - api-couchdb
     image: ${REGISTRY_URL}/${COMPANY_NAME}/api_cron:${DOCKER_BE_TAG}
 
   ############# API SECTION END #############
@@ -49,3 +61,10 @@ services:
     image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}
 
   ############# MONITORING SECTION END #############
+
+  ############# DOCUMENTATION SECTION BEGIN #############
+
+  doc-go-swagger:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/doc_go_swagger:${DOCKER_BE_TAG}
+
+  ############# DOCUMENTATION SECTION END #############

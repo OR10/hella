@@ -34,6 +34,7 @@
         <service id="annostation.labeling_api.service.frame_cdn.flysystem"
                  class="AnnoStationBundle\Service\FrameCdn\Flysystem">
             <argument>%frame_cdn_base_url%</argument>
+            <argument type="service" id="annostation.storage_factory.service.storage_factory" />
             <argument type="service" id="oneup_flysystem.frame_cdn_filesystem"/>
         </service>
 
@@ -196,6 +197,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"/>
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_block"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_block_in_frame" />
         </service>
 
         <service id="annostation.labeling_api.service.class_columns_factory"
@@ -426,8 +429,8 @@
                  class="AnnoStationBundle\Service\GhostLabeledThingGroupInFrameClassesPropagation">
         </service>
 
-        <service id="annostation.labeling_api.service.project"
-                 class="AnnoStationBundle\Service\v1\Project\ProjectService">
+        <service id="annostation.labeling_api.service.project_creator"
+                 class="AnnoStationBundle\Service\v1\Project\ProjectCreator">
             <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
         </service>
 
@@ -453,6 +456,12 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+        </service>
+
+        <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
+        </service>
+
+        <service id="annostation.labeling_api.service.labeled.frame.service" class="AnnoStationBundle\Service\LabeledFrameService">
         </service>
     </services>
 </container>

@@ -5,5 +5,8 @@ services:
     build:
       dockerfile: 'ops/docker/maintenance/node/Dockerfile'
       context: ../../../../
+    ports:
+      - 54321:54321
+      - 35729:35729
     volumes:
       - ../../../../labeling-ui:/code:Z

@@ -139,6 +139,8 @@ class User
     {
         $sessionUser = $this->tokenStorage->getToken()->getUser();
 
+        $user->setUsername(sprintf('deleted_%s_%s', $user->getUsername(), $user->getId()));
+        $user->setEmail(sprintf('deleted_%s_%s', $user->getId(), $user->getEmail()));
         $user->setLocked(true);
         $user->addLockHistoryEntry(
             $sessionUser,

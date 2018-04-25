@@ -7,7 +7,7 @@
         <service id="annostation.labeling_api.database.facade.video" class="AnnoStationBundle\Database\Facade\Video">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />
-            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />
+            <argument type="service" id="annostation.storage_factory.service.storage_factory" />
         </service>
 
         <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AnnoStationBundle\Database\Facade\PrelabeledFrame">
@@ -83,6 +83,18 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.labeled_block" class="AnnoStationBundle\Database\Facade\LabeledBlock">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_block_in_frame" class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_prediction" class="AnnoStationBundle\Database\Facade\LabelingPrediction">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
         <service id="annostation.labeling_api.database.facade.user_with_couch_db_sync" class="AnnoStationBundle\Database\Facade\UserWithCouchDbSync">
             <argument type="service" id="fos_user.user_manager"/>
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
@@ -97,9 +109,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"
-                 class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -108,9 +119,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeled_thing_group"
-                 class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledThingGroup\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -119,9 +129,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeled_thing_group_in_frame"
-                 class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_group_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -130,9 +139,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeling_task"
-                 class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabelingTask\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -141,9 +149,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.project"
-                 class="AnnoStationBundle\Database\Facade\Project\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\Project\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\Project\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\Project\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.project" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -153,9 +160,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeled_thing"
-                 class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledThing\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
@@ -164,9 +170,8 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.factory.labeled_frame"
-                 class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeInterface"
-                 factory-class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeFactory"
-                 factory-method="get">
+                 class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>

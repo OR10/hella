@@ -39,7 +39,6 @@ class S3Cmd
      * @param string        $frameCdnBaseUrl
      * @param string        $cacheDirectory
      * @param Cmd $s3CmdCdn
-     * @param \cscntLogger  $logger
      */
     public function __construct(
         $frameCdnBaseUrl,
@@ -58,7 +57,7 @@ class S3Cmd
     }
 
     /**
-     * @param string $filePath
+     * @param string $fileSourcePath
      * @return string
      */
     public function getFile(string $fileSourcePath)

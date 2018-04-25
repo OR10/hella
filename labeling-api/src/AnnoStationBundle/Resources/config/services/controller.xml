@@ -154,6 +154,8 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.service.task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.labeled.frame.service"/>
         </service>
 
         <service
@@ -173,7 +175,7 @@
             <argument type="service" id="annostation.labeling_api.service.task_database_security_permission_service"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
-            <argument type="service" id="annostation.labeling_api.service.project"/>
+            <argument type="service" id="annostation.labeling_api.service.project_creator"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\v1\Status">
@@ -188,6 +190,7 @@
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.service.validation"/>
             <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument type="service" id="annostation.labeling_api.service.header_converter"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.project_count"
@@ -228,6 +231,7 @@
         <service id="annostation.labeling_api.controller.custom_exception" class="AnnoStationBundle\Controller\CustomException">
             <argument type="service" id="twig"/>
             <argument>%kernel.debug%</argument>
+            <argument type="service" id="logger"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.ui_log" class="AnnoStationBundle\Controller\Api\v1\UiLog">
@@ -283,6 +287,10 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+        </service>
+
+        <service id="annostation.labeling_api.controller.auth"
+                 class="AnnoStationBundle\Controller\SecurityController">
         </service>
     </services>
 </container>

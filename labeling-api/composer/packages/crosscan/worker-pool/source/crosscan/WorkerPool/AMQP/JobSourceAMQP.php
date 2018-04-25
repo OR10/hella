@@ -86,12 +86,20 @@ class JobSourceAMQP extends WorkerPool\JobSource
      *
      * @param int $timeout Timeout in seconds i.e. how long to wait for the next job at max.
      *                     Defaults to 0 meaning no timeout
-     *
+     * @param int $ttl In seconds
+
      * @return WorkerPool\JobDelivery|null
+     * @throws WorkerPool\Exception
      */
-    public function getNext($timeout = 0)
+    public function getNext($timeout = 0, $ttl = 600)
     {
-        while ($this->running) {
+        if (!$this->running) {
+            throw new WorkerPool\Exception('Job source is not running');
+        }
+
+        $startTimestamp = time();
+
+        while ($this->running && time() - $startTimestamp < $ttl) {
 
             pcntl_signal_dispatch();
 

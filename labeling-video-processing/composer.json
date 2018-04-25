@@ -8,14 +8,17 @@
         "silex/web-profiler": "~2.0",
         "symfony/class-loader": "~2.8|^3.0",
         "symfony/process": "~2.8|^3.0",
-        "league/flysystem-aws-s3-v3": "^1.0"
+        "league/flysystem-aws-s3-v3": "^1.0",
+        "microsoft/azure-storage-blob": "*"
     },
     "require-dev": {
         "monolog/monolog": ">=1.23",
         "symfony/asset": ">=4.0.4"
     },
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "": "src/",
+                   "Service\\Storage": "src/Storage/"
+        }
     },
     "extra": {
         "branch-alias": {

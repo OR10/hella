@@ -3,10 +3,13 @@
 namespace AnnoStationBundle\Tests\Controller\Api;
 
 use AnnoStationBundle\Tests;
+use AppBundle\Model\User;
 use Symfony\Component\HttpFoundation;
 
 class CustomExceptionTest extends Tests\WebTestCase
 {
+    private $client = null;
+
     public function testNotFoundHttpException()
     {
         $requestWrapper = $this->createRequest('/api/v1/foobar')
@@ -27,19 +30,26 @@ class CustomExceptionTest extends Tests\WebTestCase
 
     public function testBadRequestHttpException()
     {
+
         $requestWrapper = $this->createRequest('/api/v1/currentUser/password')
             ->setMethod(HttpFoundation\Request::METHOD_PUT)
-            ->execute();
+             ->setJsonBody(
+                 [
+                     'oldPassword' => 'test',
+                 ]
+             )
+             ->execute();
 
         $expectedResponseBody = [
-            'result' => [
-                'error' => [
-                    [
-                        'field'   => 'password',
-                        'message' => 'Failed to save the new password. The current password is not correct',
+            'result' =>
+                [
+                    'error' => [
+                        [
+                            'field'   => 'newPassword',
+                            'message' => 'Failed to save the new password. The current password is not correct',
+                        ],
                     ],
-                ],
-            ],
+                ]
         ];
 
         $this->assertEquals($expectedResponseBody, $this->getRelevantJsonBody($requestWrapper));
@@ -49,6 +59,12 @@ class CustomExceptionTest extends Tests\WebTestCase
     {
         $this->getService('fos_user.util.user_manipulator')
             ->create(self::USERNAME, self::PASSWORD, self::EMAIL, true, false);
+
+        $this->createDefaultUser();
+        $this->defaultUser->setRoles([User::ROLE_SUPER_ADMIN]);
+
+        $this->client = static::createClient();
+
     }
 
     /**

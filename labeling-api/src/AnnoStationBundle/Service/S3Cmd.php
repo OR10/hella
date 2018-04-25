@@ -4,7 +4,7 @@ namespace AnnoStationBundle\Service;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Process;
 
-class S3Cmd
+class S3Cmd implements StorageInterface
 {
     /**
      * Timeout of the upload process
@@ -57,6 +57,10 @@ class S3Cmd
     private $hostBucket;
 
     /**
+     * @var string
+     */
+    private $frameCdnBaseUrl;
+    /**
      * S3Uploader constructor.
      *
      * @param string $s3CmdExecutable
@@ -68,6 +72,7 @@ class S3Cmd
      * @param string $secretKey
      * @param string $hostBase
      * @param string $hostBucket
+     * @param string $frameCdnBaseUrl
      */
     public function __construct(
         $s3CmdExecutable,
@@ -78,7 +83,8 @@ class S3Cmd
         $accessKey,
         $secretKey,
         $hostBase,
-        $hostBucket
+        $hostBucket,
+        $frameCdnBaseUrl
     ) {
         $this->s3CmdExecutable             = $s3CmdExecutable;
         $this->parallelExecutable          = $parallelExecutable;
@@ -89,6 +95,7 @@ class S3Cmd
         $this->secretKey                   = $secretKey;
         $this->hostBase                    = $hostBase;
         $this->hostBucket                  = $hostBucket;
+        $this->frameCdnBaseUrl             = $frameCdnBaseUrl;
     }
 
     public function uploadDirectory($sourceDirectory, $targetDirectoryOnS3, $acl = 'private')
@@ -394,5 +401,13 @@ EOF;
     private function convertBooleanToConfigString($boolean)
     {
         return $boolean === true ? 'True' : 'False';
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->frameCdnBaseUrl;
     }
 }

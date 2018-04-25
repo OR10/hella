@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use AppBundle\Database\Facade as AppBundleFacade;
+use GuzzleHttp;
 
 class Init extends Base
 {
@@ -109,40 +110,70 @@ class Init extends Base
     /**
      * @var string
      */
+    private $couchPassword;
+
+    /**
+     * @var string
+     */
     private $couchReadOnlyUser;
+
+    /**
+     * @var GuzzleHttp\Client
+     */
+    private $guzzleClient;
+
+    /**
+     * @var string
+     */
+    private $couchHost;
+
+    /**
+     * @var string
+     */
+    private $couchPort;
+
+    /**
+     * @var string
+     */
+    private $couchExternalUrl;
 
     /**
      * Init constructor.
      *
-     * @param CouchDB\CouchDBClient                        $couchClient
-     * @param Service\VideoImporter                        $videoImporterService
-     * @param Service\TaskCreator                          $taskCreator
-     * @param                                              $couchDatabase
-     * @param                                              $couchDatabaseReadOnly
-     * @param                                              $userPassword
-     * @param                                              $cacheDir
-     * @param                                              $frameCdnDir
-     * @param AppFacade\User                               $userFacade
-     * @param Facade\Project                               $projectFacade
-     * @param Facade\LabelingGroup                         $labelingGroupFacade
-     * @param Facade\TaskConfiguration                     $taskConfigurationFacade
+     * @param CouchDB\CouchDBClient $couchClient
+     * @param Service\VideoImporter $videoImporterService
+     * @param Service\TaskCreator $taskCreator
+     * @param string $couchDatabase
+     * @param string $couchDatabaseReadOnly
+     * @param string $userPassword
+     * @param string $cacheDir
+     * @param string $frameCdnDir
+     * @param AppFacade\User $userFacade
+     * @param Facade\Project $projectFacade
+     * @param Facade\LabelingGroup $labelingGroupFacade
+     * @param Facade\TaskConfiguration $taskConfigurationFacade
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
-     * @param Facade\Organisation                          $organisationFacade
-     * @param AppFacade\CouchDbUsers                       $couchDbUsersFacade
-     * @param AppFacade\CouchDbSecurity                    $couchDbSecurityFacade
-     * @param Service\UserRolesRebuilder                   $userRolesRebuilderService
-     * @param string                                       $couchUser
-     * @param string                                       $couchReadOnlyUser
+     * @param Facade\Organisation $organisationFacade
+     * @param AppFacade\CouchDbUsers $couchDbUsersFacade
+     * @param AppFacade\CouchDbSecurity $couchDbSecurityFacade
+     * @param Service\UserRolesRebuilder $userRolesRebuilderService
+     * @param string $couchUser
+     * @param string $couchPassword
+     * @param string $couchReadOnlyUser
+     * @param  GuzzleHttp\Client $guzzleClient
+     * @param string $couchHost
+     * @param string $couchPort
+     * @param string $couchExternalUrl
      */
     public function __construct(
         CouchDB\CouchDBClient $couchClient,
         Service\VideoImporter $videoImporterService,
         Service\TaskCreator $taskCreator,
-        $couchDatabase,
-        $couchDatabaseReadOnly,
-        $userPassword,
-        $cacheDir,
-        $frameCdnDir,
+        string $couchDatabase,
+        string $couchDatabaseReadOnly,
+        string $userPassword,
+        string $cacheDir,
+        string $frameCdnDir,
         AppFacade\User $userFacade,
         Facade\Project $projectFacade,
         Facade\LabelingGroup $labelingGroupFacade,
@@ -152,30 +183,41 @@ class Init extends Base
         AppFacade\CouchDbUsers $couchDbUsersFacade,
         AppBundleFacade\CouchDbSecurity $couchDbSecurityFacade,
         Service\UserRolesRebuilder $userRolesRebuilderService,
-        $couchUser,
-        $couchReadOnlyUser
-    ) {
+        string $couchUser,
+        string $couchPassword,
+        string $couchReadOnlyUser,
+        GuzzleHttp\Client $guzzleClient,
+        string $couchHost,
+        string $couchPort,
+        string $couchExternalUrl
+    )
+    {
         parent::__construct();
 
-        $this->couchClient                      = $couchClient;
-        $this->videoImporterService             = $videoImporterService;
-        $this->taskCreator                      = $taskCreator;
-        $this->couchDatabase                    = (string)$couchDatabase;
-        $this->couchDatabaseReadOnly            = (string)$couchDatabaseReadOnly;
-        $this->userPassword                     = (string)$userPassword;
-        $this->cacheDir                         = (string)$cacheDir;
-        $this->frameCdnDir                      = (string)$frameCdnDir;
-        $this->userFacade                       = $userFacade;
-        $this->projectFacade                    = $projectFacade;
-        $this->labelingGroupFacade              = $labelingGroupFacade;
+        $this->couchClient = $couchClient;
+        $this->videoImporterService = $videoImporterService;
+        $this->taskCreator = $taskCreator;
+        $this->couchDatabase = (string)$couchDatabase;
+        $this->couchDatabaseReadOnly = (string)$couchDatabaseReadOnly;
+        $this->userPassword = (string)$userPassword;
+        $this->cacheDir = (string)$cacheDir;
+        $this->frameCdnDir = (string)$frameCdnDir;
+        $this->userFacade = $userFacade;
+        $this->projectFacade = $projectFacade;
+        $this->labelingGroupFacade = $labelingGroupFacade;
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
-        $this->taskConfigurationFacade          = $taskConfigurationFacade;
-        $this->organisationFacade               = $organisationFacade;
-        $this->couchDbUsersFacade               = $couchDbUsersFacade;
-        $this->couchDbSecurityFacade            = $couchDbSecurityFacade;
-        $this->userRolesRebuilderService        = $userRolesRebuilderService;
-        $this->couchUser                        = $couchUser;
-        $this->couchReadOnlyUser                = $couchReadOnlyUser;
+        $this->taskConfigurationFacade = $taskConfigurationFacade;
+        $this->organisationFacade = $organisationFacade;
+        $this->couchDbUsersFacade = $couchDbUsersFacade;
+        $this->couchDbSecurityFacade = $couchDbSecurityFacade;
+        $this->userRolesRebuilderService = $userRolesRebuilderService;
+        $this->couchUser = $couchUser;
+        $this->couchPassword = $couchPassword;
+        $this->couchReadOnlyUser = $couchReadOnlyUser;
+        $this->guzzleClient = $guzzleClient;
+        $this->couchHost = $couchHost;
+        $this->couchPort = $couchPort;
+        $this->couchExternalUrl = $couchExternalUrl;
     }
 
     protected function configure()
@@ -258,9 +300,74 @@ class Init extends Base
 //        }
     }
 
+    protected function prepareCouchUrl() {
+        return sprintf(
+            'http://%s:%s@%s:%s/',
+            $this->couchUser,
+            $this->couchPassword,
+            $this->couchHost,
+            $this->couchPort
+        );
+    }
+
+    /**
+     * Couchdb 2.1 doesn't do it automatically
+     */
+    protected function setupCouchdb()
+    {
+        $data = [
+            'action' => 'enable_single_node',
+            'bind_address' => '0.0.0.0',
+            'password' => $this->couchPassword,
+            'port' => 5984,
+            'singlenode' => true,
+            'username' => $this->couchUser,
+        ];
+
+        $params = [GuzzleHttp\RequestOptions::JSON => $data];
+
+        $this->guzzleClient->post($this->prepareCouchUrl() . '_cluster_setup', $params);
+    }
+
+    protected function guzzleSendBody($url, $data, $method)
+    {
+        $url = $this->prepareCouchUrl() . $url;
+        $params = ['body' => $data];
+        $this->guzzleClient->request($method, $url, $params);
+    }
+
+    private function enableCouchCors()
+    {
+        $url = '_node/nonode@nohost/_config/httpd/enable_cors';
+        $data = '"true"';
+        $this->guzzleSendBody($url, $data, 'PUT');
+
+        $url = '_node/nonode@nohost/_config/cors/origins';
+        $data = '"' . $this->couchExternalUrl . '"';
+        $this->guzzleSendBody($url, $data, 'PUT');
+
+        $url = '_node/nonode@nohost/_config/cors/credentials';
+        $data = '"true"';
+        $this->guzzleSendBody($url, $data, 'PUT');
+
+        $url = '_node/nonode@nohost/_config/cors/headers';
+        $data = '"accept, authorization, content-type, origin, referer, x-csrf-token"';
+        $this->guzzleSendBody($url, $data, 'PUT');
+
+        $url = '_node/nonode@nohost/_config/cors/methods';
+        $data = '"GET, PUT, POST, HEAD, DELETE"';
+        $this->guzzleSendBody($url, $data, 'PUT');
+    }
+
     private function initializeCouchDatabase(OutputInterface $output)
     {
         $this->writeSection($output, 'Initializing couch database');
+
+        $this->writeVerboseInfo($output, 'Setup couchdb');
+        $this->setupCouchdb();
+
+        $this->writeVerboseInfo($output, 'Enable CORS headers');
+        $this->enableCouchCors();
 
         try {
             $this->writeVerboseInfo($output, 'dropping couch databases');

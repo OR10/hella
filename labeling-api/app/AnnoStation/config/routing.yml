@@ -1,8 +1,19 @@
 _main:
     resource: "../../config/routing.yml"
 
-app:
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /labeling
+        permanent: true
+
+annostation:
     resource: "@AnnoStationBundle/Resources/config/routing.yml"
+    type: rest
+
+app:
+    resource: "@AppBundle/Resources/config/routing.yml"
     type: rest
 
 # redirect to login page if methot is GET (if try to open in browser)
@@ -10,6 +21,6 @@ check_login_redirect:
     path: /login_check
     methods: [GET]
     defaults:
-        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
-        path: /login
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /labeling
         permanent: true

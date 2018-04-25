@@ -1,15 +1,16 @@
 # This file is auto-generated during the composer install
 parameters:
-    video_processing_host: http://video-nginx
+    video_processing_host: %video.host%
     cache_dir: /code/app/AnnoStation/cache/labeling_api/
 
+    auth_lifetime: %auth.lifetime%
     database_name: labeling_api
     database_name_read_only: labeling_api
 
-    couchdb_host: api-couchdb
+    couchdb_host: %couchdb.host%
     couchdb_host_external: %couchdb.host.external%
     couchdb_port: 5984
-    couchdb_port_external: 80
+    couchdb_port_external: %couchdb.port.external%
     couchdb_user: %couchdb.user%
     couchdb_password: %couchdb.password%
     couchdb_user_read_only: %couchdb.user.read.only%
@@ -69,8 +70,25 @@ parameters:
 
     frame_cdn_base_url: %cdn.base.url%
 
+    frame_cdn_base_url_azure: %azure.base.url%
+
     user_password: %user.password%
 
+    video_azure_default_endpoints_protocol: %azure.default.endpoints.protocol%
+    video_azure_account_name: %azure.account.name%
+    video_azure_container: %azure.dir.video%
+    video_azure_dir: %azure.dir.video%
+    video_azure_account_key: %azure.account.key%
+    video_azure_blob_endpoint: %azure.blob.endpoint%
+
+    frame_azure_default_endpoints_protocol: %azure.default.endpoints.protocol%
+    frame_azure_account_name: %azure.account.name%
+    frame_azure_container: %azure.dir.frame%
+    frame_azure_dir: %azure.dir.frame%
+    frame_azure_account_key: %azure.account.key%
+    frame_azure_blob_endpoint: %azure.blob.endpoint%
+
+    storage_type: %storage.type%
 
     rabbitmq_host: rmq
     rabbitmq_port: 5672
@@ -121,6 +139,7 @@ services:
             - '%frame_cdn_s3_secret%'
             - '%frame_cdn_s3_host_base%'
             - '%frame_cdn_s3_host_bucket%'
+            - '%frame_cdn_base_url%'
     annostation.labeling_api.service.frame_cdn.s3_cmd:
         class: AnnoStationBundle\Service\FrameCdn\S3Cmd
         arguments:
@@ -143,6 +162,7 @@ services:
             - '%video_cdn_s3_secret%'
             - '%video_cdn_s3_host_base%'
             - '%video_cdn_s3_host_bucket%'
+            - '%frame_cdn_base_url%'
     annostation.labeling_api.service.video_cdn.s3_cmd:
         class: AnnoStationBundle\Service\VideoCdn\S3Cmd
         arguments:
@@ -151,7 +171,50 @@ services:
     annostation.labeling_api.service.video_cdn.selected-alias:
         alias: annostation.labeling_api.service.video_cdn.s3_cmd
 
+    annostation.labeling_api.service.azure_cmd_frame_cdn:
+        class: AnnoStationBundle\Service\Azure
+        arguments:
+            - '%frame_azure_default_endpoints_protocol%'
+            - '%frame_azure_account_name%'
+            - '%frame_azure_account_key%'
+            - '%frame_azure_blob_endpoint%'
+            - '%frame_azure_container%'
+            - '%frame_azure_dir%'
+            - '%frame_cdn_base_url_azure%'
+    annostation.labeling_api.service.frame_cdn.azure_cmd:
+        class: AnnoStationBundle\Service\FrameCdn\Azure
+        arguments:
+            - '%frame_cdn_base_url_azure%'
+            - '%cache_dir%'
+            - '@annostation.labeling_api.service.azure_cmd_frame_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.frame_cdn.selected-alias:
+            alias: annostation.labeling_api.service.frame_cdn.azure_cmd
 
+    annostation.labeling_api.service.azure_cmd_video_cdn:
+        class: AnnoStationBundle\Service\Azure
+        arguments:
+            - '%video_azure_default_endpoints_protocol%'
+            - '%video_azure_account_name%'
+            - '%video_azure_account_key%'
+            - '%video_azure_blob_endpoint%'
+            - '%video_azure_container%'
+            - '%video_azure_dir%'
+            - '%frame_cdn_base_url_azure%'
+    annostation.labeling_api.service.video_cdn.azure_cmd:
+        class: AnnoStationBundle\Service\VideoCdn\Azure
+        arguments:
+            - '@annostation.labeling_api.service.azure_cmd_video_cdn'
+            - '@annostation.labeling_api.vendor.logger'
+    annostation.labeling_api.service.video_cdn_azure.selected-alias:
+        alias: annostation.labeling_api.service.video_cdn.azure_cmd
+
+    annostation.storage_factory.service.storage_factory:
+        class: AnnoStationBundle\Service\Storage\StorageFactory
+        arguments:
+            - '@annostation.labeling_api.service.video_cdn.selected-alias'
+            - '@annostation.labeling_api.service.video_cdn_azure.selected-alias'
+            - '@service_container'
 
 #     frame_cdn.s3_client:
 #         class: Aws\S3\S3Client

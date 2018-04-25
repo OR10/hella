@@ -51,13 +51,21 @@ class CalculateProjectDiskUsage extends WorkerPoolBundle\JobInstruction
     {
         $this->documentManager->clear();
         $project = $this->projectFacade->find($job->getProjectId());
+        if (!$project) {
+            //Project and related entities can be deleted
+            return;
+        }
 
         $oldSize = $project->getDiskUsageInBytes();
         $newSize = $this->videoFacade->calculateAggregatedeVideoSizeForProject($project);
 
         if ($oldSize !== $newSize) {
             $project->setDiskUsageInBytes($newSize);
-            $this->projectFacade->save($project);
+            try {
+                $this->projectFacade->save($project);
+            } catch (CouchDB\UpdateConflictException $e) {
+                $loggerFacade->logException($e, \cscntLogPayload::SEVERITY_ERROR);
+            }
         }
     }
 

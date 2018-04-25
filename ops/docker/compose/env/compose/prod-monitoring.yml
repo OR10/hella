@@ -1,0 +1,5 @@
+version: "3.1"
+
+services:
+  monitoring-logstash:
+    image: ${REGISTRY_URL}/${COMPANY_NAME}/monitoring-logstash:${DOCKER_BE_TAG}

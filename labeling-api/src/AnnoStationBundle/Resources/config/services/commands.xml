@@ -36,6 +36,55 @@
             <argument>%couchdb_user%</argument>
             <argument>%couchdb_user_read_only%</argument>
             <tag name="console.command"/>
+        </service><service id="annostation.labeling_api.command.init" class="AnnoStationBundle\Command\Init">
+            <argument type="service" id="doctrine_couchdb.client.default_connection"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
+            <argument>%database_name%</argument>
+            <argument>%couchdb_user_read_only%</argument>
+            <argument>%user_password%</argument>
+            <argument>%cache_dir%</argument>
+            <argument>%frame_cdn_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_password%</argument>
+            <argument>%couchdb_user_read_only%</argument>
+            <argument type="service" id="guzzle.client"/>
+            <argument>%couchdb_host%</argument>
+            <argument>%couchdb_port%</argument>
+            <argument>%couchdb_external_url%</argument>
+            <tag name="console.command"/>
+        </service>
+        
+        <service id="annostation.labeling_api.command.loadtest" class="AnnoStationBundle\Command\LoadTest">
+            <argument type="service" id="doctrine_couchdb.client.default_connection"/>
+            <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.task_creator"/>
+            <argument>%database_name%</argument>
+            <argument>%couchdb_user_read_only%</argument>
+            <argument>%user_password%</argument>
+            <argument>%cache_dir%</argument>
+            <argument>%frame_cdn_dir%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.user.selected-alias"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_group"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couchdb_users"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.couch_db_security"/>
+            <argument type="service" id="annostation.labeling_api.service.user_roles_rebuilder"/>
+            <argument>%couchdb_user%</argument>
+            <argument>%couchdb_user_read_only%</argument>
+            <tag name="console.command"/>
         </service>
 
         <service id="annostation.labeling_api.command.project.cleanup_batch_upload_directory"

@@ -18,6 +18,7 @@ use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Version("v1")
@@ -125,6 +126,14 @@ class Organisation extends Controller\Base
         $name      = $request->request->get('name');
         $quota     = $request->request->get('quota', 0);
         $userQuota = $request->request->get('userQuota', 0);
+
+        if ($quota < 0) {
+            throw new BadRequestHttpException('Invalid quota. Must be positive.');
+        }
+
+        if ($userQuota < 0) {
+            throw new BadRequestHttpException('Invalid userQuota. Must be positive.');
+        }
 
         $organisation = new AnnoStationBundleModel\Organisation($name, $quota, $userQuota);
         $this->organisationFacade->save($organisation);

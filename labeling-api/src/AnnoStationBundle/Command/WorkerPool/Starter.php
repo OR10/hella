@@ -22,7 +22,7 @@ class Starter extends Command
 
         $this->addArgument('primary', Input\InputArgument::REQUIRED, '');
         $this->addArgument('secondary', Input\InputArgument::OPTIONAL, '');
-        $this->addArgument('cycles', Input\InputArgument::OPTIONAL, '', 500);
+        $this->addArgument('cycles', Input\InputArgument::OPTIONAL, '', 1);
     }
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)

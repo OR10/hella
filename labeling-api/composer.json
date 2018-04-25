@@ -35,8 +35,6 @@
         "videlalvaro/php-amqplib": "dev-master",
         "arbit/phpillow": "dev-master",
         "phake/phake": "dev-master",
-        "snc/redis-bundle": "dev-master",
-        "predis/predis": "^1.0",
         "guzzlehttp/guzzle": "6.3.0",
         "hco/phar-installer-plugin": "^0.1.3",
         "league/flysystem-aws-s3-v3": "^1.0",
@@ -45,7 +43,8 @@
         "ruflin/elastica": "3.2.3",
         "maennchen/zipstream-php": "^0.4.1",
         "mtdowling/cron-expression": "^1.2",
-        "beberlei/assert": "^2.7"
+        "beberlei/assert": "^2.7",
+        "microsoft/azure-storage-blob": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~5",

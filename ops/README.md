@@ -12,7 +12,7 @@
 * Init project
 
 ```bash
-$ ops/install_locally.sh
+$ ops/scripts/install_locally.sh
 ```
 
 ## Start project
@@ -86,6 +86,10 @@ Run additional Consumers
 $ docker-compose exec api-workerpool-high app/AnnoStation/console annostation:workerpool:starter high &
 ```
 
+How to update CouchDB map/reduce
+```bash
+$ docker-compose run --rm api-cron app/AnnoStation/console doctrine:couchdb:update-design-doc -v
+```
 
 ## Front
 
@@ -101,6 +105,11 @@ Build gulp
 $ docker-compose run --user $(id -u) --rm maintenance-node gulp
 ```
 
+Or you also can run gulp serve on docker
+```bash
+$ docker-compose run --user $(id -u) --rm maintenance-node gulp serve
+```
+
 Or just run bash in container if you need some else
 ```bash
 $ docker-compose run --rm maintenance-node bash
@@ -109,7 +118,7 @@ $ docker-compose run --rm maintenance-node bash
 ## New service implementation checklist
 
 * Add service to docker-compose (Folder `service` or other. It depends on...) 
-* Add build configuration to `ops/build_(fe|be).sh` and `install locally` file
+* Add build configuration to `ops/scripts/build_(fe|be).sh` and `install locally` file
 * If you added new `docker-compose.yml` file - Add it to required `COMPOSE_FILE=` sections in `.env`, `build`, `deploy` 
 and `install locally` files
 * Add useful documentation into `README.md` and `confluence`
@@ -118,7 +127,7 @@ and `install locally` files
 
 ### Build BE
 ```bash
-$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_BE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/build_be.sh
+$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_BE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_be.sh
 ```
 
 E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`    
@@ -127,10 +136,10 @@ E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`
 ### Build FE
 
 ```bash
-$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/build_fe.sh
+$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_fe.sh
 ```
 
-### Deployment
+### Deployment via swarm and docker stack
 
 Deployment configured with docker `swarm` [https://docs.docker.com/get-started/part4/]
 
@@ -175,11 +184,13 @@ $ docker-machine ssh myvm2 "sudo sysctl -w vm.max_map_count=262144"
 #### How to deploy
 
 ```bash
-$ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/deploy.sh
+$ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/scripts/deploy_swarm.sh
 ```
 
 #### Run once only after first deployment
-
+```bash
+$ docker exec -it $(docker ps -f name=cron -q) app/AnnoStation/console annostation:init -v
+```
 
 #### How to do something on swarm
 
@@ -196,4 +207,16 @@ docker logs $(docker ps -a -f name=api-cron -q)
 Run some command 
 ```bash
 docker exec -it $(docker ps -a -f name=api-fpm -q) bash
+```
+
+
+### Deployment via docker-compose
+
+```bash
+$ MACHINE_USER=softeq-dev API_MACHINE={machine-name} COUCHDB_MACHINE={machine-name} VIDEO_MACHINE={machine-name} MONITORING_MACHINE={machine-name} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/scripts/deploy_compose.sh
+```
+
+#### Run once only after first deployment
+```bash
+$ docker-compose run --rm api-cron app/AnnoStation/console annostation:init -v
 ```
