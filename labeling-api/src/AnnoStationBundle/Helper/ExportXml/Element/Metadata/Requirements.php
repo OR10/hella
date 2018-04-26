@@ -31,7 +31,7 @@ class Requirements extends ExportXml\Element
         $requirements->setAttribute('name', $this->taskConfiguration->getName());
         $filename           = sprintf(
             '%s.%s.%s',
-            basename($this->taskConfiguration->getFilename(), '.xml'),
+            basename($this->getFilename($this->taskConfiguration->getFilename()), '.xml'),
             RequirementsProjectToXml::REQUIREMENTS_XML_POSTFIX,
             'xml'
         );
@@ -46,5 +46,19 @@ class Requirements extends ExportXml\Element
         $requirements->appendChild($sha256);
 
         return $requirements;
+    }
+
+    /**
+     * @param $filename
+     *
+     * @return mixed
+     */
+    private function getFilename($filename)
+    {
+        $search   = ['ä', 'ü', 'ü', 'ö', 'Ä', 'Ü', 'Ö']; // ü is not the same as ü
+        $replace  = ['ae', 'ue', 'ue', 'oe', 'Ae', 'Üe', 'Oe'];
+        $filename = str_replace($search, $replace, $filename);
+
+        return $filename;
     }
 }

@@ -105,7 +105,7 @@ class Report extends Controller\Base
         $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
         $this->authorizationService->denyIfProjectIsNotReadable($project);
         if ($report->getReportStatus() !== Model\Report::REPORT_STATUS_DONE) {
-            throw new Exception\NotFoundHttpException();
+            throw new Exception\NotFoundHttpException('The report is still generating');
         }
 
         $tasks = array();

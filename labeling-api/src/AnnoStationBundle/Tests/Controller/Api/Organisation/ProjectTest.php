@@ -63,6 +63,7 @@ class ProjectTest extends Tests\WebTestCase
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
                         'deletedState'               => 'unaccepted',
+                        'lastStatusChangeTimestamp'  => 1468409400,
                     ],
                 ],
             ],
@@ -89,6 +90,7 @@ class ProjectTest extends Tests\WebTestCase
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
                         'deletedState'               => 'unaccepted',
+                        'lastStatusChangeTimestamp'  => 1468324800,
                     ],[
                         'name'                       => 'Test Project 1',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -109,6 +111,7 @@ class ProjectTest extends Tests\WebTestCase
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
                         'deletedState'               => 'unaccepted',
+                        'lastStatusChangeTimestamp'  => 1468321200,
                     ],[
                         'name'                       => 'Test Project 2',
                         'status'                     => Model\LabelingTask::STATUS_TODO,
@@ -129,6 +132,7 @@ class ProjectTest extends Tests\WebTestCase
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
                         'deletedState'               => 'unaccepted',
+                        'lastStatusChangeTimestamp'  => 1468317600,
                     ],
                 ],
             ],
@@ -155,6 +159,7 @@ class ProjectTest extends Tests\WebTestCase
                         'campaigns'                  => [],
                         'labelingGroupId'            => null,
                         'deletedState'               => 'unaccepted',
+                        'lastStatusChangeTimestamp'  => 1468409400,
                     ],
                 ],
             ],
@@ -196,7 +201,6 @@ class ProjectTest extends Tests\WebTestCase
 
         $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
             ->withProjectOwnedByUserId($this->labelManager->getId());
-
         $testProject1 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 1')
@@ -210,6 +214,8 @@ class ProjectTest extends Tests\WebTestCase
                 ->build()
         );
 
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withProjectOwnedByUserId($this->labelManager->getId());
         $testProject2 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 2')
@@ -224,6 +230,8 @@ class ProjectTest extends Tests\WebTestCase
                 ->build()
         );
 
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withProjectOwnedByUserId($this->labelManager->getId());
         $testProject3 = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project 3')
@@ -237,10 +245,12 @@ class ProjectTest extends Tests\WebTestCase
                 ->build()
         );
 
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withProjectOwnedByUserId($this->labelManager->getId());
         $inProgressProject = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project in progress')
-                ->withStatusChange(Model\Project::STATUS_IN_PROGRESS)
+                ->withStatusChange(Model\Project::STATUS_IN_PROGRESS, new \DateTime('2016-07-13T11:30:00+00:00'))
                 ->withCreationDate(new \DateTime('2016-07-12T10:30:00+00:00'))
                 ->build()
         );
@@ -251,10 +261,12 @@ class ProjectTest extends Tests\WebTestCase
                 ->build()
         );
 
+        $projectBuilder = Tests\Helper\ProjectBuilder::create($this->organisation)
+            ->withProjectOwnedByUserId($this->labelManager->getId());
         $projectAllDone = $this->projectFacade->save(
             $projectBuilder
                 ->withName('Test Project done')
-                ->withStatusChange(Model\Project::STATUS_DONE)
+                ->withStatusChange(Model\Project::STATUS_DONE, new \DateTime('2016-07-13T11:30:00+00:00'))
                 ->withCreationDate(new \DateTime('2016-07-12T11:30:00+00:00'))
                 ->build()
         );

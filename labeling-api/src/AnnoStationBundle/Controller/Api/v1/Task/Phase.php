@@ -6,16 +6,12 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
-use AnnoStationBundle\Service\Authentication;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 use AppBundle\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Version;
 use Symfony\Component\HttpFoundation;
-use Symfony\Component\HttpKernel\Exception;
-use Symfony\Component\Security\Core\Authentication\Token\Storage;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Version("v1")

@@ -20,6 +20,11 @@
     <define name="Metadata">
         <element name="e:metadata">
             <interleave>
+                <optional>
+                    <element name="e:xml-version">
+                        <text/>
+                    </element>
+                </optional>
                 <ref name="AnnoStation"/>
                 <ref name="Requirements"/>
                 <optional>
@@ -260,30 +265,46 @@
     </define>
     <define name="CuboidShape">
         <element name="e:cuboid">
-            <element name="e:top-left-front">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:top-right-front">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:bottom-right-front">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:bottom-left-front">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:top-left-back">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:top-right-back">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:bottom-right-back">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
-            <element name="e:bottom-left-back">
-                <ref name="XYZCoordinateAttributes"/>
-            </element>
+            <optional>
+                <element name="e:top-left-front">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:top-right-front">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:bottom-right-front">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:bottom-left-front">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:top-left-back">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:top-right-back">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:bottom-right-back">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
+            <optional>
+                <element name="e:bottom-left-back">
+                    <ref name="XYZCoordinateAttributes"/>
+                </element>
+            </optional>
             <optional>
                 <element name="e:image-top-left-front">
                     <ref name="XYCoordinateAttributes"/>
@@ -460,6 +481,9 @@
                     <attribute name="bottom-right-y"/>
                 </element>
             </zeroOrMore>
+            <optional>
+                <ref name="Tags"/>
+            </optional>
         </element>
     </define>
     <!-- </metadata> -->

@@ -125,7 +125,7 @@ class VideoFrameSplitter extends JobInstruction
                 $job->imageType,
                 $imageSizes[1][0],
                 $imageSizes[1][1],
-                array_sum($frameSizesInBytes),
+                $frameSizesInBytes ? array_sum($frameSizesInBytes) : 0,
                 0,
                 1,
                 $logger

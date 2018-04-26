@@ -5,14 +5,13 @@ namespace AnnoStationBundle\Service\v1\Project;
 use AnnoStationBundle\Service\VideoImporter;
 use Flow\Config;
 use Flow\File;
+use Symfony\Component\HttpFoundation;
 use Flow\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class BatchUploadService
 {
-
-
     /**
      * @var string
      */
@@ -54,7 +53,7 @@ class BatchUploadService
         $this->ensureDirectoryExists($projectCacheDirectory);
         $this->ensureDirectoryExists($chunkDirectory);
 
-        //upload video
+        /** @var HttpFoundation\File\UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
         $flowRequest       = new Request(
             $request->request->all(),
@@ -71,7 +70,7 @@ class BatchUploadService
         $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $flowRequest->getFileName()]);
 
         if (!$file->validateChunk()) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('The uploaded chunk is invalid');
         }
 
         // There are some situations where the same previous request is aborted and send again from the ui.
@@ -123,7 +122,7 @@ class BatchUploadService
                         $project,
                         basename($targetPath),
                         $targetPath,
-                        false
+                        $request->request->getBoolean('lossless', false)
                     );
                 } elseif ($this->isImageFile($flowRequest->getFileName())) {
                     // Image compression is determined by their input image type
