@@ -3,7 +3,10 @@
 namespace AnnoStationBundle\Service;
 
 use AnnoStationBundle\Database\Facade;
+use AnnoStationBundle\Database\Facade\LabeledThingInFrame;
 use AppBundle\Model;
+use AnnoStationBundle\Helper;
+
 
 /**
  * Propagate GhostClasses for any number of labeledThingsInFrame
@@ -12,21 +15,36 @@ use AppBundle\Model;
  */
 class GhostClassesPropagation
 {
+    /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacade;
 
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var Facade\TaskConfiguration
      */
-    private $labeledThingInFrameFacade;
+    private $taskConfigurationFacade;
+
+    /**
+     * @var LabeledThingInFrame\FacadeInterface
+     */
+    private $labeledThingInFrameFactory;
 
     /**
      * GhostClassesPropagationService constructor.
      *
-     * @param Facade\LabeledThingInFrame $labeledThingInFrameFacade
+     * @param Facade\LabelingTask                 $labelingTaskFacade
+     * @param Facade\TaskConfiguration            $taskConfigurationFacade
+     * @param LabeledThingInFrame\FacadeInterface $labeledThingInFrameFactory
      */
     public function __construct(
-        Facade\LabeledThingInFrame $labeledThingInFrameFacade
+        Facade\LabelingTask $labelingTaskFacade,
+        Facade\TaskConfiguration $taskConfigurationFacade,
+        LabeledThingInFrame\FacadeInterface $labeledThingInFrameFactory
     ) {
-        $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
+        $this->labelingTaskFacade         = $labelingTaskFacade;
+        $this->taskConfigurationFacade    = $taskConfigurationFacade;
+        $this->labeledThingInFrameFactory = $labeledThingInFrameFactory;
     }
 
     /**
@@ -46,6 +64,11 @@ class GhostClassesPropagation
         $propagatedClassesCache = array();
 
         foreach ($workingCopy as $labeledThingInFrame) {
+            $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
+                $labeledThingInFrame->getProjectId(),
+                $labeledThingInFrame->getTaskId()
+            );
+            $task           = $this->labelingTaskFacade->find($labeledThingInFrame->getTaskId());
             $labeledThingId = $labeledThingInFrame->getLabeledThingId();
 
             if (!empty($labeledThingInFrame->getClasses())) {
@@ -57,19 +80,23 @@ class GhostClassesPropagation
 
             // No classes set. Need to check for ghostClasses
             if (!array_key_exists($labeledThingId, $propagatedClassesCache)) {
-                $previousLabeledThingInFrameWithClasses = $this->labeledThingInFrameFacade
+                $previousLabeledThingInFrameWithClasses = $labeledThingInFrameFacade
                     ->getPreviousLabeledThingInFrameWithClasses($labeledThingInFrame);
 
                 // There might be no such previous LabeledThingInFrame
-                if (!($previousLabeledThingInFrameWithClasses instanceof Model\LabeledThingInFrame)) {
-                    // Remember that there isn't a previous LabeledThingInFrame with classes for the next cycle
-                    // Ghost classes are not set, as there are none
+                if ($previousLabeledThingInFrameWithClasses instanceof Model\LabeledThingInFrame) {
+                    $propagatedClassesCache[$labeledThingId] = $previousLabeledThingInFrameWithClasses->getClasses();
+                }
+
+                $nextLabeledThingInFrame = $this->getNextGhostClasses($task, $labeledThingInFrame);
+                if ($previousLabeledThingInFrameWithClasses === null && $nextLabeledThingInFrame instanceof  Model\LabeledThingInFrame) {
+                    $propagatedClassesCache[$labeledThingId] = $nextLabeledThingInFrame->getClasses();
+                }
+
+                if ($previousLabeledThingInFrameWithClasses === null && $nextLabeledThingInFrame === null) {
                     $propagatedClassesCache[$labeledThingId] = null;
                     continue;
                 }
-
-                // We found a previous LabeledThingInFrame with classes. The cache needs to be filled
-                $propagatedClassesCache[$labeledThingId] = $previousLabeledThingInFrameWithClasses->getClasses();
             }
 
             // Update the ghost classes for this LabeledThingInFrame with data from the cache, which is correctly filled
@@ -78,6 +105,30 @@ class GhostClassesPropagation
         }
 
         return $workingCopy;
+    }
+
+    private function getNextGhostClasses(Model\LabelingTask $task, Model\LabeledThingInFrame $labeledThingInFrame)
+    {
+        $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
+            $labeledThingInFrame->getProjectId(),
+            $labeledThingInFrame->getTaskId()
+        );
+
+        if ($task->getTaskConfigurationId() === null) {
+            return null;
+        }
+        $identifier        = $labeledThingInFrame->getIdentifierName();
+        $taskConfiguration = $this->taskConfigurationFacade->find($task->getTaskConfigurationId());
+        $helper            = new Helper\IncompleteClassesChecker\RequirementsXml($taskConfiguration->getRawData());
+
+        if ($helper->getThingPrediction($identifier) === 'all') {
+            $labeledThingInFrame = $labeledThingInFrameFacade->getNextLabeledThingInFrameWithClasses(
+                $labeledThingInFrame,
+                $task
+            );
+
+            return $labeledThingInFrame;
+        }
     }
 
     /**
