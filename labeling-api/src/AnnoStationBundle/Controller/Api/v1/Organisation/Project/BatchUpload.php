@@ -215,10 +215,6 @@ class BatchUpload extends Controller\Base
         $tasks                        = [];
         $videosWithoutCalibrationData = [];
 
-        //if upload zip with image
-        $isImage = ($request->request->get('isImage')) ? $request->request->get('isImage') : false ;
-
-
         $videoIdsWithExistingTasks = array_map(
             function (Model\LabelingTask $task) {
                 return $task->getVideoId();
@@ -230,24 +226,8 @@ class BatchUpload extends Controller\Base
 
         if (!empty($videoIds)) {
             $user   = $this->tokenStorage->getToken()->getUser();
-            if(!$isImage) {
-                $videos = $this->videoFacade->findById($videoIds);
-
-                foreach ($videos as $video) {
-
-                    try {
-                        $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));
-                    } catch (ProjectException\Missing3dVideoCalibrationData $exception) {
-                        $videosWithoutCalibrationData[] = $video;
-                    } catch (\Exception $exception) {
-                        $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
-                        throw $exception;
-                    }
-                    break;
-                }
-            } else {
-                //create task for images
-                /*
+            $videos = $this->videoFacade->findById($videoIds);
+            foreach ($videos as $video) {
                 try {
                     $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));
                 } catch (ProjectException\Missing3dVideoCalibrationData $exception) {
@@ -256,7 +236,7 @@ class BatchUpload extends Controller\Base
                     $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
                     throw $exception;
                 }
-                */
+                break;
             }
         }
 

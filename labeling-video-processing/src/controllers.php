@@ -6,11 +6,12 @@ use Symfony\Component\Process\Process;
 
 
 $app->put('/', function (Request $request) use ($app) {
-
-    if($request->get('fileType') == 'images') {
+    $isZip = $request->get('isZip');
+    if($isZip) {
         $frameSizesInBytes = $app['VideoFrameSplitter']->storeFrames(
-            (array)$request->get('imagesParam'),
-            (string)$request->get('projectId'),
+            (string)$request->get('videoId'),
+            (string)$request->get('videoName'),
+            (string)$request->get('sourceFileFilename'),
             (string)$request->get('type'),
             (string)$app['cacheDirectory']
         );

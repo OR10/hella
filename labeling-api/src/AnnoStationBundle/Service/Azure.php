@@ -2,6 +2,7 @@
 namespace AnnoStationBundle\Service;
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 
 class Azure
 {
@@ -74,13 +75,9 @@ class Azure
      * @param $source
      * @return string
      */
-    public function uploadFile($video, $source, string $projectId = null)
+    public function uploadFile($video, $source)
     {
-        if($projectId) {
-            $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$projectId, 'source', $source);
-        } else {
-            $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
-        }
+        $this->blobClientCreate()->createBlockBlob($this->dir.'/'.$video->getId(), 'source', $source);
     }
 
     /**

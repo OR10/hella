@@ -25,9 +25,9 @@ class BatchUploadService
     private $videoImporter;
 
     /**
-     * @var array
+     * @var int
      */
-    private $zipPngImages = [];
+    private $zipFilesCount = 0;
 
     /**
      * BatchUploadService constructor.
@@ -62,9 +62,6 @@ class BatchUploadService
 
         //upload video
         $uploadedFileChunk = $request->files->get('file');
-
-        //if zip
-        $isZip = ($request->files->get('isZip')) ? true : false;
 
         $flowRequest       = new Request(
             $request->request->all(),
@@ -122,6 +119,7 @@ class BatchUploadService
                 $zip = new \ZipArchive();
                 $res = $zip->open($targetPath);
                 if ($res === TRUE) {
+                    $this->zipFilesCount = $zip->numFiles;
                     $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip';
                     if ($zip->extractTo($zipDir)) {
                         $zip->close();
@@ -155,11 +153,8 @@ class BatchUploadService
                                         sprintf('Zip content exists in project (either as video or image file): %s', $pngFile)
                                     );
                                 }
-                                $this->zipPngImages[$imagePath] = $pngFile;
                             }
                         }
-                        //delete zip file
-                        @unlink($targetPath);
                     } else {
                         throw new ConflictHttpException(
                             sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
@@ -182,12 +177,15 @@ class BatchUploadService
         }
 
         if($this->isZipFile($flowRequest->getFileName())){
-            return $this->videoImporter->importZipImage(
+            $this->videoImporter->importZipImage(
                 $organisation,
                 $project,
-                $this->zipPngImages,
+                basename($targetPath),
+                $targetPath,
+                $this->zipFilesCount,
                 false
             );
+            @unlink($targetPath);
             //delete do not need image
             $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
         } else {
@@ -223,7 +221,7 @@ class BatchUploadService
                             $targetPath
                         );
                     } elseif ($this->isCalibrationFile($flowRequest->getFileName())) {
-                        $this->videoImporter->importCalibrationData($organisation, $project, $targetPath, $isZip);
+                        $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
                     } else {
                         throw new BadRequestHttpException(
                             sprintf('Invalid file: %s', $flowRequest->getFileName())

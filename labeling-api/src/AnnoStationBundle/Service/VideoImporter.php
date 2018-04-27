@@ -164,48 +164,44 @@ class VideoImporter
         return $video;
     }
 
-    /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param Model\Project $project
-     * @param array $imagesParam
-     * @param bool $lossless
-     * @return array
-     */
+
     public function importZipImage(
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
-        array $imagesParam,
+        string $videoName,
+        string $videoFilePath,
+        int $filesCount,
         bool $lossless
-    )
-    {
-        $newImages = [];
-        $videos = [];
+    ) {
 
-        foreach ($imagesParam as $videoFilePath => $videoName) {
-            $imageTypes = $this->getImageTypes($lossless);
-            $video = new Model\Video($organisation, $videoName);
+        $imageTypes = $this->getImageTypes($lossless);
+        $video      = new Model\Video($organisation, $videoName);
 
-            $video->setMetaData($this->metaDataReader->readMetaData($videoFilePath));
-            $this->videoFacade->save($video, $videoFilePath, $project->getId());
+        $meta = new Model\Video\MetaData();
+        $meta->raw = ['format' => [
+            'filename' => $videoFilePath
+        ]];
+        $meta->numberOfFrames = $filesCount;
+        $meta->sizeInBytes = 10000;
+        $video->setMetaData($meta);
 
+        $this->videoFacade->save($video, $videoFilePath);
 
-            $this->couchDbUpdateConflictRetryService->save(
-                $project,
-                function (Model\Project $project) use ($video) {
-                    $project->addVideo($video);
-                    $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $video->getMetaData()->sizeInBytes);
-                }
-            );
-
-            foreach ($imageTypes as $imageTypeName) {
-                $video->setImageType($imageTypeName, 'converted', false);
-                $this->videoFacade->update();
+        $this->couchDbUpdateConflictRetryService->save(
+            $project,
+            function (Model\Project $project) use ($video) {
+                $project->addVideo($video);
+                $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $video->getMetaData()->sizeInBytes);
             }
+        );
 
-            $newImages[$video->getName()] = $video->getSourceVideoPath($project->getId());
-            $videos []=$video;
-            // foreach ($imageTypes as $imageTypeName) {
-            /*
+        foreach ($imageTypes as $imageTypeName) {
+            $video->setImageType($imageTypeName, 'converted', false);
+            $this->videoFacade->update();
+        }
+
+        /*
+        foreach ($imageTypes as $imageTypeName) {
             $job = new Jobs\VideoFrameSplitter(
                 $video->getId(),
                 $videoFilePath,
@@ -213,34 +209,30 @@ class VideoImporter
             );
 
             $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
-            */
-            //$video = $this->videoFacade->find($video->getId());
-
-            //video name + video source getSourceVideoPath
         }
+        */
 
-        $frameSizesInBytes = $this->frameCdnSplitter->imageToFrame($project->getId(), $newImages, ImageType\Base::create('source'));
+        //in queue
+        foreach ($imageTypes as $imageTypeName) {
+            $video = $this->videoFacade->find($video->getId());
+            if ($video === null) {
+                throw new \RuntimeException("Video '{$video->getId()}' could not be found");
+            }
 
-        $imageSizes        = $this->frameCdnSplitter->getImageSizes();
-        $videoIndex = 1;
-        foreach ($videos as $video) {
+            $frameSizesInBytes = $this->frameCdnSplitter->splitVideoInFrames($video, $video->getSourceVideoPath(), ImageType\Base::create($imageTypeName), true);
+            $imageSizes = $this->frameCdnSplitter->getImageSizes();
+
             $this->updateDocument(
                 $video,
-                ImageType\Base::create('source'),
-                $imageSizes[$videoIndex][0],
-                $imageSizes[$videoIndex][1],
+                ImageType\Base::create($imageTypeName),
+                $imageSizes[1][0],
+                $imageSizes[1][1],
                 array_sum($frameSizesInBytes)
             );
 
-
-
-            //find task by video id
-            //NEED TO FIND TASK BY VIDEO IDS BY ALL Video in Task (In this case video is image)
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
 
-
             $projectIds = [];
-            //change task video status
             foreach ($tasks as $task) {
                 $projectIds[] = $task->getProjectId();
                 $this->videoFacade->refresh($video);
@@ -251,17 +243,24 @@ class VideoImporter
                     }
                 );
             }
-            $videoIndex++;
         }
-        //foreach (array_unique($projectIds) as $projectId) {
-        //    $job = new Jobs\CalculateProjectDiskSize($projectId);
-        //    $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
-        //}
-        // }
+        //-------------------------
 
-        return $videos;
+
+
+        return $video;
     }
 
+    /**
+     * @param Model\Video $video
+     * @param ImageType\Base $imageType
+     * @param $width
+     * @param $height
+     * @param $frameSizesInBytes
+     * @param int $retryCount
+     * @param int $maxRetries
+     * @throws CouchDB\UpdateConflictException
+     */
     private function updateDocument(
         Model\Video $video,
         ImageType\Base $imageType,

@@ -210,7 +210,7 @@ class Video
      *
      * @return Model\Video
      */
-    public function save(Model\Video $video, $source = null, string $projectId = null)
+    public function save(Model\Video $video, $source = null)
     {
         $this->documentManager->persist($video);
         $this->documentManager->flush();
@@ -219,7 +219,7 @@ class Video
 
             $storage = $this->storageFactory->getStorage();
 
-            $storage->saveVideo($video, $source, $projectId);
+            $storage->saveVideo($video, $source);
         }
 
         return $video;

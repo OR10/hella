@@ -141,17 +141,13 @@ class Video extends Base
     /**
      * @return string
      */
-    public function getSourceVideoPath($projectId = null)
+    public function getSourceVideoPath()
     {
         if ($this->getId() === null) {
             throw new \LogicException('Trying to use id of not persisted video');
         }
 
-        if($projectId) {
-            return $projectId . DIRECTORY_SEPARATOR . 'source';
-        } else {
-            return $this->getId() . DIRECTORY_SEPARATOR . 'source';
-        }
+        return $this->getId() . DIRECTORY_SEPARATOR . 'source';
     }
 
     /**
