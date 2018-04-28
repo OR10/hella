@@ -164,7 +164,15 @@ class VideoImporter
         return $video;
     }
 
-
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project $project
+     * @param string $videoName
+     * @param string $videoFilePath
+     * @param int $filesCount
+     * @param bool $lossless
+     * @return Model\Video
+     */
     public function importZipImage(
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
@@ -176,15 +184,14 @@ class VideoImporter
 
         $imageTypes = $this->getImageTypes($lossless);
         $video      = new Model\Video($organisation, $videoName);
-
+        //set metadata
         $meta = new Model\Video\MetaData();
         $meta->raw = ['format' => [
             'filename' => $videoFilePath
         ]];
         $meta->numberOfFrames = $filesCount;
-        $meta->sizeInBytes = 10000;
+        $meta->sizeInBytes = number_format(filesize($videoFilePath)/1024,0,'.','');
         $video->setMetaData($meta);
-
         $this->videoFacade->save($video, $videoFilePath);
 
         $this->couchDbUpdateConflictRetryService->save(
@@ -199,92 +206,17 @@ class VideoImporter
             $video->setImageType($imageTypeName, 'converted', false);
             $this->videoFacade->update();
         }
-
-        /*
+        //unzip and upload into frame storage
         foreach ($imageTypes as $imageTypeName) {
-            $job = new Jobs\VideoFrameSplitter(
+            $job = new Jobs\ZipFrameUpload(
                 $video->getId(),
                 $videoFilePath,
                 ImageType\Base::create($imageTypeName)
             );
-
             $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
         }
-        */
-
-        //in queue
-        foreach ($imageTypes as $imageTypeName) {
-            $video = $this->videoFacade->find($video->getId());
-            if ($video === null) {
-                throw new \RuntimeException("Video '{$video->getId()}' could not be found");
-            }
-
-            $frameSizesInBytes = $this->frameCdnSplitter->splitVideoInFrames($video, $video->getSourceVideoPath(), ImageType\Base::create($imageTypeName), true);
-            $imageSizes = $this->frameCdnSplitter->getImageSizes();
-
-            $this->updateDocument(
-                $video,
-                ImageType\Base::create($imageTypeName),
-                $imageSizes[1][0],
-                $imageSizes[1][1],
-                array_sum($frameSizesInBytes)
-            );
-
-            $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
-
-            $projectIds = [];
-            foreach ($tasks as $task) {
-                $projectIds[] = $task->getProjectId();
-                $this->videoFacade->refresh($video);
-                $this->couchDbUpdateConflictRetryService->save(
-                    $task,
-                    function (Model\LabelingTask $task) use ($video) {
-                        $task->setStatusIfAllImagesAreConverted($video);
-                    }
-                );
-            }
-        }
-        //-------------------------
-
-
 
         return $video;
-    }
-
-    /**
-     * @param Model\Video $video
-     * @param ImageType\Base $imageType
-     * @param $width
-     * @param $height
-     * @param $frameSizesInBytes
-     * @param int $retryCount
-     * @param int $maxRetries
-     * @throws CouchDB\UpdateConflictException
-     */
-    private function updateDocument(
-        Model\Video $video,
-        ImageType\Base $imageType,
-        $width,
-        $height,
-        $frameSizesInBytes,
-        $retryCount = 0,
-        $maxRetries = 1
-    ) {
-        $imageTypeName = $imageType->getName();
-        try {
-            $this->videoFacade->refresh($video);
-            $video->setImageType($imageTypeName, 'converted', true);
-            $video->setImageType($imageTypeName, 'failed', false);
-            $video->setImageType($imageTypeName, 'width', $width);
-            $video->setImageType($imageTypeName, 'height', $height);
-            $video->setAccumulatedSizeInBytesForType($imageTypeName, $frameSizesInBytes);
-            $this->videoFacade->update();
-        } catch (CouchDB\UpdateConflictException $updateConflictException) {
-            if ($retryCount > $maxRetries) {
-                throw $updateConflictException;
-            }
-            $this->updateDocument($video, $imageType, $retryCount + 1, $width, $height, $frameSizesInBytes);
-        }
     }
 
     /**
