@@ -70,6 +70,7 @@ Install vendors for video processing
 ```bash
 $ docker-compose run --rm -v $PWD/labeling-video-processing/:/code:Z maintenance-composer composer install
 ```
+### Init
 
 Init project
 ```bash
@@ -86,33 +87,11 @@ Run additional Consumers
 $ docker-compose exec api-workerpool-high app/AnnoStation/console annostation:workerpool:starter high &
 ```
 
+### DB
+
 How to update CouchDB map/reduce
 ```bash
 $ docker-compose run --rm api-cron app/AnnoStation/console doctrine:couchdb:update-design-doc -v
-```
-
-## Front
-
-### How to build front
-
-Build yarn
-```bash
-$ docker-compose run --user $(id -u) --rm maintenance-node yarn
-```
-
-Build gulp
-```bash
-$ docker-compose run --user $(id -u) --rm maintenance-node gulp
-```
-
-Or you also can run gulp serve on docker
-```bash
-$ docker-compose run --user $(id -u) --rm maintenance-node gulp serve
-```
-
-Or just run bash in container if you need some else
-```bash
-$ docker-compose run --rm maintenance-node bash
 ```
 
 ## New service implementation checklist
@@ -132,12 +111,6 @@ $ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_BE_TAG={git tag or 
 
 E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`    
 
-
-### Build FE
-
-```bash
-$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_FE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_fe.sh
-```
 
 ### Deployment via swarm and docker stack
 
