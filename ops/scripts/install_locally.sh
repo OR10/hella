@@ -35,6 +35,8 @@ docker-compose run --rm api-cron bash -c "sleep 7 &&  app/AnnoStation/console ha
 
 ##### FRONTEND
 
+cd $SCRIPTPATH"/../../labeling-ui"
+
 #Build yarn
 docker-compose run --user $(id -u) --rm maintenance-node yarn
 
@@ -42,7 +44,8 @@ docker-compose run --user $(id -u) --rm maintenance-node yarn
 docker-compose run --user $(id -u) --rm maintenance-node gulp
 
 #Create symlinc for nginx
-cd $SCRIPTPATH"/../../labeling-ui" && ln -sf Distribution labeling && cd $SCRIPTPATH"/../.."
+ln -sf Distribution labeling
+cd $SCRIPTPATH"/../.."
 
 docker-compose stop
 

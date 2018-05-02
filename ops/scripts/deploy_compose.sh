@@ -27,7 +27,7 @@ export COMPOSE_FILE=ops/docker/compose/service/api-couch.yml:ops/docker/compose/
 docker-compose config > couchdb.yml
 
 #Copy docker-compose config
-docker-machine ssh $MONITORING_MACHINE "rm -f /home/$MACHINE_USER/couchdb.yml"
+docker-machine ssh $COUCHDB_MACHINE "rm -f /home/$MACHINE_USER/couchdb.yml"
 docker-machine scp couchdb.yml $COUCHDB_MACHINE:/home/$MACHINE_USER/
 docker-machine ssh $COUCHDB_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f couchdb.yml pull && docker-compose -f couchdb.yml up -d"
 
@@ -41,7 +41,7 @@ export COMPOSE_FILE=ops/docker/compose/service/api.yml:ops/docker/compose/servic
 docker-compose config > api.yml
 
 #Copy docker-compose config
-docker-machine ssh $MONITORING_MACHINE "rm -f /home/$MACHINE_USER/api.yml"
+docker-machine ssh $API_MACHINE "rm -f /home/$MACHINE_USER/api.yml"
 docker-machine scp api.yml $API_MACHINE:/home/$MACHINE_USER/
 docker-machine ssh $API_MACHINE "docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && docker-compose -f api.yml pull && docker-compose -f api.yml up -d"
 docker-machine ssh $API_MACHINE "docker-compose -f api.yml run --rm api-cron bash -c \"app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console doctrine:couchdb:update-design-doc -v\""
