@@ -111,90 +111,82 @@ class BatchUploadService
                     sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
                 );
             }
-        } elseif ($this->isZipFile($flowRequest->getFileName())) {
-            //unzip and check
-            $file->saveChunk();
-            if ($file->validateFile()) {
+        } else {
+            if(!$this->isZipFile($flowRequest->getFileName())) {
+                throw new BadRequestHttpException(
+                    sprintf('Invalid file: %s', $flowRequest->getFileName())
+                );
+            }
+        }
+
+        $file->saveChunk();
+        if ($file->validateFile()) {
+            try {
                 $file->save($targetPath);
-                $zip = new \ZipArchive();
-                $res = $zip->open($targetPath);
-                if ($res === TRUE) {
-                    $this->zipFilesCount = $zip->numFiles;
-                    $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip';
-                    if ($zip->extractTo($zipDir)) {
-                        $zip->close();
-                        //validate image
-                        $handle = opendir($zipDir);
-                        while ($pngFile = readdir($handle)) {
-                            if ($pngFile !== '.' && $pngFile !== '..') {
-                                $imagePath = $zipDir . DIRECTORY_SEPARATOR . $pngFile;
-                                $imagick = new \Imagick($imagePath);
-                                //validate in color depth
-                                if ($imagick->getImageDepth() < 16) {
-                                    //delete do not need files in zip archive
-                                    @unlink($targetPath);
-                                    $this->deleteDir($zipDir);
-                                    throw new ConflictHttpException(
-                                        sprintf('Invalid color depth in the picture: %s', $pngFile)
-                                    );
-                                }
-                                //validate image extension
-                                if (pathinfo($imagePath, PATHINFO_EXTENSION) !== 'png') {
-                                    @unlink($targetPath);
-                                    $this->deleteDir($zipDir);
-                                    throw new ConflictHttpException(
-                                        sprintf('Invalid image expansion in: %s', $pngFile)
-                                    );
-                                }
-                                //check if project already have image
-                                if ($project->hasVideo($pngFile)) {
-                                    throw new ConflictHttpException(
-                                        sprintf('Zip content exists in project (either as video or image file): %s', $pngFile)
-                                    );
+                if($this->isZipFile($flowRequest->getFileName())) {
+                    //validate zip file
+                    $zip = new \ZipArchive();
+                    $res = $zip->open($targetPath);
+                    if ($res === TRUE) {
+                        $this->zipFilesCount = $zip->numFiles;
+                        $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip';
+                        if ($zip->extractTo($zipDir)) {
+                            $zip->close();
+                            //validate image
+                            $handle = opendir($zipDir);
+                            while ($pngFile = readdir($handle)) {
+                                if ($pngFile !== '.' && $pngFile !== '..') {
+                                    $imagePath = $zipDir . DIRECTORY_SEPARATOR . $pngFile;
+                                    $imagick = new \Imagick($imagePath);
+                                    //validate in color depth
+                                    if ($imagick->getImageDepth() < 16) {
+                                        //delete do not need files in zip archive
+                                        @unlink($targetPath);
+                                        $this->deleteDir($zipDir);
+                                        throw new ConflictHttpException(
+                                            sprintf('Invalid color depth in the picture: %s', $pngFile)
+                                        );
+                                    }
+                                    //validate image extension
+                                    if (pathinfo($imagePath, PATHINFO_EXTENSION) !== 'png') {
+                                        @unlink($targetPath);
+                                        $this->deleteDir($zipDir);
+                                        throw new ConflictHttpException(
+                                            sprintf('Invalid image expansion in: %s', $pngFile)
+                                        );
+                                    }
+                                    //check if project already have image
+                                    if ($project->hasVideo($pngFile)) {
+                                        throw new ConflictHttpException(
+                                            sprintf('Zip content exists in project (either as video or image file): %s', $pngFile)
+                                        );
+                                    }
                                 }
                             }
+                        } else {
+                            throw new ConflictHttpException(
+                                sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                            );
                         }
                     } else {
                         throw new ConflictHttpException(
                             sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
                         );
                     }
-                } else {
-                    throw new ConflictHttpException(
-                        sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+
+                    //upload zip file
+                    $this->videoImporter->importZipImage(
+                        $organisation,
+                        $project,
+                        basename($targetPath),
+                        $targetPath,
+                        $this->zipFilesCount,
+                        false
                     );
-                }
-            } else {
-                throw new ConflictHttpException(
-                    sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
-                );
-            }
-        } else {
-            throw new BadRequestHttpException(
-                sprintf('Invalid file: %s', $flowRequest->getFileName())
-            );
-        }
-
-        if($this->isZipFile($flowRequest->getFileName())){
-            $this->videoImporter->importZipImage(
-                $organisation,
-                $project,
-                basename($targetPath),
-                $targetPath,
-                $this->zipFilesCount,
-                false
-            );
-            @unlink($targetPath);
-            //delete do not need image
-            $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
-        } else {
-            $file->saveChunk();
-            if ($file->validateFile()) {
-                try {
-                    if(!$this->isZipFile($flowRequest->getFileName())) {
-                        $file->save($targetPath);
-                    }
-
+                    @unlink($targetPath);
+                    //delete do not need image
+                    $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
+                } else {
                     if ($this->isVideoFile($flowRequest->getFileName())) {
                         // for now, we always use compressed images
                         $this->videoImporter->importVideo(
@@ -226,12 +218,12 @@ class BatchUploadService
                             sprintf('Invalid file: %s', $flowRequest->getFileName())
                         );
                     }
-                } catch (\InvalidArgumentException $exception) {
-                    throw new ConflictHttpException($exception->getMessage(), $exception);
-                } finally {
-                    // we ignore errors here since this directory will be cleaned up periodically anyway
-                    @unlink($targetPath);
                 }
+            } catch (\InvalidArgumentException $exception) {
+                throw new ConflictHttpException($exception->getMessage(), $exception);
+            } finally {
+                // we ignore errors here since this directory will be cleaned up periodically anyway
+                @unlink($targetPath);
             }
         }
     }
