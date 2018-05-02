@@ -9,6 +9,7 @@ use Flow\File;
 use Flow\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BatchUploadService
 {
@@ -60,7 +61,7 @@ class BatchUploadService
         $this->ensureDirectoryExists($projectCacheDirectory);
         $this->ensureDirectoryExists($chunkDirectory);
 
-        //upload video
+        /** @var UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
 
         $flowRequest       = new Request(
