@@ -8,7 +8,7 @@ RUN docker-php-ext-install \
 #        mcrypt \
         bcmath \
         mbstring \
-#        zip \
+        zip \
         opcache
 
 COPY ops/docker/video/fpm/boot.sh /usr/local/bin/boot.sh

@@ -214,7 +214,7 @@ class S3Cmd extends Service\FrameCdn
      *
      * @return array
      */
-    public function getFrameLocations(Model\LabelingTask $labelingTask, ImageType\Base $imageType, array $frameNumbers)
+    public function getFrameLocations(Model\LabelingTask $labelingTask, ImageType\Base $imageType, array $frameNumbers, string $projectId = null)
     {
         $urls = [];
         foreach ($frameNumbers as $index => $frameNumber) {
@@ -223,7 +223,7 @@ class S3Cmd extends Service\FrameCdn
                 'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
                     $this->frameCdnBaseUrl,
-                    $labelingTask->getVideoId(),
+                    ($projectId) ? $projectId : $labelingTask->getVideoId(),
                     $imageType->getName(),
                     $frameNumber,
                     $imageType->getExtension()

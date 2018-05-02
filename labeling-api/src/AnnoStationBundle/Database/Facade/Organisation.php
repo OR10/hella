@@ -121,8 +121,17 @@ class Organisation
         foreach ($bytesForImagesByOrganisationAndTypes as $bytesForImagesByOrganisationAndType) {
             $type                       = $bytesForImagesByOrganisationAndType['key'][1];
             $diskUsage['images'][$type] = $bytesForImagesByOrganisationAndType['value'];
-            $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
+            if(is_numeric($bytesForImagesByOrganisationAndType['value'])) {
+                $diskUsage['total'] += $bytesForImagesByOrganisationAndType['value'];
+            }
+
+            if(is_array($bytesForImagesByOrganisationAndType['value'])) {
+                foreach ($bytesForImagesByOrganisationAndType['value'] as $byte) {
+                    $diskUsage['total'] = $byte;
+                }
+            }
         }
+
         foreach ($bytesForVideosInOrganisation as $bytesForVideoInOrganisation) {
             $diskUsage['videos'] = $bytesForVideoInOrganisation['value'];
             $diskUsage['total'] += $bytesForVideoInOrganisation['value'];
