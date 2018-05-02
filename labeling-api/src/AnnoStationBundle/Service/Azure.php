@@ -2,7 +2,6 @@
 namespace AnnoStationBundle\Service;
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 
 class Azure
 {
