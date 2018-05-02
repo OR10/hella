@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <export xmlns="http://weblabel.hella-aglaia.com/schema/export">
   <metadata>
+    <xml-version>1.0</xml-version>
     <annostation>
       <hostname></hostname>
       <build>0</build>
@@ -29,6 +30,11 @@
   <video id="e363906c1c4a5a5bd01e8902467d4b0e" filename="labeling-video">
     <metadata>
       <image-coordinate-system top-left-x="0" top-left-y="0" bottom-right-x="1000" bottom-right-y="800"/>
+      <tags>
+        <tag>tag1</tag>
+        <tag>tag2</tag>
+        <tag>tag3</tag>
+      </tags>
     </metadata>
     <frame-labeling incomplete="true">
       <references>

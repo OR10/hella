@@ -39,13 +39,13 @@ class PhaseService
 
         if (!$task->isAllPhasesDone()) {
             if ($task->getLatestAssignedUserIdForPhase($task->getCurrentPhase()) !== null) {
-                throw new PreconditionFailedHttpException();
+                throw new PreconditionFailedHttpException('The task is still assigned to a user');
             }
 
             if ($currentStatus !== LabelingTask::STATUS_TODO &&
                 $currentStatus !== LabelingTask::STATUS_DONE
             ) {
-                throw new PreconditionFailedHttpException();
+                throw new PreconditionFailedHttpException('You can\'t move the task in this state');
             }
         }
 
@@ -68,7 +68,7 @@ class PhaseService
                 break;
             case LabelingTask::PHASE_REVIEW:
                 if (!$task->hasReviewPhase()) {
-                    throw new BadRequestHttpException();
+                    throw new BadRequestHttpException('This task has no review phase');
                 }
                 $task->setStatus(LabelingTask::PHASE_LABELING, LabelingTask::STATUS_DONE);
                 $task->setStatus(LabelingTask::PHASE_REVIEW, LabelingTask::STATUS_TODO);

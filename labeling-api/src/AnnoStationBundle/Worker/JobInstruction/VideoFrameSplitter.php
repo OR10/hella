@@ -112,7 +112,9 @@ class VideoFrameSplitter extends JobInstruction
             $video = $this->videoFacade->find($job->videoId);
 
             if ($video === null) {
-                throw new \RuntimeException("Video '{$job->videoId}' could not be found");
+                //Project and related entities can be deleted
+                $logger->logString("Video '{$job->videoId}' could not be found", \cscntLogPayload::SEVERITY_WARNING);
+                return;
             }
 
             $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $video->getSourceVideoPath(), $job->imageType);
@@ -123,7 +125,10 @@ class VideoFrameSplitter extends JobInstruction
                 $job->imageType,
                 $imageSizes[1][0],
                 $imageSizes[1][1],
-                array_sum($frameSizesInBytes)
+                $frameSizesInBytes ? array_sum($frameSizesInBytes) : 0,
+                0,
+                1,
+                $logger
             );
 
             $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
@@ -157,11 +162,13 @@ class VideoFrameSplitter extends JobInstruction
      */
     private function setFailure(Job $job)
     {
-        $video = $this->videoFacade->find($job->videoId);
-        $video->setImageType($job->imageType->getName(), 'converted', false);
-        $video->setImageType($job->imageType->getName(), 'failed', true);
-        $this->videoFacade->save($video);
-        $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+        if ($video = $this->videoFacade->find($job->videoId)) {
+            $video->setImageType($job->imageType->getName(), 'converted', false);
+            $video->setImageType($job->imageType->getName(), 'failed', true);
+            $this->videoFacade->save($video);
+        }
+
+        $tasks = $this->labelingTaskFacade->findByVideoIds([$job->videoId]);
         foreach ($tasks as $task) {
             $task->setStatus(
                 Model\LabelingTask::PHASE_PREPROCESSING,
@@ -190,7 +197,8 @@ class VideoFrameSplitter extends JobInstruction
         $height,
         $frameSizesInBytes,
         $retryCount = 0,
-        $maxRetries = 1
+        $maxRetries = 1,
+        \crosscan\Logger\Facade\LoggerFacade $logger
     ) {
         $imageTypeName = $imageType->getName();
         try {
@@ -205,7 +213,9 @@ class VideoFrameSplitter extends JobInstruction
             if ($retryCount > $maxRetries) {
                 throw $updateConflictException;
             }
-            $this->updateDocument($video, $imageType, $retryCount + 1, $width, $height, $frameSizesInBytes);
+            $this->updateDocument($video, $imageType, $retryCount + 1, $width, $height, $frameSizesInBytes, 1, $logger);
+        } catch (CouchDB\DocumentNotFoundException $notFoundException) {
+            $logger->logString(sprintf('Video not found. Id: %s ', $video->getId()), \cscntLogPayload::SEVERITY_WARNING);
         }
     }
 

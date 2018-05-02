@@ -40,6 +40,11 @@
             <element name="r:export-postfix">
                 <text/>
             </element>
+            <optional>
+                <element name="r:xml-version">
+                    <text/>
+                </element>
+            </optional>
         </element>
     </define>
     <define name="Options">
@@ -73,6 +78,9 @@
     <define name="Thing">
         <element name="r:thing">
             <attribute name="shape"/>
+            <optional>
+                <attribute name="prediction"/>
+            </optional>
             <ref name="ThingLikeStructure"/>
         </element>
     </define>

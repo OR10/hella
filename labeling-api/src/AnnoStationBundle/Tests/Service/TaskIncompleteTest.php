@@ -67,59 +67,6 @@ class TaskIncompleteTest extends Tests\KernelTestCase
      */
     private $labeledThingGroupInFrameFacadeFactory;
 
-    public function testSimpleXml()
-    {
-
-        $xml = file_get_contents(__DIR__ . '/TaskIncomplete/Simple.xml');
-
-        $labelStructure = $this->taskConfigurationXmlConverter->createConverter(
-            $xml,
-            Model\TaskConfiguration\SimpleXml::TYPE
-        );
-        $organisation        = Helper\OrganisationBuilder::create()->build();
-        $project             = $this->projectFacade->save(Helper\ProjectBuilder::create($organisation)->build());
-        $video               = $this->videoFacade->save(Helper\VideoBuilder::create($organisation)->build());
-        $task                = $this->labelingTaskFacade->save(
-            Helper\LabelingTaskBuilder::create($project, $video)
-                ->withLabelStructure($labelStructure->getLabelStructure())
-                ->build()
-        );
-        $this->taskDatabaseCreatorService->createDatabase($project, $task);
-
-        $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $project->getId(),
-            $task->getId()
-        );
-        $labeledThingInFrameFacade = $this->labeledThingInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
-            $project->getId(),
-            $task->getId()
-        );
-
-        $labeledThing        = $labeledThingFacade->save(
-            Helper\LabeledThingBuilder::create()->withTask($task)->build()
-        );
-        $labeledThingInFrame = $labeledThingInFrameFacade->save(
-            Helper\LabeledThingInFrameBuilder::create()
-                ->withLabeledThing($labeledThing)
-                ->build()
-        );
-
-        $this->taskIncompleteService->revalideLabeledThingInFrameIncompleteStatus($labeledThing, $labeledThingInFrame);
-
-        $this->assertTrue($this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame));
-
-        $labeledThingInFrame->setClasses(
-            [
-                'occlusion-0',
-                'truncation-1',
-                'direction-back-left',
-            ]
-        );
-        $labeledThingInFrameFacade->save($labeledThingInFrame);
-
-        $this->assertFalse($this->taskIncompleteService->isLabeledThingInFrameIncomplete($labeledThingInFrame));
-    }
-
     public function testRequirementsXml()
     {
         $xml = file_get_contents(__DIR__ . '/TaskIncomplete/Requirements.xml');

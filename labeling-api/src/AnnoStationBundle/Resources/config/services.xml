@@ -119,7 +119,9 @@
 
         <service id="annostation.labeling_api.service.ghost_classes_propagation"
                  class="AnnoStationBundle\Service\GhostClassesPropagation">
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_configuration"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
         </service>
 
 
@@ -459,6 +461,9 @@
         </service>
 
         <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
+        </service>
+
+        <service id="annostation.labeling_api.service.labeled.frame.service" class="AnnoStationBundle\Service\LabeledFrameService">
         </service>
     </services>
 </container>

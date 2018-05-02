@@ -86,6 +86,10 @@ Run additional Consumers
 $ docker-compose exec api-workerpool-high app/AnnoStation/console annostation:workerpool:starter high &
 ```
 
+How to update CouchDB map/reduce
+```bash
+$ docker-compose run --rm api-cron app/AnnoStation/console doctrine:couchdb:update-design-doc -v
+```
 
 ## Front
 
