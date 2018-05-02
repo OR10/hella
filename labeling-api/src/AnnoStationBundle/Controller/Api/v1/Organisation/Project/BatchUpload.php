@@ -236,7 +236,6 @@ class BatchUpload extends Controller\Base
                     $this->loggerFacade->logException($exception, \cscntLogPayload::SEVERITY_ERROR);
                     throw $exception;
                 }
-                break;
             }
         }
 
