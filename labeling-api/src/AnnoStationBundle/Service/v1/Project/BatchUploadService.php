@@ -91,7 +91,7 @@ class BatchUploadService
             if ($project->hasVideo($flowRequest->getFileName())) {
 
                 throw new ConflictHttpException(
-                    sprintf('Video already exists in project: %s', $flowRequest->getFileName())
+                    sprintf('Video/Zip already exists in project: %s', $flowRequest->getFileName())
                 );
             }
         } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
@@ -125,12 +125,14 @@ class BatchUploadService
             try {
                 $file->save($targetPath);
                 if($this->isZipFile($flowRequest->getFileName())) {
+                    $tempPrefix = explode('.', $flowRequest->getFileName());
+                    $dirTempName = (is_array($tempPrefix)) ? 'unzip_'.$tempPrefix[0] : 'unzip_'.uniqid();
+                    $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . $dirTempName;
                     //validate zip file
                     $zip = new \ZipArchive();
                     $res = $zip->open($targetPath);
                     if ($res === TRUE) {
                         $this->zipFilesCount = $zip->numFiles;
-                        $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip';
                         if ($zip->extractTo($zipDir)) {
                             $zip->close();
                             //validate image
@@ -186,7 +188,7 @@ class BatchUploadService
                     );
                     @unlink($targetPath);
                     //delete do not need image
-                    $this->deleteDir($projectCacheDirectory . DIRECTORY_SEPARATOR . 'unzip');
+                    $this->deleteDir($zipDir);
                 } else {
                     if ($this->isVideoFile($flowRequest->getFileName())) {
                         // for now, we always use compressed images
