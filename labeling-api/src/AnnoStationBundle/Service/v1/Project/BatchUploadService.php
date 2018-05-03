@@ -91,7 +91,7 @@ class BatchUploadService
             if ($project->hasVideo($flowRequest->getFileName())) {
 
                 throw new ConflictHttpException(
-                    sprintf('Video already exists in project: %s', $flowRequest->getFileName())
+                    sprintf('Video/Zip already exists in project: %s', $flowRequest->getFileName())
                 );
             }
         } elseif ($this->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
@@ -142,7 +142,7 @@ class BatchUploadService
                                     $imagePath = $zipDir . DIRECTORY_SEPARATOR . $pngFile;
                                     $imagick = new \Imagick($imagePath);
                                     //validate in color depth
-                                    if ($imagick->getImageDepth() < 16) {
+                                    if ($imagick->getImageDepth() < 8) {
                                         //delete do not need files in zip archive
                                         @unlink($targetPath);
                                         $this->deleteDir($zipDir);
