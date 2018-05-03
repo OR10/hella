@@ -142,7 +142,7 @@ class BatchUploadService
                                     $imagePath = $zipDir . DIRECTORY_SEPARATOR . $pngFile;
                                     $imagick = new \Imagick($imagePath);
                                     //validate in color depth
-                                    if ($imagick->getImageDepth() < 8) {
+                                    if ($imagick->getImageDepth() < 16) {
                                         //delete do not need files in zip archive
                                         @unlink($targetPath);
                                         $this->deleteDir($zipDir);
