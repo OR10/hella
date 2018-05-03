@@ -10,8 +10,6 @@ class LabeledFrameService
     {
         $lFrame = [];
         $availableAttr = [
-            'FullFrame-Yes' => 'Full frame',
-            'FullFrame-No' => 'Full frame',
             'day' => 'Time of day',
             'night' => 'Time of day',
             'twilight' => 'Time of day',
@@ -31,7 +29,6 @@ class LabeledFrameService
             'snow' => 'Precipitation'
         ];
         $needAttribute = [
-            'Full frame',
             'Time of day',
             'Road cover',
             'Road type',
@@ -50,7 +47,7 @@ class LabeledFrameService
                     }
                 }
                 if(!empty($attrExist)) {
-                    $lFrame[$labeledFrame->getFrameIndex()] = implode(', ',array_diff($needAttribute, $attrExist));
+                    $lFrame[$labeledFrame->getFrameIndex()] = implode(', ', array_diff($needAttribute, $attrExist));
                 } else {
                     $lFrame[$labeledFrame->getFrameIndex()] = implode(', ',$needAttribute);
                 }
@@ -59,6 +56,6 @@ class LabeledFrameService
             $lFrame[0] = implode(', ',$needAttribute);
         }
 
-        return (!empty($lFrame)) ? $lFrame : null;
+        return (strlen($lFrame[0]) != 0 ) ? $lFrame : null;
     }
 }
