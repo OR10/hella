@@ -8,7 +8,7 @@ class WorkerQueue {
    * @param maxSimultaneousJobs
    * @param compactReplicationDbCycle
    */
-  constructor(nanoAdmin, logger, compactionService, maxSimultaneousJobs = 50, compactReplicationDbCycle = 500) {
+  constructor(nanoAdmin, logger, compactionService, maxSimultaneousJobs = 5, compactReplicationDbCycle = 500) {
     this.nanoAdmin = nanoAdmin;
     this.logger = logger;
 

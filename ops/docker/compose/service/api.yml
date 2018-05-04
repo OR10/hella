@@ -10,9 +10,13 @@ services:
       - rmq
     environment:
       - APP_ENV
+      - DOCKER_BE_TAG
+      - DOCKER_FE_TAG
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
@@ -50,14 +54,16 @@ services:
 
   api-workerpool-low:
     restart: unless-stopped
-    command: bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
+    command: bash -c "app/AnnoStation/console -vvv annostation:workerpool:starter low"
     depends_on:
       - rmq
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
@@ -95,14 +101,16 @@ services:
 
   api-workerpool-normallow:
     restart: unless-stopped
-    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
+    command:  bash -c "app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     depends_on:
       - rmq
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
@@ -140,14 +148,16 @@ services:
 
   api-workerpool-normal:
     restart: unless-stopped
-    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
+    command:  bash -c "app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     depends_on:
       - rmq
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
@@ -185,14 +195,16 @@ services:
 
   api-workerpool-high:
     restart: unless-stopped
-    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
+    command: bash -c " app/AnnoStation/console -vvv annostation:workerpool:starter high"
     depends_on:
       - rmq
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}
@@ -230,14 +242,16 @@ services:
 
   api-cron:
     restart: unless-stopped
-    command: bash -c "app/AnnoStation/console cache:clear -vvv && service cron start && tail -f /dev/null"
+    command: bash -c "service cron start && tail -f /dev/null"
     depends_on:
       - rmq
     environment:
       - APP_ENV
       - SYMFONY_ENV=${APP_ENV}
       - SYMFONY__COUCHDB__HOST=${COUCHDB_HOST}
+      - SYMFONY__AUTH__LIFETIME=${HELLA_AUTH_LIFETIME}
       - SYMFONY__COUCHDB__HOST__EXTERNAL=${COUCHDB_HOST_EXTERNAL}
+      - SYMFONY__COUCHDB__PORT__EXTERNAL=${COUCHDB_PORT_EXTERNAL}
       - SYMFONY__COUCHDB__USER=${COUCHDB_USER}
       - SYMFONY__COUCHDB__PASSWORD=${COUCHDB_PASSWORD}
       - SYMFONY__COUCHDB__USER__READ__ONLY=${COUCHDB_USER_READ_ONLY}

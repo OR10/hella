@@ -69,3 +69,12 @@ services:
       - ../../../../labeling-video-processing:/code:z
 
   ############# VIDEO PROCESSING SECTION END #############
+
+  ############# DOCUMENTATION SECTION BEGIN #############
+
+  doc-go-swagger:
+    volumes:
+      - ../../../../labeling-api/doc/swagger:/apiDoc
+
+  ############# DOCUMENTATION SECTION END #############
+

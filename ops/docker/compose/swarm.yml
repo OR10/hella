@@ -55,6 +55,7 @@ services:
         condition: any
 
   api-workerpool-low:
+    command: bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter low"
     deploy:
       placement:
         constraints:
@@ -67,6 +68,7 @@ services:
         condition: any
 
   api-workerpool-normallow:
+    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal low"
     deploy:
       placement:
         constraints:
@@ -79,6 +81,7 @@ services:
         condition: any
 
   api-workerpool-normal:
+    command:  bash -c "app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter normal"
     deploy:
       placement:
         constraints:
@@ -91,6 +94,7 @@ services:
         condition: any
 
   api-workerpool-high:
+    command: bash -c " app/AnnoStation/console cache:clear -vvv && app/AnnoStation/console -vvv annostation:workerpool:starter high"
     deploy:
       placement:
         constraints:
@@ -103,6 +107,7 @@ services:
         condition: any
 
   api-cron:
+    command: bash -c "app/AnnoStation/console cache:clear -vvv && service cron start && tail -f /dev/null"
     deploy:
       placement:
         constraints:

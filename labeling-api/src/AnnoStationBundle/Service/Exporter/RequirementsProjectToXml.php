@@ -14,8 +14,24 @@ use AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
+/**
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ *
+ * Any changes to the XML structure must be accepted by Hella Aglaia before!
+ * http://pluto.ham.hella.com/confluence/pages/viewpage.action?pageId=148222151
+ *
+ * If you change the XML structure, you need to increase the XML version number!
+ * puppet/hiera/global.yaml - `labeling_api::params::requirements_xml_version`
+ *
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ */
 class RequirementsProjectToXml
 {
+    const XML_VERSION = '1.0';
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
     const REQUIREMENTS_XML_POSTFIX = 'labelconfiguration';
     const REQUIREMENTS_XML_PREVIOUS_POSTFIX = 'labelconfiguration_old';
@@ -230,6 +246,7 @@ class RequirementsProjectToXml
                     $this->labelingGroupFacade,
                     $this->campaignFacade,
                     $taskConfigurations,
+                    self::XML_VERSION,
                     self::XML_NAMESPACE,
                     $additionalFrameNumberMapping
                 );
@@ -237,6 +254,7 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
+                    //this facade allows you to connect data in the database "labeling_api" and the database in which to store frame figures
                     $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
@@ -425,7 +443,7 @@ class RequirementsProjectToXml
             foreach ($taskConfigurations as $taskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($taskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($taskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_POSTFIX,
                     'xml'
                 );
@@ -435,7 +453,7 @@ class RequirementsProjectToXml
             foreach ($previousTaskConfigurations as $previousTaskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($previousTaskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($previousTaskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_PREVIOUS_POSTFIX,
                     'xml'
                 );
@@ -807,5 +825,19 @@ class RequirementsProjectToXml
         $zip->close();
 
         return file_get_contents($zipFilename);
+    }
+
+    /**
+     * @param $filename
+     *
+     * @return mixed
+     */
+    private function getFilename($filename)
+    {
+        $search   = ['ä', 'ü', 'ü', 'ö', 'Ä', 'Ü', 'Ö']; // ü is not the same as ü
+        $replace  = ['ae', 'ue', 'ue', 'oe', 'Ae', 'Üe', 'Oe'];
+        $filename = str_replace($search, $replace, $filename);
+
+        return $filename;
     }
 }

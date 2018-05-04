@@ -114,6 +114,16 @@
             <value id="time-limit-end-23" name="23" />
         </class>
     </thing>
+    <thing id="construction-layer" shape="rectangle" name="Construction-Layer" prediction="all">
+        <class id="construction-type" name="Construction">
+            <value id="bulding" name="Building"/>
+            <value id="wall" name="Wall"/>
+            <value id="guard_rail" name="Guard Rail"/>
+            <value id="bridge" name="Bridge"/>
+            <value id="tunnel" name="Tunnel"/>
+            <value id="other-construction" name="Other"/>
+        </class>
+    </thing>
     <group id="extension-sign-group" name="Sign with extension">
         <class id="extension-position" name="Position of the extension sign">
             <value id="position-below" name="Below" />

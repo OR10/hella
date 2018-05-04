@@ -152,7 +152,7 @@ class LabelingGroup extends Controller\Base
             [Model\User::ROLE_LABEL_MANAGER, Model\User::ROLE_SUPER_ADMIN]
         )
         ) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('You are not allowed to access groups');
         }
 
         if ($this->userPermissionService->hasPermission('canAssignAllGroupsToProjects')) {
@@ -263,7 +263,7 @@ class LabelingGroup extends Controller\Base
             count($labeler) === 0 ||
             $name === null || $name === ''
         ) {
-            throw new Exception\BadRequestHttpException();
+            throw new Exception\BadRequestHttpException('There are not labelManager/labeler or the name is empty');
         }
 
         $labelingGroup = new Model\LabelingGroup($organisation, $labelManagers, $labeler, $name);

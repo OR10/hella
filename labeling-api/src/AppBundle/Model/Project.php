@@ -783,7 +783,7 @@ class Project extends Base
     /**
      * @param CalibrationData $calibrationData
      */
-    public function addCalibrationData(CalibrationData $calibrationData)
+    public function addCalibrationData(CalibrationData $calibrationData, bool $isZip = false)
     {
         if ($this->hasCalibrationData($calibrationData->getName())) {
             throw new \InvalidArgumentException(
@@ -795,7 +795,15 @@ class Project extends Base
             throw new \LogicException('Trying to reference a not yet persisted calibration data');
         }
 
-        $this->calibrations[$this->getVideoKey($calibrationData->getName())] = $calibrationData->getId();
+        if(!$isZip) {
+            $this->calibrations[$this->getVideoKey($calibrationData->getName())] = $calibrationData->getId();
+        } else {
+            if(is_array($this->videos)) {
+                foreach ($this->videos as $imageName => $imageKey) {
+                    $this->calibrations[$imageName] = $calibrationData->getId();
+                }
+            }
+        }
     }
 
     /**

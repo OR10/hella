@@ -216,6 +216,7 @@ class Video
         $this->documentManager->flush();
 
         if ($source !== null) {
+
             $storage = $this->storageFactory->getStorage();
 
             $storage->saveVideo($video, $source);

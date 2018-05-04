@@ -158,6 +158,14 @@ class ImportTest extends Tests\KernelTestCase
                         'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
                         'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
                     ],
+                    [
+                        'frameRange' => new Model\FrameIndexRange(0, 4),
+                        'incomplete' => false,
+                        'lineColor'  => '6',
+                        'originalId' => '936f01d0baf669cc0daad101ca81111',
+                        'createdBy'  => 'ffa2a4a7f72e5765eb5d1b09d4009335',
+                        'createdAt'  => new \DateTime('2017-09-29 10:00:00', new \DateTimeZone('UTC')),
+                    ],
                 ],
                 'labeledThingsInFrames' => [
                     [
@@ -342,6 +350,24 @@ class ImportTest extends Tests\KernelTestCase
                         'ghost' => false,
 
                     ],
+                    [
+                        'originalLabeledThingId' => '936f01d0baf669cc0daad101ca81111',
+                        'frameIndex' => 2,
+                        'classes' => ['guard_rail'],
+                        'ghostClasses' => null,
+                        'shapes' => [
+                            [
+                                'id' => '7d670d47-55b0-4b2a-9262-f051df11111',
+                                'type' => 'rectangle',
+                                'topLeft' => ['x' => 333, 'y' => 219],
+                                'bottomRight' => ['x' => 631, 'y' => 380],
+                            ]
+                        ],
+                        'incomplete' => false,
+                        'identifierName' => 'construction-layer',
+                        'ghost' => false,
+
+                    ],
                 ],
                 'labeledThingGroups' => [
                     [
@@ -445,7 +471,7 @@ class ImportTest extends Tests\KernelTestCase
 
         $labeledThings = $labelingThingFacade->findByTaskId($task);
 
-        $this->assertEquals(4, count($labeledThings));
+        $this->assertEquals(5, count($labeledThings));
 
         $actualLabeledThings = array_map(function (Model\LabeledThing $labeledThing) {
             return [

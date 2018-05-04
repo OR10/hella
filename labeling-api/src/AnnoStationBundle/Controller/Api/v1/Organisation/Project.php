@@ -110,9 +110,9 @@ class Project extends Controller\Base
     private $projectFacadeReadOnly;
 
     /**
-     * @var Service\v1\Project\ProjectService
+     * @var Service\v1\Project\ProjectCreator
      */
-    private $projectService;
+    private $projectCreator;
 
     /**
      * Project constructor.
@@ -131,7 +131,7 @@ class Project extends Controller\Base
      * @param Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService
      * @param AMQP\FacadeAMQP                               $amqpFacade
      * @param Authentication\UserPermissions                $userPermissions
-     * @param Service\v1\Project\ProjectService             $projectService
+     * @param Service\v1\Project\ProjectCreator             $projectCreator
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -148,7 +148,7 @@ class Project extends Controller\Base
         Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions,
-        Service\v1\Project\ProjectService $projectService
+        Service\v1\Project\ProjectCreator $projectCreator
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
@@ -164,7 +164,7 @@ class Project extends Controller\Base
         $this->projectFacadeReadOnly                 = $projectFacadeFactory->getReadOnlyFacade();
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
-        $this->projectService                        = $projectService;
+        $this->projectCreator                        = $projectCreator;
     }
 
     /**
@@ -271,18 +271,19 @@ class Project extends Controller\Base
             }
 
             $responseProject               = array(
-                'id'                 => $project->getId(),
-                'userId'             => $project->getUserId(),
-                'name'               => $project->getName(),
-                'status'             => $project->getStatus(),
-                'labelingGroupId'    => $project->getLabelingGroupId(),
-                'finishedPercentage' => floor(
+                'id'                          => $project->getId(),
+                'userId'                      => $project->getUserId(),
+                'name'                        => $project->getName(),
+                'status'                      => $project->getStatus(),
+                'lastStatusChangeTimestamp'   => $project->getLastStateForStatus($project->getStatus()) === null ? null : $project->getLastStateForStatus($project->getStatus())['timestamp'],
+                'labelingGroupId'             => $project->getLabelingGroupId(),
+                'finishedPercentage'          => floor(
                     $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
-                'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
-                'diskUsage'                => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
-                'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
+                'creationTimestamp'           => $project->getCreationDate(),
+                'taskInPreProcessingCount'    => $sumOfPreProcessingTasks,
+                'diskUsage'                   => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
+                'campaigns'                   => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
             if ($this->userPermissions->hasPermission('canViewProjectManagementRelatedStatisticsColumn')) {
@@ -410,7 +411,7 @@ class Project extends Controller\Base
     private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds) {
         
         //TODO Will be better for the future prevent empty elements.
-        if ($campaignIds === null || count(array_filter($campaignIds) < 1)) {
+        if ($campaignIds === null || count(array_filter($campaignIds)) < 1) {
             return [];
         }
 
@@ -445,7 +446,7 @@ class Project extends Controller\Base
         /** @var Model\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $project = $this->projectService->createNewProject($organisation, $user, $request);
+        $project = $this->projectCreator->createNewProject($organisation, $user, $request);
 
         $project = $this->projectFacade->save($project);
 
@@ -530,7 +531,7 @@ class Project extends Controller\Base
         $this->projectFacade->save($project);
 
         $job = new Jobs\ProjectDeleter($project->getId());
-        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -572,7 +573,7 @@ class Project extends Controller\Base
 
         $labelManager = $this->userFacade->getUserById($assignedLabelManagerId);
         if (!$labelManager->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('You need label manager permissions');
         }
 
         $project->addLabelManagerAssignmentHistory($labelManager);

@@ -166,6 +166,61 @@ class VideoImporter
 
     /**
      * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project $project
+     * @param string $videoName
+     * @param string $videoFilePath
+     * @param int $filesCount
+     * @param bool $lossless
+     * @return Model\Video
+     */
+    public function importZipImage(
+        AnnoStationBundleModel\Organisation $organisation,
+        Model\Project $project,
+        string $videoName,
+        string $videoFilePath,
+        int $filesCount,
+        bool $lossless
+    ) {
+
+        $imageTypes = $this->getImageTypes($lossless);
+        $video      = new Model\Video($organisation, $videoName);
+        //set metadata
+        $meta = new Model\Video\MetaData();
+        $meta->raw = ['format' => [
+            'filename' => $videoFilePath
+        ]];
+        $meta->numberOfFrames = $filesCount;
+        $meta->sizeInBytes = number_format(filesize($videoFilePath)/1024,0,'.','');
+        $video->setMetaData($meta);
+        $this->videoFacade->save($video, $videoFilePath);
+
+        $this->couchDbUpdateConflictRetryService->save(
+            $project,
+            function (Model\Project $project) use ($video) {
+                $project->addVideo($video);
+                $project->setDiskUsageInBytes($project->getDiskUsageInBytes() + $video->getMetaData()->sizeInBytes);
+            }
+        );
+
+        foreach ($imageTypes as $imageTypeName) {
+            $video->setImageType($imageTypeName, 'converted', false);
+            $this->videoFacade->update();
+        }
+        //unzip and upload into frame storage
+        foreach ($imageTypes as $imageTypeName) {
+            $job = new Jobs\ZipFrameUpload(
+                $video->getId(),
+                $videoFilePath,
+                ImageType\Base::create($imageTypeName)
+            );
+            $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        }
+
+        return $video;
+    }
+
+    /**
+     * @param AnnoStationBundleModel\Organisation $organisation
      * @param Model\Project                       $project
      * @param string                              $imageName
      * @param string                              $imageFilePath
@@ -204,7 +259,8 @@ class VideoImporter
     public function importCalibrationData(
         AnnoStationBundleModel\Organisation $organisation,
         Model\Project $project,
-        string $calibrationFilePath
+        string $calibrationFilePath,
+        bool $isZip = false
     ) {
         $calibrationName = basename($calibrationFilePath);
 
@@ -222,8 +278,8 @@ class VideoImporter
 
         $this->couchDbUpdateConflictRetryService->save(
             $project,
-            function (Model\Project $project) use ($calibration) {
-                $project->addCalibrationData($calibration);
+            function (Model\Project $project) use ($calibration, $isZip) {
+                $project->addCalibrationData($calibration, $isZip);
             }
         );
 

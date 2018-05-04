@@ -3,13 +3,14 @@ parameters:
     video_processing_host: %video.host%
     cache_dir: /code/app/AnnoStation/cache/labeling_api/
 
+    auth_lifetime: %auth.lifetime%
     database_name: labeling_api
     database_name_read_only: labeling_api
 
     couchdb_host: %couchdb.host%
     couchdb_host_external: %couchdb.host.external%
     couchdb_port: 5984
-    couchdb_port_external: 80
+    couchdb_port_external: %couchdb.port.external%
     couchdb_user: %couchdb.user%
     couchdb_password: %couchdb.password%
     couchdb_user_read_only: %couchdb.user.read.only%
