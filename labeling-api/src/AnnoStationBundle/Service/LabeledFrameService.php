@@ -12,7 +12,7 @@ class LabeledFrameService
         $availableAttr = [
             'day' => 'Time of day',
             'night' => 'Time of day',
-            'twilight' => 'Time of day',
+            'duskDawn' => 'Time of day',
             'dry' => 'Road cover',
             'wet' => 'Road cover',
             'snowcover' => 'Road cover',
@@ -26,6 +26,7 @@ class LabeledFrameService
             'inTunnel' => 'Sky',
             'undefined' => 'Sky',
             'rain' => 'Precipitation',
+            'none' => 'Precipitation',
             'snow' => 'Precipitation'
         ];
         $needAttribute = [
@@ -36,6 +37,7 @@ class LabeledFrameService
             'Precipitation'
         ];
         $attrExist = [];
+
         if ($labeledFrames) {
             foreach ($labeledFrames  as $labeledFrame) {
                 $frameAttribute = $labeledFrame->getClasses();
@@ -47,9 +49,9 @@ class LabeledFrameService
                     }
                 }
                 if(!empty($attrExist)) {
-                    $lFrame[$labeledFrame->getFrameIndex()] = implode(', ', array_diff($needAttribute, $attrExist));
+                    $lFrame[] = implode(', ', array_diff($needAttribute, $attrExist));
                 } else {
-                    $lFrame[$labeledFrame->getFrameIndex()] = implode(', ',$needAttribute);
+                    $lFrame[] = implode(', ',$needAttribute);
                 }
             }
         } else {
