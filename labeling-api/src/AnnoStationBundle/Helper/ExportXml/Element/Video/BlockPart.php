@@ -7,7 +7,7 @@ use AppBundle\Model;
 class BlockPart extends ExportXml\Element
 {
     /**
-     * @var Model\LabeledBlock
+     * @var Model\LabeledBlockInFrame
      */
     private $labeledBlockPart;
 
@@ -32,42 +32,49 @@ class BlockPart extends ExportXml\Element
     private $references;
 
     /**
-     * @var
+     * BlockPart constructor.
+     * @param Model\LabeledBlockInFrame $labeledBlockPart
+     * @param References                $references
+     * @param                           $namespace
      */
-    private $frameNumberMapping;
-
     public function __construct(
-        $frameNumberMapping,
-        Model\LabeledBlock $labeledBlockPart,
+        Model\LabeledBlockInFrame $labeledBlockPart,
         References $references,
         $namespace
     ) {
         $this->labeledBlockPart   = $labeledBlockPart;
         $this->references         = $references;
         $this->namespace          = $namespace;
-        $this->frameNumberMapping = $frameNumberMapping;
     }
 
     public function getElement(\DOMDocument $document)
     {
         $block = $document->createElementNS($this->namespace, 'value');
+        $place = $this->labeledBlockPart->getPlace();
+        $block->setAttribute('id',  'sector-'.$place.'-blocked');
+        $blockClass = $this->labeledBlockPart->getClasses();
+        $block->setAttribute('class', (is_array($blockClass)) ? $blockClass[0] : '');
 
-        $block->setAttribute('id', $this->labeledBlockPart->getId());
-
-        $block->setAttribute('class', 'blockage-16-'.$this->labeledBlockPart->getStatus());
-
+        $frameIndex = $this->labeledBlockPart->getFrameRange();
         $block->setAttribute(
-            'start', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-            $this->frameNumberMapping[$this->labeledBlockPart->getFrameRange()->getStartFrameIndex()]
+            'start',
+            ($frameIndex instanceof Model\FrameIndexRange) ? $frameIndex->getStartFrameIndex() : ''
         );
         $block->setAttribute(
-            'end', //$this->frameNumberMapping[(int)$this->labeledBlockPart->getFrameIndex()]
-            $this->frameNumberMapping[$this->labeledBlockPart->getFrameRange()->getEndFrameIndex()]
+            'end',
+            ($frameIndex instanceof Model\FrameIndexRange) ? $frameIndex->getEndFrameIndex() : ''
         );
 
         return $block;
     }
 
+    /**
+     * @param $class
+     * @param $value
+     * @param $start
+     * @param $end
+     * @param bool $default
+     */
     public function addValue($class, $value, $start, $end, $default = false)
     {
         $this->values[] = [

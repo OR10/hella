@@ -10,7 +10,7 @@ class LabeledBlockInFrame implements \IteratorAggregate
     /**
      * @var array
      */
-    private $labelingFrameWithBlock = [];
+    private $labelingBlockInFrame = [];
 
     /**
      * @var Model\LabelingTask
@@ -18,31 +18,37 @@ class LabeledBlockInFrame implements \IteratorAggregate
     private $task;
 
     /**
-     * @var Facade\LabelingTask
+     * @var Facade\LabeledBlockInFrame
      */
     private $labelBlockInFrameFacade;
 
     /**
      * LabeledBlockInFrame constructor.
-     * @param Facade\LabeledBlockInFrame $labeledBlockInFrame
      * @param Model\LabelingTask $task
+     * @param Facade\LabeledBlockInFrame $labeledBlockInFrame
      */
-    public function __construct(Facade\LabeledBlockInFrame $labeledBlockInFrame, Model\LabelingTask $task)
+    public function __construct(Model\LabelingTask $task, Facade\LabeledBlockInFrame $labeledBlockInFrame)
     {
         $this->task     = $task;
         $this->labelBlockInFrameFacade = $labeledBlockInFrame;
     }
 
+    /**
+     * @return \Generator
+     */
     public function getIterator()
     {
         return $this->labelingTaskIteratorGenerator();
     }
 
+    /**
+     * @return \Generator
+     */
     private function labelingTaskIteratorGenerator()
     {
-        $this->labelingFrameWithBlock = $this->labelBlockInFrameFacade->findByTaskId($this->task);
+        $this->labelingBlockInFrame = $this->labelBlockInFrameFacade->findByTaskId($this->task);
 
-        foreach ($this->labelingFrameWithBlock as $labelingFrameBlock) {
+        foreach ($this->labelingBlockInFrame as $labelingFrameBlock) {
             yield $labelingFrameBlock;
         }
     }

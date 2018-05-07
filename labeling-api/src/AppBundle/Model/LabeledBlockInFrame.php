@@ -42,17 +42,22 @@ class LabeledBlockInFrame extends Base
     /**
      * @CouchDB\Field(type="mixed")
      */
-    private $labelBlockGroupIds;
-
-    /**
-     * @CouchDB\Field(type="boolean")
-     */
-    private $status;
+    private $place;
 
     /**
      * @CouchDB\Field(type="string")
      */
     private $createdByUserId;
+
+    /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
+
+    /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $classes;
 
     /**
      * @CouchDB\Field(type="string")
@@ -68,32 +73,31 @@ class LabeledBlockInFrame extends Base
      * @return static
      */
     public static function create(
-        LabeledBlock $labeledBlock,
-        $frameIndex
+        LabelingTask $task,
+        $startIndex,
+        $endIndex
     ) {
-        return new static($labeledBlock, $frameIndex);
+        return new static($task, $startIndex, $endIndex);
     }
 
     /**
      * LabeledBlockInFrame constructor.
-     * @param LabeledBlock $labeledBlock
      * @param LabelingTask $task
      * @param $frameIndex
      */
     public function __construct(
-        LabeledBlock $labeledBlock,
         LabelingTask $task,
-        $frameIndex
+        $startIndex,
+        $endIndex
     ) {
-        $labeledBlock->getFrameRange()->throwIfFrameIndexIsNotCovered($frameIndex);
 
-        $this->taskId        = $labeledBlock->getTaskId();
-        $this->projectId     = $labeledBlock->getProjectId();
-        $this->frameIndex    = (int) $frameIndex;
+        $this->taskId        = $task->getId();
+        $this->projectId     = $task->getProjectId();
+
         $this->frameRange      = new FrameIndexRange(
-            min(array_keys($task->getFrameNumberMapping())),
-            max(array_keys($task->getFrameNumberMapping()))
+            $startIndex, $endIndex
         );
+
     }
 
     /**
@@ -131,6 +135,26 @@ class LabeledBlockInFrame extends Base
     }
 
     /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        if ($this->classes === null) {
+            return [];
+        }
+
+        return $this->classes;
+    }
+
+    /**
+     * @param array $classes
+     */
+    public function setClasses(array $classes)
+    {
+        $this->classes = $classes;
+    }
+
+    /**
      * @return mixed
      */
     public function getRev()
@@ -155,47 +179,27 @@ class LabeledBlockInFrame extends Base
     }
 
     /**
+     * @param $place
+     */
+    public function setPlace($place)
+    {
+        $this->place = $place;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
+
+    /**
      * @return mixed
      */
     public function getCreatedByUserId()
     {
         return $this->createdByUserId;
-    }
-
-    /**
-     * @param mixed $groupIds
-     */
-    public function setLabeledGroupIds($groupIds)
-    {
-        $this->labelBlockGroupIds = $groupIds;
-    }
-
-    /**
-     * @param $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLabeledGroupIds()
-    {
-        if ($this->labelBlockGroupIds === null) {
-            return [];
-        }
-
-        return $this->labelBlockGroupIds;
     }
 
     /**
@@ -262,6 +266,25 @@ class LabeledBlockInFrame extends Base
     public function setFrameRange(FrameIndexRange $frameRange)
     {
         $this->frameRange = $frameRange;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param $incomplete
+     * @return $this
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = (bool) $incomplete;
 
         return $this;
     }

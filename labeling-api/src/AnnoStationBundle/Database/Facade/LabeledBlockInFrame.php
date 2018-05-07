@@ -20,8 +20,8 @@ class LabeledBlockInFrame
     }
 
     /**
-     * @param Model\LabeledBlock $labeledBlock
-     * @return Model\LabeledBlock
+     * @param Model\LabeledBlockInFrame $labeledBlock
+     * @return mixed|null
      */
     public function save(Model\LabeledBlockInFrame $labeledBlock)
     {
@@ -63,7 +63,7 @@ class LabeledBlockInFrame
     }
 
     /**
-     * @param Model\LabeledBlock $task
+     * @param Model\LabelingTask $task
      * @return mixed
      */
     public function findByTaskId(Model\LabelingTask $task)
@@ -77,11 +77,11 @@ class LabeledBlockInFrame
     }
 
     /**
-     * @param Model\LabeledBlock $labeledThing
+     * @param Model\LabeledBlockInFrame $labeledBlockInFrame
      */
-    public function delete(Model\LabeledBlock $labeledThing)
+    public function delete(Model\LabeledBlockInFrame $labeledBlockInFrame)
     {
-        $this->documentManager->remove($labeledThing);
+        $this->documentManager->remove($labeledBlockInFrame);
         $this->documentManager->flush();
     }
 }
