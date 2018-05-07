@@ -69,14 +69,14 @@ class LabeledBlockInFrame extends Base
      */
     public static function create(
         LabelingTask $task,
-        $frameIndex
+        $startIndex,
+        $endIndex
     ) {
-        return new static($task, $frameIndex);
+        return new static($task, $startIndex, $endIndex);
     }
 
     /**
      * LabeledBlockInFrame constructor.
-     * @param LabeledBlock $labeledBlock
      * @param LabelingTask $task
      * @param $frameIndex
      */
