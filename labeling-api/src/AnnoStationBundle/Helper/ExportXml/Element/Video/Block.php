@@ -34,22 +34,31 @@ class Block extends ExportXml\Element
     /**
      * @var
      */
-    private $frameNumberMapping;
+    private $blockStatus;
 
+    /**
+     * Block constructor.
+     * @param References $references
+     * @param $namespace
+     */
     public function __construct(
-        $frameNumberMapping,
         References $references,
-        $namespace
+        $namespace,
+        $blockStatus
     ) {
         $this->references         = $references;
         $this->namespace          = $namespace;
-        $this->frameNumberMapping = $frameNumberMapping;
+        $this->blockStatus        = $blockStatus;
     }
 
     public function getElement(\DOMDocument $document)
     {
         $block = $document->createElementNS($this->namespace, 'blockage-labeling');
-        $block->setAttribute('incomplete', 'false');
+        if(!empty($this->blockStatus)) {
+            $block->setAttribute('incomplete', (in_array(true, $this->blockStatus)) ? 'true' : 'false');
+        } else {
+            $block->setAttribute('incomplete', 'true');
+        }
 
         $block->appendChild($this->references->getElement($document));
 

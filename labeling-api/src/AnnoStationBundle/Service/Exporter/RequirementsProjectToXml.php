@@ -398,10 +398,16 @@ class RequirementsProjectToXml
                         new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
                         self::XML_NAMESPACE
                     );
+                    //get block status
+                    $blockStatus = [];
+                    foreach ($labeledFrameBlockIterator as $frameBlock) {
+                        $blockStatus []= $frameBlock->getIncomplete();
+                    }
+
                     $block = new ExportXml\Element\Video\Block(
-                        $frameMapping,
                         $references,
-                        self::XML_NAMESPACE
+                        self::XML_NAMESPACE,
+                        $blockStatus
                     );
                     foreach ($labeledFrameBlockIterator as $frameBlock) {
                         $part = new ExportXml\Element\Video\BlockPart(
@@ -462,7 +468,7 @@ class RequirementsProjectToXml
             );
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
-            $this->exporterFacade->save($export);
+            return $this->exporterFacade->save($export);
         } catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);

@@ -50,9 +50,9 @@ class BlockPart extends ExportXml\Element
     public function getElement(\DOMDocument $document)
     {
         $block = $document->createElementNS($this->namespace, 'value');
-        $block->setAttribute('id', 'test-'.rand(1,9999));
-        $blockClass = $this->labeledBlockPart->getClasses();
         $place = $this->labeledBlockPart->getPlace();
+        $block->setAttribute('id',  'sector-'.$place.'-blocked');
+        $blockClass = $this->labeledBlockPart->getClasses();
         $block->setAttribute('class', (is_array($blockClass)) ? $blockClass[0] : '');
 
         $frameIndex = $this->labeledBlockPart->getFrameRange();
@@ -63,10 +63,6 @@ class BlockPart extends ExportXml\Element
         $block->setAttribute(
             'end',
             ($frameIndex instanceof Model\FrameIndexRange) ? $frameIndex->getEndFrameIndex() : ''
-        );
-        $block->setAttribute(
-            'place',
-            (isset($place)) ? $place : null
         );
 
         return $block;

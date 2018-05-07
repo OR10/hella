@@ -50,6 +50,11 @@ class LabeledBlockInFrame extends Base
     private $createdByUserId;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     */
+    private $incomplete = true;
+
+    /**
      * @CouchDB\Field(type="mixed")
      */
     private $classes;
@@ -261,6 +266,25 @@ class LabeledBlockInFrame extends Base
     public function setFrameRange(FrameIndexRange $frameRange)
     {
         $this->frameRange = $frameRange;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIncomplete()
+    {
+        return $this->incomplete;
+    }
+
+    /**
+     * @param $incomplete
+     * @return $this
+     */
+    public function setIncomplete($incomplete)
+    {
+        $this->incomplete = (bool) $incomplete;
 
         return $this;
     }
