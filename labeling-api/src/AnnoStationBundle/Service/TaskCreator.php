@@ -161,6 +161,10 @@ class TaskCreator
             $framesPerVideoChunk            = $video->getMetaData()->numberOfFrames;
             $frameMappingChunks             = [];
 
+            $videoRaw = $video->getMetaData()->raw;
+            $fileInfo = pathinfo($videoRaw['format']['filename']);
+            $fileExt = $fileInfo['extension'];
+
             $legacyDrawingTools     = array_map(
                 function ($instruction) {
                     return $instruction['drawingTool'];
@@ -277,6 +281,7 @@ class TaskCreator
                         $legacyTaskInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         null
                     );
                 }
@@ -321,6 +326,7 @@ class TaskCreator
                         $instruction,
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         $taskConfiguration
                     );
                 }
@@ -359,6 +365,7 @@ class TaskCreator
                         $instruction,
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         $taskConfiguration,
                         $previousTaskConfiguration,
                         $labelDataImportInProgress
@@ -437,6 +444,7 @@ class TaskCreator
         $instruction = null,
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = [],
+        $fileExt = null,
         Model\TaskConfiguration $taskConfiguration = null,
         Model\TaskConfiguration $previousTaskConfiguration = null,
         $labelDataImportInProgress = false
@@ -521,6 +529,9 @@ class TaskCreator
         }
         if ($instruction !== null) {
             $task->setLabelInstruction($instruction);
+        }
+        if($fileExt !== null) {
+            $task->setFileExtension($fileExt);
         }
 
         $task->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);

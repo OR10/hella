@@ -147,6 +147,12 @@ class LabelingTask extends Base
     private $labelInstruction = null;
 
     /**
+     * @var
+     * @CouchDB\Field(type="string")
+     */
+    private $fileExtension;
+
+    /**
      * @var string|null
      * @CouchDB\Field(type="mixed")
      */
@@ -353,6 +359,24 @@ class LabelingTask extends Base
     public function getDescriptionTitle()
     {
         return $this->descriptionTitle;
+    }
+
+    /**
+     * @param $fileExt
+     * @return $this
+     */
+    public function setFileExtension($fileExt)
+    {
+        $this->fileExtension = $fileExt;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFileExtension()
+    {
+        return $this->fileExtension;
     }
 
     /**

@@ -182,7 +182,7 @@ class VideoImporter
         bool $lossless
     ) {
 
-        $imageTypes = $this->getImageTypes($lossless);
+        $imageTypes = $this->getImageTypes($lossless, true);
         $video      = new Model\Video($organisation, $videoName);
         //set metadata
         $meta = new Model\Video\MetaData();
@@ -343,10 +343,14 @@ class VideoImporter
      *
      * @return array List of image types to generate for the task.
      */
-    private function getImageTypes($lossless)
+    private function getImageTypes(bool $lossless, bool $isZip = false)
     {
         if ($lossless) {
             return ['source', 'thumbnail'];
+        }
+
+        if ($isZip) {
+            return ['source', 'thumbnailPng'];
         }
 
         return ['sourceJpg', 'thumbnail'];
