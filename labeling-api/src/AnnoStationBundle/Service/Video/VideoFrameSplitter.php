@@ -73,7 +73,7 @@ class VideoFrameSplitter
      *
      * @return array
      */
-    public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type)
+    public function splitVideoInFrames(Model\Video $video, string $sourceFileFilename, ImageType\Base $type, bool $isZip = false)
     {
         $httpClient = new GuzzleHttp\Client();
         $response = $httpClient->put(
@@ -83,17 +83,40 @@ class VideoFrameSplitter
                     'videoId' => $video->getId(),
                     'videoName' => $video->getName(),
                     'sourceFileFilename' => $sourceFileFilename,
-                    'type' => $type->getName()
+                    'type' => $type->getName(),
+                    'isZip' => $isZip
                 ],
                 'timeout' => self::TIMEOUT
             ]
         );
-       
         $response = json_decode($response->getBody()->getContents(), true);
         $this->imageSizes = $response['image'];
 
         return $response['frame'];
+    }
 
+    public function imageToFrame(string $projectId, array $imagesParam, ImageType\Base $type)
+    {
+
+        $httpClient = new GuzzleHttp\Client();
+        $response = $httpClient->put(
+            $this->processingHost,
+            [
+                'form_params' => [
+                    'imagesParam' => $imagesParam,
+                    'projectId' => $projectId,
+                    'type' => $type->getName(),
+                    'fileType' => 'images'
+                ],
+                'timeout' => self::TIMEOUT
+            ]
+        );
+
+        $response = json_decode($response->getBody()->getContents(), true);
+
+        $this->imageSizes = $response['image'];
+
+        return $response['frame'];
     }
 
     /**

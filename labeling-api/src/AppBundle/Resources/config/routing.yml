@@ -1,0 +1,5 @@
+app_version:
+    path: /version
+    defaults:
+        _controller: AppBundle:Version:version
+        permanent: true

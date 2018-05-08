@@ -40,8 +40,6 @@ class LogoutHandler implements LogoutHandlerInterface
             $this->userFacade->updateUser($user);
         }
 
-        return new JsonResponse([
-            'result' => ['Unauthorized'],
-        ], 401);
+        $response->headers->set('Location', '/labeling/login');
     }
 }

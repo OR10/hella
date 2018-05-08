@@ -7,7 +7,7 @@
         <service id="annostation.labeling_api.database.facade.video" class="AnnoStationBundle\Database\Facade\Video">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
             <argument type="service" id="oneup_flysystem.cache_filesystem" />
-            <argument type="service" id="annostation.labeling_api.service.video_cdn.selected-alias" />
+            <argument type="service" id="annostation.storage_factory.service.storage_factory" />
         </service>
 
         <service id="annostation.labeling_api.database.facade.prelabeled_frame" class="AnnoStationBundle\Database\Facade\PrelabeledFrame">
@@ -80,6 +80,14 @@
         </service>
 
         <service id="annostation.labeling_api.database.facade.campaign" class="AnnoStationBundle\Database\Facade\Campaign">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_block_in_frame" class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.labeled_prediction" class="AnnoStationBundle\Database\Facade\LabelingPrediction">
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
@@ -162,6 +170,16 @@
             <factory class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_block_in_frame"
+                 class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeFactory" method="get"/>
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_block_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <argument>%database_name_read_only%</argument>

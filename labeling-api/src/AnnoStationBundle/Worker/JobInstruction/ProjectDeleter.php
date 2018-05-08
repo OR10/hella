@@ -56,7 +56,7 @@ class ProjectDeleter extends WorkerPoolBundle\JobInstruction
         }
         if ($project->getDeletedState() !== Model\Project::DELETED_PENDING) {
             $loggerFacade->logString(
-                sprintf('Project %s can\'t deleted due wrong state.', $project->getId()),
+                sprintf('Project %s can\'t deleted due wrong state %s.', $project->getId(), $project->getDeletedState()),
                 \cscntLogPayload::SEVERITY_FATAL
             );
             throw new \RuntimeException(sprintf('Project can\'t deleted due wrong state.'));

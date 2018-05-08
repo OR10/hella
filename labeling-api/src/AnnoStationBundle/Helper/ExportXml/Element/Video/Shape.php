@@ -88,6 +88,8 @@ class Shape extends ExportXml\Element
                 break;
             case $this->shape instanceof Model\Shapes\BrightestPixel:
                 $shapeElement = new Shape\BrightestPixel($this->shape, $this->namespace);
+            case $this->shape instanceof Model\Shapes\Trapezoid:
+                $shapeElement = new Shape\Trapezoid($this->shape, $this->namespace);
                 break;
         }
 

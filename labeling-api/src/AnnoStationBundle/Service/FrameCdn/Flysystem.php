@@ -15,6 +15,11 @@ class Flysystem extends Service\FrameCdn
     protected $frameCdnBaseUrl;
 
     /**
+     * @var Service\Storage\StorageFactory
+     */
+    private $storageFactory;
+
+    /**
      * @var League\Flysystem\Filesystem
      */
     protected $fileSystem;
@@ -22,14 +27,16 @@ class Flysystem extends Service\FrameCdn
     /**
      * FrameCdn constructor.
      *
-     * @param string                      $frameCdnBaseUrl
-     * @param League\Flysystem\Filesystem $fileSystem
+     * @param string                         $frameCdnBaseUrl
+     * @param Service\Storage\StorageFactory $storageFactory
+     * @param League\Flysystem\Filesystem    $fileSystem
      */
-    public function __construct($frameCdnBaseUrl, League\Flysystem\Filesystem $fileSystem)
+    public function __construct($frameCdnBaseUrl, Service\Storage\StorageFactory $storageFactory, League\Flysystem\Filesystem $fileSystem)
     {
         parent::__construct();
 
         $this->frameCdnBaseUrl = $frameCdnBaseUrl;
+        $this->storageFactory = $storageFactory;
         $this->fileSystem      = $fileSystem;
     }
 
@@ -91,16 +98,20 @@ class Flysystem extends Service\FrameCdn
     public function getFrameLocations(
         Model\LabelingTask $labelingTask,
         ImageType\Base $imageType,
-        array $frameNumbers
+        array $frameNumbers,
+        string $projectId = null
+
     ) {
         $urls = [];
+        $storage = $this->storageFactory->getStorage();
+        $frameCdnBaseUrl = $storage->getStorageData()->getBaseUrl();
         foreach ($frameNumbers as $index => $frameNumber) {
             $urls[] = [
                 "frameIndex" => $index,
                 'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
-                    $this->frameCdnBaseUrl,
-                    $labelingTask->getVideoId(),
+                    $frameCdnBaseUrl,
+                     ($projectId) ? $projectId : $labelingTask->getVideoId(),
                     $imageType->getName(),
                     $frameNumber,
                     $imageType->getExtension()

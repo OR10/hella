@@ -2,13 +2,11 @@
 
 namespace AnnoStationBundle\Service\v1\Project;
 
-use AppBundle\Exception;
 use AppBundle\Model;
 use AnnoStationBundle\Database\Facade;
-use AppBundle\Database\Facade as AppFacade;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ProjectService
+class ProjectCreator
 {
 
     private  $taskConfigurationFacade;
@@ -139,7 +137,8 @@ class ProjectService
 
                 $taskTypeConfiguration = reset($taskTypeConfigurations);
 
-                if ($taskTypeConfiguration['taskConfigurationId'] === '' || $taskTypeConfiguration['type'] === '') {
+
+                if (!$taskTypeConfiguration['taskConfigurationId'] || !$taskTypeConfiguration['type']) {
                     throw new BadRequestHttpException('Invalid taskConfigurationId or taskType');
                 }
 

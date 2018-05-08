@@ -181,6 +181,30 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param Model\LabeledThingInFrame $labeledThingInFrame
+     *
+     * @return Model\LabeledThingInFrame[]
+     */
+    public function getNextLabeledThingInFrameWithClasses(Model\LabeledThingInFrame $labeledThingInFrame, Model\LabelingTask $task)
+    {
+        $result = $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_labeledThingId_frameIndex_count_by_classes')
+            ->onlyDocs(true)
+            ->setEndKey([$labeledThingInFrame->getLabeledThingId(), $labeledThingInFrame->getFrameIndex(), 1])
+            ->setStartKey([$labeledThingInFrame->getLabeledThingId(), max($task->getFrameNumberMapping()), '*'])
+            ->setLimit(1)
+            ->setDescending(true)
+            ->execute()
+            ->toArray();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result[0];
+    }
+
+    /**
      * @param Model\Project $project
      *
      * @return int

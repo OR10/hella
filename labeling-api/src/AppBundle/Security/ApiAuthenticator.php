@@ -50,22 +50,38 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
     private $secureToken;
 
     /**
+     * @var int seconds
+     */
+    private $lifetime;
+
+    /**
+     * @var array
+     */
+    private $allowActions = [
+        'annostation.labeling_api.controller.api.organisation.project.export:getExportAction'
+    ];
+
+
+    /**
      * ApiAuthenticator constructor.
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $encoder
      * @param User $userFacade
      * @param TokenStorage $tokenStorage
+     * @param int $lifetime
      */
     public function __construct(
         RouterInterface $router,
         UserPasswordEncoderInterface $encoder,
         User $userFacade,
-        TokenStorage $tokenStorage)
+        TokenStorage $tokenStorage,
+        int $lifetime)
     {
-        $this->router      = $router;
-        $this->encoder     = $encoder;
-        $this->userFacade  = $userFacade;
+        $this->router = $router;
+        $this->encoder = $encoder;
+        $this->userFacade = $userFacade;
         $this->secureToken = $tokenStorage;
+        $this->lifetime = $lifetime;
     }
 
     private function checkLoginPage(Request $request)
@@ -94,7 +110,6 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
             'token' => null,
             'authMe' => true,
         ];
-
     }
 
     public function getCredentials(Request $request)
@@ -123,12 +138,20 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
     {
         $result = null;
         $username = $credentials['username'];
+        /** @var \AppBundle\Model\User|\FOS\UserBundle\Model\UserInterface $user */
         $user = $userProvider->loadUserByUsername($username);
         $token = $user ? $user->getToken() : null;
         if ($user && !$credentials['authMe'] && $credentials['token'] && $credentials['token'] != $token) {
             $user = null;
         } elseif ($credentials['token'] && $credentials['token'] == $token) {
             $this->authenticated = true;
+        }
+
+        if ($this->authenticated && $token && $user->isTokenExpired()) {
+            $user->setToken(null);
+            $this->userFacade->updateUser($user);
+
+            $user = null;
         }
 
         return $user;
@@ -167,7 +190,17 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
             $user->setToken($tokenStr);
         }
 
+        $exp = new \DateTime();
+        $interval = new \DateInterval(sprintf("PT%sS", $this->lifetime));
+        $exp->add($interval);
+        $user->setTokenExpiresAt($exp);
+
         $this->userFacade->updateUser($user);
+
+        $allow = $request->attributes->get('_controller');
+        if(in_array($allow, $this->allowActions)) {
+            return;
+        }
 
         return new JsonResponse(
             [

@@ -41,9 +41,17 @@ class Metadata extends ExportXml\Element
         $imageCoordinateSystem->setAttribute('top-left-y', 0);
         $imageCoordinateSystem->setAttribute('bottom-right-x', $this->video->getMetaData()->width);
         $imageCoordinateSystem->setAttribute('bottom-right-y', $this->video->getMetaData()->height);
-
-
         $metadata->appendChild($imageCoordinateSystem);
+
+        if (!empty($this->video->getTags())) {
+            $tags = $document->createElementNS($this->namespace, 'tags');
+            foreach ($this->video->getTags() as $tagName) {
+                $tag = $document->createElementNS($this->namespace, 'tag', $tagName);
+                $tags->appendChild($tag);
+            }
+
+            $metadata->appendChild($tags);
+        }
 
         return $metadata;
     }

@@ -145,6 +145,9 @@ class TaskCreator
                     'minHandles' => 3,
                     'maxHandles' => 15,
                 ],
+                'trapezoid'     => [
+                    'minimalHeight' => 15,
+                ],
             ];
 
             $taskVideoSettings              = $project->getTaskVideoSettings();
@@ -157,6 +160,10 @@ class TaskCreator
             $imageTypes                     = array_keys($video->getImageTypes());
             $framesPerVideoChunk            = $video->getMetaData()->numberOfFrames;
             $frameMappingChunks             = [];
+
+            $videoRaw = $video->getMetaData()->raw;
+            $fileInfo = pathinfo($videoRaw['format']['filename']);
+            $fileExt = $fileInfo['extension'];
 
             $legacyDrawingTools     = array_map(
                 function ($instruction) {
@@ -274,6 +281,7 @@ class TaskCreator
                         $legacyTaskInstruction['instruction'],
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         null
                     );
                 }
@@ -318,6 +326,7 @@ class TaskCreator
                         $instruction,
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         $taskConfiguration
                     );
                 }
@@ -356,6 +365,7 @@ class TaskCreator
                         $instruction,
                         $minimalVisibleShapeOverflow,
                         $drawingToolOptions,
+                        $fileExt,
                         $taskConfiguration,
                         $previousTaskConfiguration,
                         $labelDataImportInProgress
@@ -434,6 +444,7 @@ class TaskCreator
         $instruction = null,
         $minimalVisibleShapeOverflow = null,
         $drawingToolOptions = [],
+        $fileExt = null,
         Model\TaskConfiguration $taskConfiguration = null,
         Model\TaskConfiguration $previousTaskConfiguration = null,
         $labelDataImportInProgress = false
@@ -471,6 +482,7 @@ class TaskCreator
                 $drawingToolOptions['rectangle']['minimalHeight']  = (int) $minimalHeightResult->item(0)->nodeValue;
                 $drawingToolOptions['pedestrian']['minimalHeight'] = (int) $minimalHeightResult->item(0)->nodeValue;
                 $drawingToolOptions['cuboid']['minimalHeight']     = (int) $minimalHeightResult->item(0)->nodeValue;
+                $drawingToolOptions['trapezoid']['minimalHeight']  = (int) $minimalHeightResult->item(0)->nodeValue;
             }
         } else {
             $labelStructure   = $this->labelStructureService->getLabelStructureForTypeAndInstruction(
@@ -517,6 +529,9 @@ class TaskCreator
         }
         if ($instruction !== null) {
             $task->setLabelInstruction($instruction);
+        }
+        if($fileExt !== null) {
+            $task->setFileExtension($fileExt);
         }
 
         $task->setMinimalVisibleShapeOverflow($minimalVisibleShapeOverflow);

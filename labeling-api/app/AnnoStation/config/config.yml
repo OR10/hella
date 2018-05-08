@@ -6,6 +6,7 @@ imports:
 
 parameters:
   redirectAfterLogin: /labeling
+  fos_user.security.interactive_login_listener.class: AppBundle\Service\FosLastLoginListener
   password.policy:
     AtLeastOneSpecialCharacter: true
     AtLeastOneDigit: true
@@ -78,5 +79,3 @@ swiftmailer:
     #encryption: "%mailer_encryption%"
     #auth_mode:  "%mailer_auth_mode%"
     #port:       "%mailer_port%"
-
-nelmio_api_doc: ~

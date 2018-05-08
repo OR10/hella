@@ -52,6 +52,24 @@ class RequirementsXml extends Helper\ClassesStructure
     }
 
     /**
+     * @param $thingId
+     *
+     * @return string
+     */
+    public function getThingPrediction($thingId)
+    {
+        $xpath = new \DOMXPath($this->document);
+        $xpath->registerNamespace('x', 'http://weblabel.hella-aglaia.com/schema/requirements');
+        $query = $xpath->query('//x:requirements/x:thing[@id="' . $thingId . '" and @prediction]');
+
+        if ($query->length === 0) {
+            return 'forward';
+        }
+
+        return $query->item(0)->getAttribute('prediction');
+    }
+
+    /**
      * @param \DOMXPath $xpath
      * @param           $id
      *

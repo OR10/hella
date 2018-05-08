@@ -227,7 +227,6 @@ class BatchUpload extends Controller\Base
         if (!empty($videoIds)) {
             $user   = $this->tokenStorage->getToken()->getUser();
             $videos = $this->videoFacade->findById($videoIds);
-
             foreach ($videos as $video) {
                 try {
                     $tasks = array_merge($tasks, $this->taskCreator->createTasks($project, $video, $user));

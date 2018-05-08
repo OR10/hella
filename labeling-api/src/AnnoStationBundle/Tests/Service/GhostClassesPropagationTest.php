@@ -11,9 +11,9 @@ use AnnoStationBundle\Service;
 class GhostClassesPropagationTest extends KernelTestCase
 {
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var Facade\LabeledThingInFrame\FacadeInterface
      */
-    private $labeledThingInFrameFacadeMock;
+    private $labeledThingInFrameFactoryMock;
 
     /**
      * @var Service\GhostClassesPropagation
@@ -51,6 +51,12 @@ class GhostClassesPropagationTest extends KernelTestCase
     private $labeledThingTwo;
 
     /**
+     * @var Facade\LabelingTask
+     */
+    private $labelingTaskFacadeMock;
+    private $labeledThingInFrameFacadeMock;
+
+    /**
      * Initialize test environment before each test
      */
     public function setUpImplementation()
@@ -65,9 +71,23 @@ class GhostClassesPropagationTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->labeledThingInFrameFactoryMock = $this->getMockBuilder(
+            'AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeInterface'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->labeledThingInFrameFactoryMock->method('getFacadeByProjectIdAndTaskId')
+            ->will($this->returnValue($this->labeledThingInFrameFacadeMock));
+
+        $this->labelingTaskFacadeMock = $this->getMockBuilder(
+            'AnnoStationBundle\Database\Facade\LabelingTask'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $container->set(
-            sprintf(self::ANNOSTATION_SERVICE_PATTERN, 'database.facade.labeled_thing_in_frame'),
-            $this->labeledThingInFrameFacadeMock
+            sprintf(self::ANNOSTATION_SERVICE_PATTERN, 'database.facade.factory.labeled_thing_in_frame'),
+            $this->labeledThingInFrameFactoryMock
         );
 
         $this->ghostClassesPropagationService = $this->getAnnostationService('service.ghost_classes_propagation');
@@ -127,18 +147,50 @@ class GhostClassesPropagationTest extends KernelTestCase
         );
 
         $expectedClasses = array(
-            ['classes' => ['some', 'classes'], 'ghostClasses' => null],
-            ['classes' => [], 'ghostClasses' => ['some', 'classes']],
-            ['classes' => [], 'ghostClasses' => ['some', 'classes']],
-            ['classes' => ['some', 'other', 'classes'], 'ghostClasses' => null],
-            ['classes' => [], 'ghostClasses' => ['some', 'other', 'classes']],
-            ['classes' => ['completely', 'different'], 'ghostClasses' => null],
-
-            ['classes' => [], 'ghostClasses' => ['propagated']],
-            ['classes' => [], 'ghostClasses' => ['propagated']],
-            ['classes' => ['a class'], 'ghostClasses' => null],
-            ['classes' => [], 'ghostClasses' => ['a class']],
-            ['classes' => ['foo', 'bar'], 'ghostClasses' => null],
+            [
+                'classes' => ['some', 'classes'],
+                'ghostClasses' => null
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['some', 'classes']
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['some', 'classes']
+            ],
+            [
+                'classes' => ['some', 'other', 'classes'],
+                'ghostClasses' => null
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['some', 'other', 'classes']
+            ],
+            [
+                'classes' => ['completely', 'different'],
+                'ghostClasses' => null
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['propagated']
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['propagated']
+            ],
+            [
+                'classes' => ['a class'],
+                'ghostClasses' => null
+            ],
+            [
+                'classes' => [],
+                'ghostClasses' => ['a class']
+            ],
+            [
+                'classes' => ['foo', 'bar'],
+                'ghostClasses' => null
+            ],
         );
 
         foreach ($labeledThingsInFrameWithGhostClasses as $key => $labeledThingInFrameWithGhostClasses) {
@@ -172,14 +224,18 @@ class GhostClassesPropagationTest extends KernelTestCase
      */
     private function setUpLabeledThingsInFrame()
     {
+        $taskFacade = $this->getAnnostationService('database.facade.labeling_task');
+
         $organisation          = new AnnoStationBundleModel\Organisation('Test Organisation');
         $this->video           = Model\Video::create($organisation, 'some video');
         $this->project         = Model\Project::create('test project', $organisation);
-        $this->task            = Model\LabelingTask::create(
-            $this->video,
-            $this->project,
-            range(1, 200),
-            'object-labeling'
+        $this->task            = $taskFacade->save(
+            Model\LabelingTask::create(
+                $this->video,
+                $this->project,
+                range(1, 200),
+                'object-labeling'
+            )
         );
         $this->labeledThingOne = Model\LabeledThing::create($this->task)->setId('labeled-thing-one');
         $this->labeledThingTwo = Model\LabeledThing::create($this->task)->setId('labeled-thing-two');

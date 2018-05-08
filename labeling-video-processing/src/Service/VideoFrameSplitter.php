@@ -54,8 +54,8 @@ class VideoFrameSplitter
      * @param Flysystem\Filesystem $fileSystem
      */
     public function __construct(
-        Service\FrameCdn $frameCdn,
-        Service\VideoCdn $videoCdn,
+        $frameCdn,
+        $videoCdn,
         $ffmpegExecutable,
         Flysystem\Filesystem $fileSystem
     ) {
@@ -135,6 +135,79 @@ class VideoFrameSplitter
         }
     }
 
+
+    /**
+     * @param string $videoId
+     * @param string $videoName
+     * @param string $sourceFileFilename
+     * @param string $type
+     * @param string $cacheDir
+     * @return array
+     */
+    public function storeFrames(string $videoId, string $videoName, string $sourceFileFilename, string $type, string $cacheDir)
+    {
+        $type = Model\ImageType::create($type);
+        $tempDir = $this->getTempDirectory($type);
+        $tmpFile = $this->createTemporaryFileForVideo($videoName,$cacheDir);
+        if (file_put_contents($tmpFile, $this->videoCdn->getFile($sourceFileFilename)) === false) {
+            throw new \RuntimeException("Error writing video data to temporary file '{$tmpFile}'");
+        }
+        try {
+            $prefixedTempDir = $this->fileSystem->getAdapter()->applyPathPrefix($tempDir);
+            $zip = new \ZipArchive();
+            //rename zip files
+            if ($zip->open($tmpFile) === true) {
+                for($zipIndex = 0; $zipIndex < $zip->numFiles; $zipIndex++) {
+                    $newImageName = $zipIndex + 1;
+                    $zip->renameIndex($zipIndex,$newImageName.'.png');
+                }
+                $zip->close();
+            }
+            //unzip files with new name
+            $res = $zip->open($tmpFile);
+            if ($res === TRUE) {
+                if ($zip->extractTo($prefixedTempDir)) {
+                    $zip->close();
+                }
+            }
+            //add image to temp folder
+            $files = array_filter(
+                $this->fileSystem->listContents($tempDir),
+                function ($file) use ($type) {
+                    if ($file['extension'] === $type->getExtension()) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //upload image into storage
+            $this->frameCdn->beginBatchTransaction((string)$videoId);
+            $frameSizesInBytes = [];
+            foreach ($files as $file) {
+                $this->imageSizes[(int) $file['basename']] = getimagesizefromstring(
+                    $this->fileSystem->read($file['path'])
+                );
+                $cdnPath = $this->frameCdn->save(
+                    $videoId,
+                    $type,
+                    (int) $file['basename'],
+                    $this->fileSystem->read($file['path'])
+                );
+                $frameSizesInBytes[$cdnPath] = $this->fileSystem->getSize($file['path']);
+            }
+            $this->frameCdn->commit();
+
+            return $frameSizesInBytes;
+        } finally {
+            if (!unlink($tmpFile)) {
+                throw new \RuntimeException("Error removing temporary file '{$tmpFile}'");
+            }
+            if (!$this->fileSystem->deleteDir($tempDir)) {
+                throw new \RuntimeException("Error removing temporary directory '{$tempDir}'");
+            }
+        }
+    }
+
     /**
      * @param                $sourceFileName
      * @param Model\ImageType $type
@@ -188,7 +261,7 @@ class VideoFrameSplitter
      *
      * The temporary file will have the same file extension as the original video.
      *
-     * @param string $video
+     * @param string $videoName
      *
      * @return string
      */

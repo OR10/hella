@@ -50,6 +50,12 @@ class LabeledFrame extends Base
     private $incomplete = true;
 
     /**
+     * @CouchDB\Field(type="boolean")
+     * @var boolean
+     */
+    private $stopPropagation;
+
+    /**
      * @param LabelingTask $task
      * @param int          $frameIndex
      *
@@ -117,6 +123,22 @@ class LabeledFrame extends Base
     public function getFrameIndex()
     {
         return $this->frameIndex;
+    }
+
+    /**
+     *  @return boolean
+     */
+    public function getStopPropagation()
+    {
+        return $this->stopPropagation;
+    }
+
+    /**
+     * @param bool $propagation
+     */
+    public function setStopPropagation(bool $propagation)
+    {
+        $this->stopPropagation = $propagation;
     }
 
     /**
