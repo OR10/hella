@@ -18,12 +18,12 @@ class PhaseThingCreateByUser implements \IteratorAggregate
     private $labeledThingFacade;
 
     /**
-     * @var array
+     * @var Model\LabeledThing
      */
     private $labeledThings = [];
 
     /**
-     * @var
+     * @var string
      */
     private $userId;
 

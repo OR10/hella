@@ -14,7 +14,7 @@ class PhaseThingInFrameByUser implements \IteratorAggregate
     private $task;
 
     /**
-     * @var array
+     * @var Model\LabeledThingInFrame
      */
     private $labeledThingsInFrames = [];
 

@@ -152,7 +152,7 @@ class LabeledThing
     /**
      * @param Model\LabelingTask $task
      * @param string $userId
-     * @return mixed
+     * @return Model\LabeledThing[]|null
      */
     public function findByTaskUserId(Model\LabelingTask $task, string $userId)
     {
@@ -167,7 +167,7 @@ class LabeledThing
     /**
      * @param Model\LabelingTask $task
      * @param string $userId
-     * @return mixed
+     * @return Model\LabeledThing[]|null
      */
     public function findByTaskUserModify(Model\LabelingTask $task, string $userId)
     {

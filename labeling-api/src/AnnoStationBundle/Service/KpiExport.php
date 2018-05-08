@@ -23,33 +23,32 @@ class KpiExport
     private $projectFacade;
 
     /**
-     * @var
+     * @var \AnnoStationBundle\Database\Facade\LabelingTask
      */
     private $labelingTask;
 
-
     /**
-     * @var
+     * @var string
      */
     private $csv;
 
     /**
-     * @var
+     * @var TaskDatabase
      */
     private $labeledThingFacadeFactory;
 
     /**
-     * @var
+     * @var LabeledThingInFrame\TaskDatabase
      */
     private $labeledThingInFrameFacadeFactory;
 
     /**
-     * @var
+     * @var TaskService
      */
     private $taskService;
 
     /**
-     * @var
+     * @var \AnnoStationBundle\Database\Facade\TaskTimer\TaskDatabase
      */
     private $taskTimerFacadeFactory;
 
@@ -683,6 +682,11 @@ class KpiExport
         $this->csv .= fgets($output);
     }
 
+    /**
+     * @param array $data
+     * @return bool|string
+     * @throws \Exception
+     */
     private function compressData(array $data)
     {
         $zipFilename = tempnam(sys_get_temp_dir(), 'anno-export-csv-');

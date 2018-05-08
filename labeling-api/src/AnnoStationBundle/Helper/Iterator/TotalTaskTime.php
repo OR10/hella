@@ -12,6 +12,9 @@ class TotalTaskTime implements \IteratorAggregate
      */
     private $task;
 
+    /**
+     * @var string
+     */
     private $userId;
 
     /**
@@ -20,7 +23,7 @@ class TotalTaskTime implements \IteratorAggregate
     private $taskTimeFacade;
 
     /**
-     * @var array
+     * @var Model\TaskTimer
      */
     private $totalTaskTime = [];
 

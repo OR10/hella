@@ -137,7 +137,7 @@ class LabeledThingInFrame
 
     /**
      * @param Model\LabelingTask $labelingTask
-     * @return mixed
+     * @return Model\LabeledThingInFrame[]|null
      */
     public function getLabeledThingsInFrameByTask(Model\LabelingTask $labelingTask)
     {

@@ -23,7 +23,7 @@ class TaskTimer
      * @param $id
      * @return object
      */
-    public function find($id)
+    public function find(string $id)
     {
         return $this->documentManager->find(Model\TaskTimer::class, $id);
     }
@@ -39,9 +39,9 @@ class TaskTimer
 
     /**
      * @param Model\TaskTimer $task
-     * @return mixed
+     * @return Model\TaskTimer[]|null
      */
-    public function findByTaskId(Model\LabelingTask $task, $userId)
+    public function findByTaskId(Model\LabelingTask $task, string $userId)
     {
         return $this->documentManager
             ->createQuery('annostation_task_timer', 'by_taskId_userId')

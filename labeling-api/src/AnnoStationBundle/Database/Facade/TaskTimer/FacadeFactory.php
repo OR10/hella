@@ -8,12 +8,20 @@ use AppBundle\Service as AppBundleService;
 
 class FacadeFactory
 {
+    /**
+     * @param string                                          $type
+     * @param Facade\TaskTimer                                $labelingTaskFacade
+     * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
+     * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
+     * @param string                                          $readOnlyDatabase
+     * @return TaskDatabase
+     */
     public static function get(
         string $type,
         Facade\TaskTimer $labelingTaskFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $readOnlyDatabase
+        string $readOnlyDatabase
     ) {
         switch ($type) {
             case 'taskDatabase':
