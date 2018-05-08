@@ -6,8 +6,9 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class FacadeFactory
+class FacadeFactory extends Facade\Factory\TaskFactoryFluent
 {
+
     /**
      * @param string                                          $type
      * @param Facade\TaskTimer                                $labelingTaskFacade
@@ -24,7 +25,7 @@ class FacadeFactory
         string $readOnlyDatabase
     ) {
         switch ($type) {
-            case 'taskDatabase':
+            case self::TASK_DATABASE:
                 return new TaskDatabase(
                     $labelingTaskFacade,
                     $databaseDocumentManagerFactory,

@@ -24,7 +24,7 @@ class KpiProjectToCsv extends WorkerPool\Job
     }
 
     /**
-     * @return mixed
+     * @return KpiExport
      */
     public function getExport()
     {

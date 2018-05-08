@@ -610,7 +610,11 @@ class KpiExport
         $this->defaultKpi['total_changed_attributes_per_task_revision'] = [$totalSelectAttrRevision];
     }
 
-    //convert data to correct kpi csv format
+    /**
+     * convert data to correct kpi csv format
+     *
+     * @return array
+     */
     private function csvToExportFormat()
     {
         $maxArray = 0;
@@ -645,6 +649,10 @@ class KpiExport
         return $dataForCsv;
     }
 
+    /**
+     * @param Export $export
+     * @param string $filename
+     */
     private function saveExportModel(Export $export, string $filename)
     {
         $zipData[$filename] = $this->csv;
@@ -657,6 +665,10 @@ class KpiExport
         $this->exporterFacade->save($export);
     }
 
+    /**
+     * @param array $data
+     * @return string
+     */
     private function createCsv(array $data)
     {
         $output = fopen('php://temp', 'w');

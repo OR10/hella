@@ -135,7 +135,7 @@ class TaskService
      * @param string $projectId
      * @return array
      */
-    public function getTaskByPhase(string $projectId)
+    public function getTaskByPhase(string $projectId) : array
     {
         $offset     = 0;
         $limit      = 100;

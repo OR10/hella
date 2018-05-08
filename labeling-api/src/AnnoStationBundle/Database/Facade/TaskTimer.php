@@ -20,7 +20,7 @@ class TaskTimer
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return object
      */
     public function find(string $id)

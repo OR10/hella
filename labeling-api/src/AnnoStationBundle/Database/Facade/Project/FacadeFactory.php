@@ -7,7 +7,7 @@ use AnnoStationBundle\Service;
 use AnnoStationBundle\Service\Authentication;
 use AppBundle\Service as AppBundleService;
 
-class FacadeFactory
+class FacadeFactory extends Facade\Factory\TaskFactoryFluent
 {
     public static function get(
         string $type,
@@ -18,7 +18,7 @@ class FacadeFactory
         Authentication\UserPermissions $userPermissions
     ) {
         switch ($type) {
-            case 'taskDatabase':
+            case self::TASK_DATABASE:
                 return new TaskDatabase(
                     $projectFacade,
                     $databaseDocumentManagerFactory,

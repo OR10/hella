@@ -6,7 +6,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class FacadeFactory
+class FacadeFactory extends Facade\Factory\TaskFactoryFluent
 {
     public static function get(
         string $type,
@@ -16,7 +16,7 @@ class FacadeFactory
         $readOnlyDatabase
     ) {
         switch ($type) {
-            case 'taskDatabase':
+            case self::TASK_DATABASE:
                 return new TaskDatabase(
                     $labelingTaskFacade,
                     $databaseDocumentManagerFactory,
