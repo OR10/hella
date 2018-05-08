@@ -56,6 +56,7 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
         './x:polyline',
         './x:cuboid',
         './x:point',
+        './x:brightestPixel'
     ];
     /**
      * @var Facade\LabeledFrame
@@ -656,6 +657,19 @@ class ThingImporter extends WorkerPoolBundle\JobInstruction
                         $topRightBack,
                         $bottomRightBack,
                         $bottomLeftBack
+                    );
+                    break;
+                case 'brightestPixel':
+                    $shapes[] = new Model\Shapes\BrightestPixel(
+                        $id,
+                        (float) $xpath->query('x:top-left', $shapeElement)->item(0)->getAttribute('x'),
+                        (float) $xpath->query('x:top-left', $shapeElement)->item(0)->getAttribute('y'),
+                        (float) $xpath->query('x:bottom-right', $shapeElement)->item(0)->getAttribute('x'),
+                        (float) $xpath->query('x:bottom-right', $shapeElement)->item(0)->getAttribute('y'),
+                        [
+                            'x' => (float) $xpath->query('x:center', $shapeElement)->item(0)->getAttribute('x'),
+                            'y' => (float) $xpath->query('x:center', $shapeElement)->item(0)->getAttribute('y'),
+                        ]
                     );
                     break;
             }

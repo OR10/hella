@@ -19,6 +19,7 @@ abstract class Shape
         'pedestrian' => Shapes\Pedestrian::class,
         'cuboid3d' => Shapes\Cuboid3d::class,
         'point' => Shapes\Point::class,
+        'brightestPixel' => Shapes\BrightestPixel::class,
         'trapezoid' => Shapes\Trapezoid::class
     ];
 
