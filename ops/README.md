@@ -104,9 +104,17 @@ and `install locally` files
 
 ## Build and deploy
 
+### Before deployment
+
+Before deployment install [release-manager](https://github.com/itcreator/release-manager-micro) tool 
+
+* Read the instructions from README.md
+* Clone sources into folder on CI agent node
+* Run service ops/scripts/start_semver.sh
+
 ### Build BE
 ```bash
-$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} DOCKER_BE_TAG={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_be.sh
+$ DOCKER_HUB_USER={username} DOCKER_HUB_PASSWORD={pw} GIT_BRANCH={git tag or branch name} COMPANY_NAME={username or company from dockerhub} ops/scripts/build_be.sh
 ```
 
 E.g. `DOCKER_FE_TAG`=`latest` `COMPANY_NAME`=`softeqhella`    
@@ -155,6 +163,8 @@ $ docker-machine ssh myvm2 "sudo sysctl -w vm.max_map_count=262144"
 ```
 
 #### How to deploy
+
+*Note*: Currently we don't use swarm. Deployment by swarm can be broken. 
 
 ```bash
 $ SWARM_USER=docker SWARM_MASTER={mastername} DOCKER_HUB_USER={hub_user} DOCKER_HUB_PASSWORD={pass} DOCKER_FE_TAG={tag} DOCKER_BE_TAG={tag} COMPANY_NAME=softeqhaglannostation ops/scripts/deploy_swarm.sh

@@ -24,12 +24,6 @@ docker-compose stop
 docker-compose build proxy api-nginx api-fpm api-workerpool-low api-cron video-nginx video-fpm monitoring-logstash doc-go-swagger
 
 #Push images
-docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD
-
-images=$(docker-compose config | sort -u | grep -o 'image:.*' | grep $REGISTRY_URL | cut -d" " -f2)
-for image in $images; do
-    echo "Pushing image: $image"
-    docker push $image
-done
+docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASSWORD && ./release-manager-client
 
 echo -e "\033[0;32mDone well\033[0m\n"
