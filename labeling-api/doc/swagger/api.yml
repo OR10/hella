@@ -1,0 +1,4280 @@
+swagger: '2.0'
+info:
+  title: Annostation Labeling API
+  version: ''
+  description: >-
+    This document describes the HTTP protocol used by the labeling ui to
+    interact with the backend.
+
+
+    ## Status codes
+
+
+    The backend is allowed to respond with any 5xx status code if anything goes
+
+    wrong and the UI needs to handle those errors in some form. Means, the UI is
+
+    expected to be still functional on any error that occurs in the backend. So,
+
+    even if one function is broken, everything else should still be functional.
+
+
+    If the backend does not understand the request or the request was malicious
+    or
+
+    broken a 400 status code should be returned.
+paths:
+  '/api/v1/video/{id}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+          schema:
+            type: object
+            properties:
+              result:
+                type: Video
+      summary: Get a video by id
+      description: Get a video specified by id
+      tags:
+        - Video
+      parameters:
+        - name: id
+          in: path
+          description: The id of the video-entity.
+          required: true
+          type: string
+  /api/v1/task:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                array:
+                  id: 05c1a74d8eda4a16a355519c0f002ee6
+                  descriptionTitle: Identify the person
+                  descriptionText: >-
+                    How is the view on the person? Which side does one see from
+                    the person and from which side is the person entering the
+                    screen?
+                  requiredImageTypes:
+                    - sourceJpg
+                  status:
+                    preprocessing: done
+                    labeling: in_progress
+                  taskType: object-labeling
+                  drawingToolOptions:
+                    pedestrian:
+                      minimalHeight: 22
+                    cuboid:
+                      minimalHeight: 15
+                    polygon:
+                      minHandles: 3
+                      maxHandles: 15
+                  labelInstruction: miscellaneous
+                  frameNumberMapping:
+                    - '3'
+                  metaData:
+                    frameRange:
+                      startFrameIndex: 1
+                      endFrameIndex: 23
+                    frameSkip: 1
+                    startFrameNumber: 22
+                  createdAt: '2017-05-16T12:15:01+0200'
+                  video:
+                    id: 16b00780792d045c496513f01f006f09
+                    name: example.avi
+                    metaData:
+                      duration: 47.23
+                      height: 480
+                      width: 640
+                  project:
+                    id: 36047d429d50548893be41c6880632fd
+                    name: Pedestrian Labeling
+                    taskCount: 5
+                    taskFinishedCount: 1
+                    totalLabelingTimeInSeconds: 3124
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  array:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The id of the task.
+                      descriptionTitle:
+                        type: string
+                        description: Title of the Task
+                      descriptionText:
+                        type: string
+                        description: Task description
+                      requiredImageTypes:
+                        type: array
+                        description: List of the required images types
+                        items: {}
+                      status:
+                        type: object
+                        properties:
+                          preprocessing:
+                            type: string
+                            description: status of the preprocessing type
+                          labeling:
+                            type: string
+                            description: status of the labeling type
+                      taskType:
+                        type: string
+                        description: Task type
+                      drawingToolOptions:
+                        type: object
+                        properties:
+                          pedestrian:
+                            type: object
+                            properties:
+                              minimalHeight:
+                                type: number
+                                description: The minimal pedestrian height
+                          cuboid:
+                            type: object
+                            properties:
+                              minimalHeight:
+                                type: number
+                                description: The minimal cuboid height
+                          polygon:
+                            type: object
+                            properties:
+                              minHandles:
+                                type: number
+                                description: Min number of handles
+                              maxHandles:
+                                type: number
+                                description: Max number of handles
+                      labelInstruction:
+                        type: string
+                        description: label instruction type
+                      frameNumberMapping:
+                        type: array
+                        description: The frameNumberMapping
+                        items: {}
+                      metaData:
+                        type: object
+                        properties:
+                          frameRange:
+                            type: object
+                            properties:
+                              startFrameIndex:
+                                type: number
+                                description: The first frame number of the frame range.
+                              endFrameIndex:
+                                type: number
+                                description: The last frame number of the frame range.
+                          frameSkip:
+                            type: number
+                            description: Number of frames to skip
+                          startFrameNumber:
+                            type: number
+                            description: Start framenumber
+                      createdAt:
+                        type: string
+                        description: Task creation date
+                      video:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: The id of the video.
+                          name:
+                            type: string
+                            description: The name of the video.
+                          metaData:
+                            type: object
+                            properties:
+                              duration:
+                                type: number
+                                description: The duration of the video (in seconds).
+                              height:
+                                type: number
+                                description: The height of the video (in pixels).
+                              width:
+                                type: number
+                                description: The width of the video (in pixels).
+                            description: The meta data of the video.
+                      project:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: Project ID
+                          name:
+                            type: string
+                            description: Project Name
+                          taskCount:
+                            type: number
+                            description: Number of total tasks inside all projects
+                          taskFinishedCount:
+                            type: number
+                            description: Number of total finished tasks inside all projects
+                          totalLabelingTimeInSeconds:
+                            type: number
+                            description: Seconds spend by users in this project
+                      users:
+                        type: array
+                        items: {}
+      summary: Get a list of all tasks
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: project
+          in: query
+          description: Task list for project id
+          required: true
+          type: string
+        - name: offset
+          in: query
+          description: Set an offset
+          required: false
+          type: number
+        - name: limit
+          in: query
+          description: Limit the number is tasks
+          required: false
+          type: number
+        - name: taskStatus
+          in: query
+          description: Fetch only tasks with a given status
+          required: false
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{id}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 05c1a74d8eda4a16a355519c0f002ee6
+                descriptionTitle: Identify the person
+                descriptionText: >-
+                  How is the view on the person? Which side does one see from
+                  the person and from which side is the person entering the
+                  screen?
+                requiredImageTypes:
+                  - sourceJpg
+                status:
+                  preprocessing: done
+                  labeling: in_progress
+                taskType: object-labeling
+                drawingToolOptions:
+                  pedestrian:
+                    minimalHeight: 22
+                  cuboid:
+                    minimalHeight: 15
+                  polygon:
+                    minHandles: 3
+                    maxHandles: 15
+                labelInstruction: miscellaneous
+                frameNumberMapping:
+                  - '3'
+                metaData:
+                  frameRange:
+                    startFrameIndex: 1
+                    endFrameIndex: 23
+                  frameSkip: 1
+                  startFrameNumber: 22
+                createdAt: '2017-05-16T12:15:01+0200'
+                video:
+                  id: 16b00780792d045c496513f01f006f09
+                  name: example.avi
+                  metaData:
+                    duration: 47.23
+                    height: 480
+                    width: 640
+                project:
+                  id: 36047d429d50548893be41c6880632fd
+                  name: Pedestrian Labeling
+                  taskCount: 5
+                  taskFinishedCount: 1
+                  totalLabelingTimeInSeconds: 3124
+                users:
+                  - id: 1
+                    _rev: 1
+                    username: user
+                    email: user@example.com
+                    enabled: true
+                    lastLogin: '2016-01-15T15:42:41+0100'
+                    locked: false
+                    roles:
+                      - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The id of the task.
+                  descriptionTitle:
+                    type: string
+                    description: Title of the Task
+                  descriptionText:
+                    type: string
+                    description: Task description
+                  requiredImageTypes:
+                    type: array
+                    description: List of the required images types
+                    items: {}
+                  status:
+                    type: object
+                    properties:
+                      preprocessing:
+                        type: string
+                        description: status of the preprocessing type
+                      labeling:
+                        type: string
+                        description: status of the labeling type
+                  taskType:
+                    type: string
+                    description: Task type
+                  drawingToolOptions:
+                    type: object
+                    properties:
+                      pedestrian:
+                        type: object
+                        properties:
+                          minimalHeight:
+                            type: number
+                            description: The minimal pedestrian height
+                      cuboid:
+                        type: object
+                        properties:
+                          minimalHeight:
+                            type: number
+                            description: The minimal cuboid height
+                      polygon:
+                        type: object
+                        properties:
+                          minHandles:
+                            type: number
+                            description: Min number of handles
+                          maxHandles:
+                            type: number
+                            description: Max number of handles
+                  labelInstruction:
+                    type: string
+                    description: label instruction type
+                  frameNumberMapping:
+                    type: array
+                    description: The frameNumberMapping
+                    items: {}
+                  metaData:
+                    type: object
+                    properties:
+                      frameRange:
+                        type: object
+                        properties:
+                          startFrameIndex:
+                            type: number
+                            description: The first frame number of the frame range.
+                          endFrameIndex:
+                            type: number
+                            description: The last frame number of the frame range.
+                      frameSkip:
+                        type: number
+                        description: Number of frames to skip
+                      startFrameNumber:
+                        type: number
+                        description: Start framenumber
+                  createdAt:
+                    type: string
+                    description: Task creation date
+                  video:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The id of the video.
+                      name:
+                        type: string
+                        description: The name of the video.
+                      metaData:
+                        type: object
+                        properties:
+                          duration:
+                            type: number
+                            description: The duration of the video (in seconds).
+                          height:
+                            type: number
+                            description: The height of the video (in pixels).
+                          width:
+                            type: number
+                            description: The width of the video (in pixels).
+                        description: The meta data of the video.
+                  project:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Project ID
+                      name:
+                        type: string
+                        description: Project Name
+                      taskCount:
+                        type: number
+                        description: Number of total tasks inside all projects
+                      taskFinishedCount:
+                        type: number
+                        description: Number of total finished tasks inside all projects
+                      totalLabelingTimeInSeconds:
+                        type: number
+                        description: Seconds spend by users in this project
+                  users:
+                    type: array
+                    items: {}
+      summary: Get task
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: id
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/frameLocations/{type}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                - frameNumber: 1
+                  url: 'https://backend/path/to/frame'
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items: {}
+      summary: Get frame locations
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+        - name: type
+          in: path
+          description: The image type.
+          required: true
+          type: string
+        - name: offset
+          in: query
+          description: >-
+            The offset relative to the startFrameIndex of the frameRange of the
+            task.
+          required: false
+          type: number
+        - name: limit
+          in: query
+          description: The maximum number of frameLocations that should be returned.
+          required: false
+          type: number
+      produces:
+        - application/json
+  '/api/v1/task/{id}/labelStructure':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                structure:
+                  name: root
+                  children:
+                    name: pedestrian
+                    children: ...
+                annotation:
+                  pedestrian:
+                    response: Pedestrian
+                    iconClass: icon-area-residential
+                  cyclist:
+                    response: Cyclist
+                    iconClass: icon-area-residential
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  structure:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      children:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          children:
+                            type: string
+                  annotation:
+                    type: object
+                    properties:
+                      pedestrian:
+                        type: object
+                        properties:
+                          response:
+                            type: string
+                          iconClass:
+                            type: string
+                      cyclist:
+                        type: object
+                        properties:
+                          response:
+                            type: string
+                          iconClass:
+                            type: string
+      summary: Get Structure
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: id
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/user/{userId}/assign':
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Assign a LabelingTask to a user
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - &ref_0
+          name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+        - &ref_1
+          name: userId
+          in: path
+          description: The id of the user.
+          required: true
+          type: string
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Delete a LabelingTask assignment
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - *ref_0
+        - *ref_1
+  '/api/v1/task/{taskId}/status/done':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Set Status to done
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+  '/api/v1/task/{taskId}/status/todo':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Set Status to todo
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+  '/api/v1/task/{taskId}/status/begin':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Set Status to begin
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+  '/api/v1/task/{taskId}/status/reopen':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Set Status to reopen
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+  '/api/v1/task/{taskId}/status/in_progress':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Set Status to in_progress
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+  /api/v1/projectCount:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                done: 20
+                preprocessing: 30
+                todo: 40
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  done:
+                    type: number
+                    description: Number of done jobs
+                  preprocessing:
+                    type: number
+                    description: Number of preprocessing jobs
+                  todo:
+                    type: number
+                    description: Number of todo jobs
+      summary: Sum of Tasks
+      description: ''
+      tags:
+        - Task
+      parameters: []
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/attention/enable':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Set attention flag to true
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/attention/disable':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Set attention flag to false
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/phase':
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Change the Task Phase
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/task/{taskId}/replication':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                taskId: 05c1a74d8eda4a16a355519c0f003504
+                databaseName: >-
+                  taskdb-project-303e4737cb1ea602d0dfea44ce00b37f-task-303e4737cb1ea602d0dfea44ce02c5e3
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  taskId:
+                    type: string
+                  databaseName:
+                    type: string
+      summary: Get the Task Replication DB
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: taskId
+          in: path
+          description: The id of the task-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/taskCount/{projectId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                preprocessing:
+                  todo: '0'
+                  in_progress: '0'
+                  done: '0'
+                  waiting_for_precondition: '0'
+                  failed: '0'
+                labeling:
+                  todo: '0'
+                  in_progress: '0'
+                  done: '0'
+                  waiting_for_precondition: '0'
+                  failed: '0'
+                review:
+                  todo: '0'
+                  in_progress: '0'
+                  done: '0'
+                  waiting_for_precondition: '0'
+                  failed: '0'
+                revision:
+                  todo: '0'
+                  in_progress: '0'
+                  done: '0'
+                  waiting_for_precondition: '0'
+                  failed: '0'
+                all_phases_done: '0'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  preprocessing:
+                    type: object
+                    properties:
+                      todo:
+                        type: string
+                      in_progress:
+                        type: string
+                      done:
+                        type: string
+                      waiting_for_precondition:
+                        type: string
+                      failed:
+                        type: string
+                  labeling:
+                    type: object
+                    properties:
+                      todo:
+                        type: string
+                      in_progress:
+                        type: string
+                      done:
+                        type: string
+                      waiting_for_precondition:
+                        type: string
+                      failed:
+                        type: string
+                  review:
+                    type: object
+                    properties:
+                      todo:
+                        type: string
+                      in_progress:
+                        type: string
+                      done:
+                        type: string
+                      waiting_for_precondition:
+                        type: string
+                      failed:
+                        type: string
+                  revision:
+                    type: object
+                    properties:
+                      todo:
+                        type: string
+                      in_progress:
+                        type: string
+                      done:
+                        type: string
+                      waiting_for_precondition:
+                        type: string
+                      failed:
+                        type: string
+                  all_phases_done:
+                    type: string
+      summary: Get the TaskCount for a Project
+      description: ''
+      tags:
+        - Task
+      parameters:
+        - name: projectIdId
+          in: body
+          description: The id of the project-entity.
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
+  /api/v1/currentUser/profile:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 1
+                username: user
+                email: user@example.com
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    description: The id of the current user.
+                  username:
+                    type: string
+                    description: The username of the current user.
+                  email:
+                    type: string
+                    description: The email address of the current user.
+      summary: Get the current user profile
+      description: Get the current logged in users profile
+      tags:
+        - Current User
+      parameters: []
+      produces:
+        - application/json
+  /api/v1/currentUser/profile/picture:
+    get:
+      responses:
+        '200':
+          description: The returned data may be any image type.
+          headers: {}
+          examples:
+            image/*: ''
+      summary: Current user Profile Picture
+      description: Get the current logged in users profile picture
+      tags:
+        - Current User
+      parameters: []
+      produces:
+        - image/*
+  /api/v1/currentUser/password:
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Change own password
+      description: Change the password of the current logged in user
+      tags:
+        - Current User
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+      produces:
+        - application/json
+  /api/v1/currentUser/permissions:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                canViewStatsButton: true
+                canViewUserListButton: true
+                canViewVideoUploadButton: true
+                canViewReopenButton: true
+                canChangeUserTaskAssignment: true
+                canViewProjectButton: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  canViewStatsButton:
+                    type: boolean
+                  canViewUserListButton:
+                    type: boolean
+                  canViewVideoUploadButton:
+                    type: boolean
+                  canViewReopenButton:
+                    type: boolean
+                  canChangeUserTaskAssignment:
+                    type: boolean
+                  canViewProjectButton:
+                    type: boolean
+      summary: Get user permissions
+      description: Get the current logged in users permission list.
+      tags:
+        - Current User
+      parameters: []
+      produces:
+        - application/json
+  /api/v1/currentUser/organisations:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                - id: 36047d429d50548893be41c6880632ee
+                  rev: 1-36047d429d50548893be41c6880632gg
+                  name: Some Organisation
+                  quota: 0
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items: {}
+      summary: Get users organisations
+      description: Get all assigned organisations for the current logged in user
+      tags:
+        - Current User
+      parameters: []
+      produces:
+        - application/json
+  /api/v1/user:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                user:
+                  - id: 1
+                    _rev: 1
+                    username: user
+                    email: user@example.com
+                    enabled: true
+                    lastLogin: '2016-01-15T15:42:41+0100'
+                    locked: false
+                    roles:
+                      - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  user:
+                    type: array
+                    items: {}
+      summary: Get a list of all users
+      description: ''
+      tags:
+        - Users
+      parameters: []
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                user:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Add a new user
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: number
+                description: The id of the current user.
+              _rev:
+                type: number
+                description: Document revision.
+              username:
+                type: string
+                description: The username of the current user.
+              email:
+                type: string
+                description: The email address of the current user.
+              enabled:
+                type: boolean
+                description: User enabled or not
+              lastLogin:
+                type: string
+              locked:
+                type: boolean
+              roles:
+                type: array
+      produces:
+        - application/json
+  '/api/v1/user/{id}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                user:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Get a user
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Edit a user
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user-entity.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: number
+                description: The id of the current user.
+              _rev:
+                type: number
+                description: Document revision.
+              username:
+                type: string
+                description: The username of the current user.
+              email:
+                type: string
+                description: The email address of the current user.
+              enabled:
+                type: boolean
+                description: User enabled or not
+              lastLogin:
+                type: string
+              locked:
+                type: boolean
+              roles:
+                type: array
+      produces:
+        - application/json
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Delete a user
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/user/{userId}/assign':
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              success: true
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+      summary: Assign from Organisation
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: organisationId
+          in: path
+          description: The id of the Organisation.
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: The id of the User.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/user/{userId}/unassign':
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              success: true
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+      summary: Unassign from Organisation
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: organisationId
+          in: path
+          description: The id of the Organisation.
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: The id of the User.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/users':
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                user:
+                  - id: 1
+                    _rev: 1
+                    username: user
+                    email: user@example.com
+                    enabled: true
+                    lastLogin: '2016-01-15T15:42:41+0100'
+                    locked: false
+                    roles:
+                      - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  user:
+                    type: array
+                    items: {}
+      summary: Get all user for organisation
+      description: ''
+      tags:
+        - Users
+      parameters:
+        - name: organisationId
+          in: path
+          description: The id of the Organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result Project: ''
+          schema:
+            type: object
+            properties:
+              result Project:
+                type: string
+      summary: Get a a single project
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Delete a Project
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project?limit={limit}&offset={offset}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              totalRows: 5
+              result array:
+                id: 36047d429d50548893be41c6880632fd
+                name: Pedestrian Labeling
+                taskCount: 5
+                taskFinishedCount: 1
+                totalLabelingTimeInSeconds: 3124
+          schema:
+            type: object
+            properties:
+              totalRows:
+                type: number
+                description: Total Number of documents in the database
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Project ID
+                  name:
+                    type: string
+                    description: Project Name
+                  taskCount:
+                    type: number
+                    description: Number of total tasks inside all projects
+                  taskFinishedCount:
+                    type: number
+                    description: Number of total finished tasks inside all projects
+                  totalLabelingTimeInSeconds:
+                    type: number
+                    description: Seconds spend by users in this project
+      summary: Get all projects
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: limit
+          in: path
+          description: Limit the result.
+          required: false
+          type: integer
+        - name: offset
+          in: path
+          description: Set an offset.
+          required: false
+          type: integer
+        - name: projectStatus
+          in: body
+          description: Filter list by status.
+          required: false
+          schema:
+            type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 36047d429d50548893be41c6880632fd
+                name: Pedestrian Labeling
+                taskCount: 5
+                taskFinishedCount: 1
+                totalLabelingTimeInSeconds: 3124
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Project ID
+                  name:
+                    type: string
+                    description: Project Name
+                  taskCount:
+                    type: number
+                    description: Number of total tasks inside all projects
+                  taskFinishedCount:
+                    type: number
+                    description: Number of total finished tasks inside all projects
+                  totalLabelingTimeInSeconds:
+                    type: number
+                    description: Seconds spend by users in this project
+      summary: Create Project
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Project name
+              review:
+                type: boolean
+                description: Review process?
+              frameSkip:
+                type: number
+                description: Number of frame skips
+              startFrameNumber:
+                type: number
+                description: Start frame number
+              splitEach:
+                type: number
+                description: Split task every x sec
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/export':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: '``'
+                projectId: 16b00780792d045c496513f01f006f09
+                filename: csv.zip
+                taskIds:
+                  - 583c0838ea5f72671b1b21605c3d6b47
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  projectId:
+                    type: string
+                    description: project id
+                  filename:
+                    type: string
+                    description: export filename
+                  taskIds:
+                    type: array
+                    description: included task ids for this export
+                    items: {}
+      summary: List all finished exports
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/export/{projectExportId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+      summary: Download Export
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+        - name: projectExportId
+          in: path
+          description: The id of the export.
+          required: true
+          type: string
+  '/api/v1/organisation/{organisationId}/project/{projectId}/export/csv':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              message: Export started
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      summary: Start a new export
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/projectCount':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                done: 20
+                in_progress: 30
+                todo: 40
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  done:
+                    type: number
+                    description: Number of done jobs
+                  in_progress:
+                    type: number
+                    description: Number of in_progress jobs
+                  todo:
+                    type: number
+                    description: Number of todo jobs
+      summary: Sum of Projects
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/status/accept':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result true: ''
+          schema:
+            type: object
+            properties:
+              result true:
+                type: string
+      summary: Set State inProgress
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/status/done':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result true: ''
+          schema:
+            type: object
+            properties:
+              result true:
+                type: string
+      summary: Set State done
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/status/deleted':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Mark Project as deleted
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/delete':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                success: true
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      summary: Delete a project
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/report':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632fd
+                rev: 1-36047d429d50548893be41c6880632fd
+                reportStatus: in_progress
+                projectId: in_315c18731e6a3989d933017a1e47b1dd
+                projectStatus: '``'
+                projectCreatedAt: 1468379894
+                projectMovedToInProgressAt: 1468379894
+                projectMovedToDoneAt: 1468379894
+                numberOfVideosInProject: 130
+                numberOfTasksInProject: 390
+                projectLabelType: '``'
+                projectDueDate: 1468379894
+                numberOfToDoTasks: 0
+                numberOfInProgressTasks: 0
+                numberOfDoneTasks: 390
+                numberOfToDoReviewTasks: 0
+                numberOfInProgressReviewTasks: 0
+                numberOfDoneReviewTasks: 0
+                numberOfToDoRevisionTasks: 0
+                numberOfInProgressRevisionTasks: 0
+                numberOfDoneRevisionTasks: 0
+                numberOfLabeledThingInFrames: 15783
+                numberOfLabeledThingInFrameClasses: 32819
+                numberOfLabeledThings: 4537
+                numberOfLabeledThingClasses: 4537
+                totalTime: 460990
+                totalLabelingTime: 0
+                totalReviewTime: 0
+                totalRevisionTime: 0
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Labeling Group ID
+                  rev:
+                    type: string
+                    description: The Revision of the Labeling Group
+                  reportStatus:
+                    type: string
+                  projectId:
+                    type: string
+                  projectStatus:
+                    type: string
+                  projectCreatedAt:
+                    type: number
+                  projectMovedToInProgressAt:
+                    type: number
+                  projectMovedToDoneAt:
+                    type: number
+                  numberOfVideosInProject:
+                    type: number
+                  numberOfTasksInProject:
+                    type: number
+                  projectLabelType:
+                    type: string
+                  projectDueDate:
+                    type: number
+                  numberOfToDoTasks:
+                    type: number
+                  numberOfInProgressTasks:
+                    type: number
+                  numberOfDoneTasks:
+                    type: number
+                  numberOfToDoReviewTasks:
+                    type: number
+                  numberOfInProgressReviewTasks:
+                    type: number
+                  numberOfDoneReviewTasks:
+                    type: number
+                  numberOfToDoRevisionTasks:
+                    type: number
+                  numberOfInProgressRevisionTasks:
+                    type: number
+                  numberOfDoneRevisionTasks:
+                    type: number
+                  numberOfLabeledThingInFrames:
+                    type: number
+                  numberOfLabeledThingInFrameClasses:
+                    type: number
+                  numberOfLabeledThings:
+                    type: number
+                  numberOfLabeledThingClasses:
+                    type: number
+                  totalTime:
+                    type: number
+                  totalLabelingTime:
+                    type: number
+                  totalReviewTime:
+                    type: number
+                  totalRevisionTime:
+                    type: number
+      summary: Create New Report
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632fd
+                rev: 1-36047d429d50548893be41c6880632fd
+                reportStatus: in_progress
+                projectId: in_315c18731e6a3989d933017a1e47b1dd
+                projectStatus: '``'
+                projectCreatedAt: 1468379894
+                projectMovedToInProgressAt: 1468379894
+                projectMovedToDoneAt: 1468379894
+                numberOfVideosInProject: 130
+                numberOfTasksInProject: 390
+                projectLabelType: '``'
+                projectDueDate: 1468379894
+                numberOfToDoTasks: 0
+                numberOfInProgressTasks: 0
+                numberOfDoneTasks: 390
+                numberOfToDoReviewTasks: 0
+                numberOfInProgressReviewTasks: 0
+                numberOfDoneReviewTasks: 0
+                numberOfToDoRevisionTasks: 0
+                numberOfInProgressRevisionTasks: 0
+                numberOfDoneRevisionTasks: 0
+                numberOfLabeledThingInFrames: 15783
+                numberOfLabeledThingInFrameClasses: 32819
+                numberOfLabeledThings: 4537
+                numberOfLabeledThingClasses: 4537
+                totalTime: 460990
+                totalLabelingTime: 0
+                totalReviewTime: 0
+                totalRevisionTime: 0
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Labeling Group ID
+                  rev:
+                    type: string
+                    description: The Revision of the Labeling Group
+                  reportStatus:
+                    type: string
+                  projectId:
+                    type: string
+                  projectStatus:
+                    type: string
+                  projectCreatedAt:
+                    type: number
+                  projectMovedToInProgressAt:
+                    type: number
+                  projectMovedToDoneAt:
+                    type: number
+                  numberOfVideosInProject:
+                    type: number
+                  numberOfTasksInProject:
+                    type: number
+                  projectLabelType:
+                    type: string
+                  projectDueDate:
+                    type: number
+                  numberOfToDoTasks:
+                    type: number
+                  numberOfInProgressTasks:
+                    type: number
+                  numberOfDoneTasks:
+                    type: number
+                  numberOfToDoReviewTasks:
+                    type: number
+                  numberOfInProgressReviewTasks:
+                    type: number
+                  numberOfDoneReviewTasks:
+                    type: number
+                  numberOfToDoRevisionTasks:
+                    type: number
+                  numberOfInProgressRevisionTasks:
+                    type: number
+                  numberOfDoneRevisionTasks:
+                    type: number
+                  numberOfLabeledThingInFrames:
+                    type: number
+                  numberOfLabeledThingInFrameClasses:
+                    type: number
+                  numberOfLabeledThings:
+                    type: number
+                  numberOfLabeledThingClasses:
+                    type: number
+                  totalTime:
+                    type: number
+                  totalLabelingTime:
+                    type: number
+                  totalReviewTime:
+                    type: number
+                  totalRevisionTime:
+                    type: number
+      summary: Reports by Project
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/report/{reportId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632fd
+                rev: 1-36047d429d50548893be41c6880632fd
+                reportStatus: in_progress
+                projectId: in_315c18731e6a3989d933017a1e47b1dd
+                projectStatus: '``'
+                projectCreatedAt: 1468379894
+                projectMovedToInProgressAt: 1468379894
+                projectMovedToDoneAt: 1468379894
+                numberOfVideosInProject: 130
+                numberOfTasksInProject: 390
+                projectLabelType: '``'
+                projectDueDate: 1468379894
+                numberOfToDoTasks: 0
+                numberOfInProgressTasks: 0
+                numberOfDoneTasks: 390
+                numberOfToDoReviewTasks: 0
+                numberOfInProgressReviewTasks: 0
+                numberOfDoneReviewTasks: 0
+                numberOfToDoRevisionTasks: 0
+                numberOfInProgressRevisionTasks: 0
+                numberOfDoneRevisionTasks: 0
+                numberOfLabeledThingInFrames: 15783
+                numberOfLabeledThingInFrameClasses: 32819
+                numberOfLabeledThings: 4537
+                numberOfLabeledThingClasses: 4537
+                totalTime: 460990
+                totalLabelingTime: 0
+                totalReviewTime: 0
+                totalRevisionTime: 0
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Labeling Group ID
+                  rev:
+                    type: string
+                    description: The Revision of the Labeling Group
+                  reportStatus:
+                    type: string
+                  projectId:
+                    type: string
+                  projectStatus:
+                    type: string
+                  projectCreatedAt:
+                    type: number
+                  projectMovedToInProgressAt:
+                    type: number
+                  projectMovedToDoneAt:
+                    type: number
+                  numberOfVideosInProject:
+                    type: number
+                  numberOfTasksInProject:
+                    type: number
+                  projectLabelType:
+                    type: string
+                  projectDueDate:
+                    type: number
+                  numberOfToDoTasks:
+                    type: number
+                  numberOfInProgressTasks:
+                    type: number
+                  numberOfDoneTasks:
+                    type: number
+                  numberOfToDoReviewTasks:
+                    type: number
+                  numberOfInProgressReviewTasks:
+                    type: number
+                  numberOfDoneReviewTasks:
+                    type: number
+                  numberOfToDoRevisionTasks:
+                    type: number
+                  numberOfInProgressRevisionTasks:
+                    type: number
+                  numberOfDoneRevisionTasks:
+                    type: number
+                  numberOfLabeledThingInFrames:
+                    type: number
+                  numberOfLabeledThingInFrameClasses:
+                    type: number
+                  numberOfLabeledThings:
+                    type: number
+                  numberOfLabeledThingClasses:
+                    type: number
+                  totalTime:
+                    type: number
+                  totalLabelingTime:
+                    type: number
+                  totalReviewTime:
+                    type: number
+                  totalRevisionTime:
+                    type: number
+      summary: Report by id
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+        - name: reportId
+          in: path
+          description: The id of the report.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/assign':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result Project: ''
+          schema:
+            type: object
+            properties:
+              result Project:
+                type: string
+      summary: Assign Project to Coordinator
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+        - name: assignedLabelCoordinatorId
+          in: body
+          description: The id of the coordinator user.
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/assignLabelGroup':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result Project: ''
+          schema:
+            type: object
+            properties:
+              result Project:
+                type: string
+      summary: Change the LabelGroup assignment
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+        - name: labelGroupId
+          in: body
+          description: The id of the LabelGroup.
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/batchUpload/{projectId}':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples: {}
+        '400':
+          description: Bad Request
+          headers: {}
+          examples: {}
+        '409':
+          description: Conflict
+          headers: {}
+          examples: {}
+        '500':
+          description: Internal Server Error
+          headers: {}
+          examples: {}
+      summary: Batch upload chunk
+      description: >-
+        This route provides an api endpoint to upload file chunks for the flow
+        library.
+
+        The POST body is not documented here, please have a look at
+        https://github.com/flowjs/flow-php-server.
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+  '/api/v1/organisation/{organisationId}/project/batchUpload/{projectId}/complete':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                taskIds: []
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  taskIds: {}
+      summary: Batch upload complete
+      description: >-
+        This route creates the tasks for all uploaded videos of the given
+        project once all chunks were uploaded completely.
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/project/{projectId}/attentionTasks':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                tasks array:
+                  id: 05c1a74d8eda4a16a355519c0f002ee6
+                  descriptionTitle: Identify the person
+                  descriptionText: >-
+                    How is the view on the person? Which side does one see from
+                    the person and from which side is the person entering the
+                    screen?
+                  requiredImageTypes:
+                    - sourceJpg
+                  status:
+                    preprocessing: done
+                    labeling: in_progress
+                  taskType: object-labeling
+                  drawingToolOptions:
+                    pedestrian:
+                      minimalHeight: 22
+                    cuboid:
+                      minimalHeight: 15
+                    polygon:
+                      minHandles: 3
+                      maxHandles: 15
+                  labelInstruction: miscellaneous
+                  frameNumberMapping:
+                    - '3'
+                  metaData:
+                    frameRange:
+                      startFrameIndex: 1
+                      endFrameIndex: 23
+                    frameSkip: 1
+                    startFrameNumber: 22
+                  createdAt: '2017-05-16T12:15:01+0200'
+                  video:
+                    id: 16b00780792d045c496513f01f006f09
+                    name: example.avi
+                    metaData:
+                      duration: 47.23
+                      height: 480
+                      width: 640
+                  project:
+                    id: 36047d429d50548893be41c6880632fd
+                    name: Pedestrian Labeling
+                    taskCount: 5
+                    taskFinishedCount: 1
+                    totalLabelingTimeInSeconds: 3124
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+                users array:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+                totalRows: '5'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  tasks array:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The id of the task.
+                      descriptionTitle:
+                        type: string
+                        description: Title of the Task
+                      descriptionText:
+                        type: string
+                        description: Task description
+                      requiredImageTypes:
+                        type: array
+                        description: List of the required images types
+                        items: {}
+                      status:
+                        type: object
+                        properties:
+                          preprocessing:
+                            type: string
+                            description: status of the preprocessing type
+                          labeling:
+                            type: string
+                            description: status of the labeling type
+                      taskType:
+                        type: string
+                        description: Task type
+                      drawingToolOptions:
+                        type: object
+                        properties:
+                          pedestrian:
+                            type: object
+                            properties:
+                              minimalHeight:
+                                type: number
+                                description: The minimal pedestrian height
+                          cuboid:
+                            type: object
+                            properties:
+                              minimalHeight:
+                                type: number
+                                description: The minimal cuboid height
+                          polygon:
+                            type: object
+                            properties:
+                              minHandles:
+                                type: number
+                                description: Min number of handles
+                              maxHandles:
+                                type: number
+                                description: Max number of handles
+                      labelInstruction:
+                        type: string
+                        description: label instruction type
+                      frameNumberMapping:
+                        type: array
+                        description: The frameNumberMapping
+                        items: {}
+                      metaData:
+                        type: object
+                        properties:
+                          frameRange:
+                            type: object
+                            properties:
+                              startFrameIndex:
+                                type: number
+                                description: The first frame number of the frame range.
+                              endFrameIndex:
+                                type: number
+                                description: The last frame number of the frame range.
+                          frameSkip:
+                            type: number
+                            description: Number of frames to skip
+                          startFrameNumber:
+                            type: number
+                            description: Start framenumber
+                      createdAt:
+                        type: string
+                        description: Task creation date
+                      video:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: The id of the video.
+                          name:
+                            type: string
+                            description: The name of the video.
+                          metaData:
+                            type: object
+                            properties:
+                              duration:
+                                type: number
+                                description: The duration of the video (in seconds).
+                              height:
+                                type: number
+                                description: The height of the video (in pixels).
+                              width:
+                                type: number
+                                description: The width of the video (in pixels).
+                            description: The meta data of the video.
+                      project:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: Project ID
+                          name:
+                            type: string
+                            description: Project Name
+                          taskCount:
+                            type: number
+                            description: Number of total tasks inside all projects
+                          taskFinishedCount:
+                            type: number
+                            description: Number of total finished tasks inside all projects
+                          totalLabelingTimeInSeconds:
+                            type: number
+                            description: Seconds spend by users in this project
+                      users:
+                        type: array
+                        items: {}
+                  users array:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+                  totalRows:
+                    type: string
+      summary: Get all Task with attention Flagging
+      description: ''
+      tags:
+        - Projects
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: projectId
+          in: path
+          description: The id of the project.
+          required: true
+          type: string
+        - name: offset
+          in: body
+          description: Set an offset
+          required: false
+          schema:
+            type: number
+        - name: limit
+          in: body
+          description: Limit the number is tasks
+          required: false
+          schema:
+            type: number
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/labelingGroup':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              totalRows: 0
+              result:
+                labelingGroups array:
+                  id: 36047d429d50548893be41c6880632fd
+                  rev: 1-36047d429d50548893be41c6880632fd
+                  coordinators:
+                    - 672b8a8a6b3103f25318a5c4be00a325
+                  labelers:
+                    - 43367aa94690546d066c6e25b26de099
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+                users array:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              totalRows:
+                type: number
+              result:
+                type: object
+                properties:
+                  labelingGroups array:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Labeling Group ID
+                      rev:
+                        type: string
+                        description: The Revision of the Labeling Group
+                      coordinators:
+                        type: array
+                        description: Array of the coordinator IDs
+                        items: {}
+                      labelers:
+                        type: array
+                        description: Array of the labelers IDs
+                        items: {}
+                      users:
+                        type: array
+                        items: {}
+                  users array:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Get a Labeling Group List
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                labelingGroups:
+                  id: 36047d429d50548893be41c6880632fd
+                  rev: 1-36047d429d50548893be41c6880632fd
+                  coordinators:
+                    - 672b8a8a6b3103f25318a5c4be00a325
+                  labelers:
+                    - 43367aa94690546d066c6e25b26de099
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+                users array:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  labelingGroups:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Labeling Group ID
+                      rev:
+                        type: string
+                        description: The Revision of the Labeling Group
+                      coordinators:
+                        type: array
+                        description: Array of the coordinator IDs
+                        items: {}
+                      labelers:
+                        type: array
+                        description: Array of the labelers IDs
+                        items: {}
+                      users:
+                        type: array
+                        items: {}
+                  users array:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Add a new Labeling Group
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              coordinators:
+                type: array
+              labeler:
+                type: array
+              name:
+                type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/labelingGroup/{labelingGroupId}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                labelingGroups:
+                  id: 36047d429d50548893be41c6880632fd
+                  rev: 1-36047d429d50548893be41c6880632fd
+                  coordinators:
+                    - 672b8a8a6b3103f25318a5c4be00a325
+                  labelers:
+                    - 43367aa94690546d066c6e25b26de099
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+                users array:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  labelingGroups:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Labeling Group ID
+                      rev:
+                        type: string
+                        description: The Revision of the Labeling Group
+                      coordinators:
+                        type: array
+                        description: Array of the coordinator IDs
+                        items: {}
+                      labelers:
+                        type: array
+                        description: Array of the labelers IDs
+                        items: {}
+                      users:
+                        type: array
+                        items: {}
+                  users array:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Get a single Labeling Group
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: labelingGroupId
+          in: path
+          description: The id of the labeling group.
+          required: true
+          type: string
+      produces:
+        - application/json
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                labelingGroups:
+                  id: 36047d429d50548893be41c6880632fd
+                  rev: 1-36047d429d50548893be41c6880632fd
+                  coordinators:
+                    - 672b8a8a6b3103f25318a5c4be00a325
+                  labelers:
+                    - 43367aa94690546d066c6e25b26de099
+                  users:
+                    - id: 1
+                      _rev: 1
+                      username: user
+                      email: user@example.com
+                      enabled: true
+                      lastLogin: '2016-01-15T15:42:41+0100'
+                      locked: false
+                      roles:
+                        - '[]'
+                users array:
+                  id: 1
+                  _rev: 1
+                  username: user
+                  email: user@example.com
+                  enabled: true
+                  lastLogin: '2016-01-15T15:42:41+0100'
+                  locked: false
+                  roles:
+                    - '[]'
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  labelingGroups:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Labeling Group ID
+                      rev:
+                        type: string
+                        description: The Revision of the Labeling Group
+                      coordinators:
+                        type: array
+                        description: Array of the coordinator IDs
+                        items: {}
+                      labelers:
+                        type: array
+                        description: Array of the labelers IDs
+                        items: {}
+                      users:
+                        type: array
+                        items: {}
+                  users array:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        description: The id of the current user.
+                      _rev:
+                        type: number
+                        description: Document revision.
+                      username:
+                        type: string
+                        description: The username of the current user.
+                      email:
+                        type: string
+                        description: The email address of the current user.
+                      enabled:
+                        type: boolean
+                        description: User enabled or not
+                      lastLogin:
+                        type: string
+                      locked:
+                        type: boolean
+                      roles:
+                        type: array
+                        items: {}
+      summary: Update a Labeling Group
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: labelingGroupId
+          in: path
+          description: The id of the labeling group.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              _rev:
+                type: string
+              coordinators:
+                type: array
+              labeler:
+                type: array
+              name:
+                type: string
+      produces:
+        - application/json
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result: 'true'
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+      summary: Delete a Labeling Group
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: labelingGroupId
+          in: path
+          description: The id of the labeling group.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/labelingGroup/user/groups':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632fd
+                rev: 1-36047d429d50548893be41c6880632fd
+                coordinators:
+                  - 672b8a8a6b3103f25318a5c4be00a325
+                labelers:
+                  - 43367aa94690546d066c6e25b26de099
+                users:
+                  - id: 1
+                    _rev: 1
+                    username: user
+                    email: user@example.com
+                    enabled: true
+                    lastLogin: '2016-01-15T15:42:41+0100'
+                    locked: false
+                    roles:
+                      - '[]'
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Labeling Group ID
+                  rev:
+                    type: string
+                    description: The Revision of the Labeling Group
+                  coordinators:
+                    type: array
+                    description: Array of the coordinator IDs
+                    items: {}
+                  labelers:
+                    type: array
+                    description: Array of the labelers IDs
+                    items: {}
+                  users:
+                    type: array
+                    items: {}
+      summary: My Labeling Group
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/labelingGroup/user/labelManagers':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 36047d429d50548893be41c6880632fd
+                username: Christian
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The id of the user.
+                  username:
+                    type: string
+                    description: username of the user
+      summary: Get all Coordinators
+      description: ''
+      tags:
+        - Labeling Groups
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/taskConfiguration':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                array:
+                  id: 02b531ffe2c35ee965e4b339a61c7ad2
+                  name: Foobar
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  array:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Id of this task configuration
+                      name:
+                        type: string
+                        description: name of this task configuration
+      summary: Own Task Configurations
+      description: ''
+      tags:
+        - Task Configuration
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              id: 36047d429d50548893be41c6880632fd
+              rev: 1-36047d429d50548893be41c6880632fd
+              json:
+                - '[]'
+              name: Some Name
+              timestamp: 234523523
+              userId: 583c0838ea5f72671b1b21605c3d6b47
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Labeling Group ID
+              rev:
+                type: string
+                description: The Revision of the Labeling Group
+              json:
+                type: array
+                description: Instruction and Shape defaults
+                items: {}
+              name:
+                type: string
+                description: Name of this configuration file
+              timestamp:
+                type: number
+                description: Creation Date for this config
+              userId:
+                type: string
+                description: Creators UserId
+      summary: Create a new task configuration
+      description: ''
+      tags:
+        - Task Configuration
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                description: XML Configuration file
+              name:
+                type: string
+                description: Some name for this configuration
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/taskConfiguration/{id}':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                array:
+                  id: 02b531ffe2c35ee965e4b339a61c7ad2
+                  name: Foobar
+                  filename: file.xml
+                  userId: file.xml
+                  type: requirements
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  array:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Id of this task configuration
+                      name:
+                        type: string
+                        description: name of this task configuration
+                      filename:
+                        type: string
+                        description: filename
+                      userId:
+                        type: string
+                        description: owner user id
+                      type:
+                        type: string
+                        description: Configuration type requirements/simple
+      summary: Get a task configuration
+      description: ''
+      tags:
+        - Task Configuration
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: The id of the configuration-entity.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/taskConfiguration/{id}/file':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/xml: ''
+      summary: Get a task configuration
+      description: ''
+      tags:
+        - Task Configuration
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: The id of the configuration-entity.
+          required: true
+          type: string
+      produces:
+        - application/xml
+  '/api/v1/organisation/{organisationId}/taskConfiguration/requirements':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/xml: ''
+          schema:
+            type: object
+            properties:
+              result:
+                type: TaskConfiguration
+      summary: Save a new req. XML file
+      description: ''
+      tags:
+        - Task Configuration
+      parameters:
+        - name: file
+          in: body
+          description: XML Requirements File
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: body
+          description: Name of the requirements file.
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/xml
+  /api/v1/system/queues:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                someQueueName1: 4
+                someQueueName2: 6
+                someQueueName3: 0
+                someQueueName4: 1
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  someQueueName1:
+                    type: number
+                  someQueueName2:
+                    type: number
+                  someQueueName3:
+                    type: number
+                  someQueueName4:
+                    type: number
+      summary: RabbitMQ Queue
+      description: ''
+      tags:
+        - System
+      parameters: []
+      produces:
+        - application/json
+  /api/v1/organisation:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632ee
+                rev: 1-36047d429d50548893be41c6880632gg
+                name: Some Organisation
+                quota: 0
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Organisation ID
+                  rev:
+                    type: string
+                    description: The Revision of the Organisation
+                  name:
+                    type: string
+                    description: Organisation Name
+                  quota:
+                    type: number
+                    description: Quota in bytes. 0 bytes no limit
+      summary: Get an Organisations List
+      description: ''
+      tags:
+        - Organisations
+      parameters: []
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 36047d429d50548893be41c6880632ee
+                rev: 1-36047d429d50548893be41c6880632gg
+                name: Some Organisation
+                quota: 0
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Organisation ID
+                  rev:
+                    type: string
+                    description: The Revision of the Organisation
+                  name:
+                    type: string
+                    description: Organisation Name
+                  quota:
+                    type: number
+                    description: Quota in bytes. 0 bytes no limit
+      summary: Add a new organisation
+      description: ''
+      tags:
+        - Organisations
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              quota:
+                type: number
+              userQuota:
+                type: number
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}':
+    put:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 36047d429d50548893be41c6880632ee
+                rev: 1-36047d429d50548893be41c6880632gg
+                name: Some Organisation
+                quota: 0
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Organisation ID
+                  rev:
+                    type: string
+                    description: The Revision of the Organisation
+                  name:
+                    type: string
+                    description: Organisation Name
+                  quota:
+                    type: number
+                    description: Quota in bytes. 0 bytes no limit
+      summary: Update an organisation
+      description: ''
+      tags:
+        - Organisations
+      parameters:
+        - name: organisationId
+          in: path
+          description: The id of the labeling group.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              _rev:
+                type: string
+              name:
+                type: string
+              quota:
+                type: number
+              userQuota:
+                type: number
+      produces:
+        - application/json
+    delete:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result: 'true'
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+      summary: Delete an organisation
+      description: ''
+      tags:
+        - Organisations
+      parameters:
+        - name: organisationId
+          in: path
+          description: The id of the labeling group.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/projectImport/{uploadId}':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result: array
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+      summary: Upload chunk
+      description: ''
+      tags:
+        - ProjectImporter
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: uploadId
+          in: path
+          description: Random uploadId identifier.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/projectImport/{uploadId}/complete':
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              taskIds: array
+              missing3dVideoCalibrationData: array
+          schema:
+            type: object
+            properties:
+              taskIds:
+                type: string
+              missing3dVideoCalibrationData:
+                type: string
+      summary: Flag upload as complete
+      description: ''
+      tags:
+        - ProjectImporter
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: uploadId
+          in: path
+          description: Random uploadId identifier.
+          required: true
+          type: string
+      produces:
+        - application/json
+  '/api/v1/organisation/{organisationId}/campaign':
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result array:
+                id: 36047d429d50548893be41c6880632ee
+                rev: 1-36047d429d50548893be41c6880632gg
+                name: Some Campaign
+                organisationId: 1e8662640b31b28050a9ab5eafa8371e
+          schema:
+            type: object
+            properties:
+              result array:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Campaign ID
+                  rev:
+                    type: string
+                    description: The Revision of the Campaign
+                  name:
+                    type: string
+                    description: Campaign Name
+                  organisationId:
+                    type: string
+                    description: ID of the Organisation
+      summary: Get the Campaigns for this Organisation
+      description: This route returns all campaigns for a given organisation
+      tags:
+        - Campaign
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+      produces:
+        - application/json
+    post:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              result:
+                id: 36047d429d50548893be41c6880632ee
+                rev: 1-36047d429d50548893be41c6880632gg
+                name: Some Campaign
+                organisationId: 1e8662640b31b28050a9ab5eafa8371e
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Campaign ID
+                  rev:
+                    type: string
+                    description: The Revision of the Campaign
+                  name:
+                    type: string
+                    description: Campaign Name
+                  organisationId:
+                    type: string
+                    description: ID of the Organisation
+      summary: Save a Campaigns for this Organisation
+      description: >-
+        Save a campaign for a given organisation. You don't need to provide an
+        id or _rev.
+      tags:
+        - Campaign
+      parameters:
+        - name: organisationId
+          in: path
+          description: Id of the organisation.
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Campaign ID
+              rev:
+                type: string
+                description: The Revision of the Campaign
+              name:
+                type: string
+                description: Campaign Name
+              organisationId:
+                type: string
+                description: ID of the Organisation
+      produces:
+        - application/json
+definitions:
+  Video Metadata:
+    type: object
+    properties:
+      duration:
+        type: number
+      height:
+        type: number
+      width:
+        type: number
+  FrameRange:
+    type: object
+    properties:
+      startFrameIndex:
+        type: number
+      endFrameIndex:
+        type: number
+  Video:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      metaData:
+        type: Video Metadata
+  Task:
+    type: object
+    properties:
+      id:
+        type: string
+      descriptionTitle:
+        type: string
+      descriptionText:
+        type: string
+      requiredImageTypes:
+        type: array
+        items: {}
+      status:
+        type: object
+      taskType:
+        type: string
+      drawingToolOptions:
+        type: object
+      labelInstruction:
+        type: string
+      frameNumberMapping:
+        type: array
+        items: {}
+      metaData:
+        type: object
+      createdAt:
+        type: string
+      video:
+        type: Video
+      project:
+        type: Project
+      users:
+        type: array
+        items: {}
+  FrameLocation:
+    type: object
+    properties:
+      frameNumber:
+        type: number
+      url:
+        type: string
+  LabeledFrame:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      taskId:
+        type: string
+      frameNumber:
+        type: number
+      classes:
+        type: array
+        items: {}
+      incomplete:
+        type: boolean
+  LabeledThing:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      taskId:
+        type: string
+      frameRange:
+        type: FrameRange
+      classes:
+        type: array
+        items: {}
+      incomplete:
+        type: boolean
+      lineColor:
+        type: string
+  Shape:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      bottomRight:
+        type: object
+      topLeft:
+        type: object
+  LabeledThingInFrame:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      labeledThingId:
+        type: string
+      frameNumber:
+        type: number
+      incomplete:
+        type: boolean
+      ghost:
+        type: boolean
+      classes:
+        type: array
+        items: {}
+      shapes:
+        type: array
+        items: {}
+  Export Started Message:
+    type: object
+    properties:
+      message:
+        type: string
+  CurrentUser:
+    type: object
+    properties:
+      id:
+        type: number
+      username:
+        type: string
+      email:
+        type: string
+  User:
+    type: object
+    properties:
+      id:
+        type: number
+      _rev:
+        type: number
+      username:
+        type: string
+      email:
+        type: string
+      enabled:
+        type: boolean
+      lastLogin:
+        type: string
+      locked:
+        type: boolean
+      roles:
+        type: array
+        items: {}
+  Label Structure:
+    type: object
+    properties:
+      structure:
+        type: object
+      annotation:
+        type: object
+  Project:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      taskCount:
+        type: number
+      taskFinishedCount:
+        type: number
+      totalLabelingTimeInSeconds:
+        type: number
+  ProjectExport:
+    type: object
+    properties:
+      id:
+        type: string
+      projectId:
+        type: string
+      filename:
+        type: string
+      taskIds:
+        type: array
+        items: {}
+  LabelingGroup:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      coordinators:
+        type: array
+        items: {}
+      labelers:
+        type: array
+        items: {}
+      users:
+        type: array
+        items: {}
+  Report:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      reportStatus:
+        type: string
+      projectId:
+        type: string
+      projectStatus:
+        type: string
+      projectCreatedAt:
+        type: number
+      projectMovedToInProgressAt:
+        type: number
+      projectMovedToDoneAt:
+        type: number
+      numberOfVideosInProject:
+        type: number
+      numberOfTasksInProject:
+        type: number
+      projectLabelType:
+        type: string
+      projectDueDate:
+        type: number
+      numberOfToDoTasks:
+        type: number
+      numberOfInProgressTasks:
+        type: number
+      numberOfDoneTasks:
+        type: number
+      numberOfToDoReviewTasks:
+        type: number
+      numberOfInProgressReviewTasks:
+        type: number
+      numberOfDoneReviewTasks:
+        type: number
+      numberOfToDoRevisionTasks:
+        type: number
+      numberOfInProgressRevisionTasks:
+        type: number
+      numberOfDoneRevisionTasks:
+        type: number
+      numberOfLabeledThingInFrames:
+        type: number
+      numberOfLabeledThingInFrameClasses:
+        type: number
+      numberOfLabeledThings:
+        type: number
+      numberOfLabeledThingClasses:
+        type: number
+      totalTime:
+        type: number
+      totalLabelingTime:
+        type: number
+      totalReviewTime:
+        type: number
+      totalRevisionTime:
+        type: number
+  TaskConfiguration:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      json:
+        type: array
+        items: {}
+      name:
+        type: string
+      timestamp:
+        type: number
+      userId:
+        type: string
+  LabeledThingGroup:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      identifierName:
+        type: string
+      groupIds:
+        type: array
+        items: {}
+  LabeledThingGroupInFrame:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      frameIndex:
+        type: string
+      classes:
+        type: array
+        items: {}
+  Organisation:
+    type: object
+    properties:
+      id:
+        type: string
+      rev:
+        type: string
+      name:
+        type: string
+      quota:
+        type: number
+  Campaign: {}
+  TaskCount:
+    type: object
+    properties:
+      preprocessing:
+        type: object
+      labeling:
+        type: object
+      review:
+        type: object
+      revision:
+        type: object
+      all_phases_done:
+        type: string
+  Video by id: {}
+  List all tasks: {}
+  Get a specific task: {}
+  Get frame locations of a task: {}
+  Get the task structures: {}
+  Assign a user to a LabelingTask: {}
+  Set Status to done: {}
+  Set Status to todo: {}
+  Set Status to begin: {}
+  Set Status to reopen: {}
+  Set Status to in_progress: {}
+  Get sum of Tasks by status: {}
+  Set attention flag to true: {}
+  Set attention flag to false: {}
+  Change the Task Phase: {}
+  Get the Task Replication DB: {}
+  Get the TaskCount for a Project: {}
+  Get the current user profile: {}
+  Current user Profile Picture: {}
+  Change own password: {}
+  Get User Permissions: {}
+  Get users organisations: {}
+  List all users: {}
+  Add a new user: {}
+  Get a specific user: {}
+  Edit a specific user: {}
+  Delete a specific user: {}
+  Assign a user to an organisation: {}
+  Unassign a user from an organisation: {}
+  Get all user for organisation: {}
+  Get a a single project: {}
+  Delete a Project: {}
+  Get a list of all projects: {}
+  Create a new Project: {}
+  Get a list of all finished exports for this project: {}
+  Download an export: {}
+  Start a new export job for this project: {}
+  Get sum of projects by status: {}
+  Set Projects State to in progress: {}
+  Set Projects State to done: {}
+  Mark a project as deleted: {}
+  Delete a project: {}
+  Create a new Report: {}
+  Get all Reports for Project: {}
+  Get Report by Report ID: {}
+  Assign project to label coordinator: {}
+  Change the LabelGroup assignment: {}
+  Get all Task with attention Flagging: {}
+  Get a Labeling Group List: {}
+  Get a Labeling Group: {}
+  Add a new Labeling Group: {}
+  Update a Labeling Group: {}
+  Delete a Labeling Group: {}
+  My Labeling Group: {}
+  Get all Coordinators: {}
+  List all task configurations for the current user: {}
+  Create new Task Configuration: {}
+  Get a task configuration: {}
+  Save a new req. xml: {}
+  Get the Number of queues RabbitMQ messages: {}
+  Get an Organisations List: {}
+  Add a new organisation: {}
+  Update an organisation: {}
+  Delete an organisation: {}
+  Upload chunk: {}
+  Flag upload as complete: {}

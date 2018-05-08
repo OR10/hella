@@ -271,18 +271,19 @@ class Project extends Controller\Base
             }
 
             $responseProject               = array(
-                'id'                 => $project->getId(),
-                'userId'             => $project->getUserId(),
-                'name'               => $project->getName(),
-                'status'             => $project->getStatus(),
-                'labelingGroupId'    => $project->getLabelingGroupId(),
-                'finishedPercentage' => floor(
+                'id'                          => $project->getId(),
+                'userId'                      => $project->getUserId(),
+                'name'                        => $project->getName(),
+                'status'                      => $project->getStatus(),
+                'lastStatusChangeTimestamp'   => $project->getLastStateForStatus($project->getStatus()) === null ? null : $project->getLastStateForStatus($project->getStatus())['timestamp'],
+                'labelingGroupId'             => $project->getLabelingGroupId(),
+                'finishedPercentage'          => floor(
                     $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
                 ),
-                'creationTimestamp'        => $project->getCreationDate(),
-                'taskInPreProcessingCount' => $sumOfPreProcessingTasks,
-                'diskUsage'                => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
-                'campaigns'                => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
+                'creationTimestamp'           => $project->getCreationDate(),
+                'taskInPreProcessingCount'    => $sumOfPreProcessingTasks,
+                'diskUsage'                   => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
+                'campaigns'                   => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
             );
 
             if ($this->userPermissions->hasPermission('canViewProjectManagementRelatedStatisticsColumn')) {
@@ -530,7 +531,7 @@ class Project extends Controller\Base
         $this->projectFacade->save($project);
 
         $job = new Jobs\ProjectDeleter($project->getId());
-        $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+        $this->amqpFacade->addJob($job, WorkerPool\Facade::HIGH_PRIO);
 
         return View\View::create()->setData(['result' => ['success' => true]]);
     }
@@ -572,7 +573,7 @@ class Project extends Controller\Base
 
         $labelManager = $this->userFacade->getUserById($assignedLabelManagerId);
         if (!$labelManager->hasRole(Model\User::ROLE_LABEL_MANAGER)) {
-            throw new Exception\AccessDeniedHttpException();
+            throw new Exception\AccessDeniedHttpException('You need label manager permissions');
         }
 
         $project->addLabelManagerAssignmentHistory($labelManager);

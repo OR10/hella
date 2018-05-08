@@ -14,8 +14,24 @@ use AnnoStationBundle\Database\Facade\LabeledThingGroupInFrame;
 use AnnoStationBundle\Service;
 use AnnoStationBundle\Helper\ExportXml;
 
+/**
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ *
+ * Any changes to the XML structure must be accepted by Hella Aglaia before!
+ * http://pluto.ham.hella.com/confluence/pages/viewpage.action?pageId=148222151
+ *
+ * If you change the XML structure, you need to increase the XML version number!
+ * puppet/hiera/global.yaml - `labeling_api::params::requirements_xml_version`
+ *
+ * !!!!!!!!!!!!!!!!!!!
+ * !!!! Attention !!!!
+ * !!!!!!!!!!!!!!!!!!!
+ */
 class RequirementsProjectToXml
 {
+    const XML_VERSION = '1.0';
     const XML_NAMESPACE = 'http://weblabel.hella-aglaia.com/schema/export';
     const REQUIREMENTS_XML_POSTFIX = 'labelconfiguration';
     const REQUIREMENTS_XML_PREVIOUS_POSTFIX = 'labelconfiguration_old';
@@ -108,14 +124,14 @@ class RequirementsProjectToXml
     private $campaignFacade;
 
     /**
-     * @var Facade\LabeledBlock
-     */
-    private $labelBlockFacade;
-
-    /**
      * @var Facade\LabeledBlockInFrame
      */
     private $blockInFrameFacade;
+
+    /**
+     * @var Facade\LabeledBlockInFrame\FacadeInterface
+     */
+    private $labeledBlockInFrameFacadeFactory;
 
     /**
      * RequirementsProjectToXml constructor.
@@ -137,7 +153,6 @@ class RequirementsProjectToXml
      * @param LabeledThingGroup\FacadeInterface                       $labeledThingGroupFacadeFactory
      * @param LabeledThingGroupInFrame\FacadeInterface                $labeledThingGroupInFrameFacadeFactory
      * @param Service\DepthBuffer                                     $depthBufferService
-     * @param Facade\LabeledBlock                                     $labeledBlock
      * @param Facade\LabeledBlockInFrame                              $labeledBlockInFrame
      */
     public function __construct(
@@ -159,8 +174,8 @@ class RequirementsProjectToXml
         LabeledThingGroup\FacadeInterface $labeledThingGroupFacadeFactory,
         LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFacadeFactory,
         Service\DepthBuffer $depthBufferService,
-        Facade\LabeledBlock $labeledBlock,
-        Facade\LabeledBlockInFrame $labeledBlockInFrame
+        Facade\LabeledBlockInFrame $labeledBlockInFrame,
+        Facade\LabeledBlockInFrame\FacadeInterface $labeledBlockInFrameFacade
     ) {
         $this->exporterFacade                                  = $exporterFacade;
         $this->projectFacade                                   = $projectFacade;
@@ -180,8 +195,8 @@ class RequirementsProjectToXml
         $this->depthBufferService                              = $depthBufferService;
         $this->calibrationDataFacade                           = $calibrationDataFacade;
         $this->campaignFacade                                  = $campaignFacade;
-        $this->labelBlockFacade                                = $labeledBlock;
         $this->blockInFrameFacade                              = $labeledBlockInFrame;
+        $this->labeledBlockInFrameFacadeFactory                = $labeledBlockInFrameFacade;
     }
 
     /**
@@ -230,6 +245,7 @@ class RequirementsProjectToXml
                     $this->labelingGroupFacade,
                     $this->campaignFacade,
                     $taskConfigurations,
+                    self::XML_VERSION,
                     self::XML_NAMESPACE,
                     $additionalFrameNumberMapping
                 );
@@ -237,6 +253,7 @@ class RequirementsProjectToXml
                 $xmlVideo = new ExportXml\Element\Video($video, self::XML_NAMESPACE);
 
                 foreach ($labelingTaskIterator as $task) {
+                    //this facade allows you to connect data in the database "labeling_api" and the database in which to store frame figures
                     $labelingTaskFacade = $this->labelingTaskFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
@@ -246,6 +263,10 @@ class RequirementsProjectToXml
                         $task->getId()
                     );
                     $labeledThingFacade = $this->labeledThingFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    $labeledBlockInFrameFacade = $this->labeledBlockInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
                     );
@@ -367,37 +388,36 @@ class RequirementsProjectToXml
                         $xmlVideo->addThing($thing);
                     }
 
-                    //add blocked areas into frame
+                    /*blockage*/
                     $labeledFrameBlockIterator = new Iterator\LabeledBlockInFrame(
-                        $this->blockInFrameFacade,
-                        $task
+                        $task,
+                        $labeledBlockInFrameFacade
                     );
+                    //blocked area in one frame
+                    $references = new ExportXml\Element\Video\References(
+                        new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
+                        self::XML_NAMESPACE
+                    );
+                    //get block status
+                    $blockStatus = [];
+                    foreach ($labeledFrameBlockIterator as $frameBlock) {
+                        $blockStatus []= $frameBlock->getIncomplete();
+                    }
 
-                    foreach ($labeledFrameBlockIterator as $frameBlocks) {
-                        //blocked area in one frame
-                        $references = new ExportXml\Element\Video\References(
-                            new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
-                            self::XML_NAMESPACE
-                        );
-                        $block = new ExportXml\Element\Video\Block(
-                            $frameMapping,
-                            $frameBlocks,
+                    $block = new ExportXml\Element\Video\Block(
+                        $references,
+                        self::XML_NAMESPACE,
+                        $blockStatus
+                    );
+                    foreach ($labeledFrameBlockIterator as $frameBlock) {
+                        $part = new ExportXml\Element\Video\BlockPart(
+                            $frameBlock,
                             $references,
                             self::XML_NAMESPACE
                         );
-                        //parts of the blocked area to xml
-                        $labeledBlocksInFrame = new Iterator\LabeledBlock($this->labelBlockFacade, $frameBlocks);
-                        foreach ($labeledBlocksInFrame as $blockPart) {
-                            $part = new ExportXml\Element\Video\BlockPart(
-                                $frameMapping,
-                                $blockPart,
-                                $references,
-                                self::XML_NAMESPACE
-                            );
-                            $block->addBlock($part);
-                        }
-                        $xmlVideo->addBlock($block);
+                        $block->addBlock($part);
                     }
+                    $xmlVideo->addBlock($block);
                     /*end blockage*/
 
                     $labeledFrames    = new Iterator\LabeledFrame($task, $labelingTaskFacade);
@@ -422,7 +442,7 @@ class RequirementsProjectToXml
             foreach ($taskConfigurations as $taskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($taskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($taskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_POSTFIX,
                     'xml'
                 );
@@ -432,7 +452,7 @@ class RequirementsProjectToXml
             foreach ($previousTaskConfigurations as $previousTaskConfiguration) {
                 $filename           = sprintf(
                     '%s.%s.%s',
-                    basename($previousTaskConfiguration->getFilename(), '.xml'),
+                    basename($this->getFilename($previousTaskConfiguration->getFilename()), '.xml'),
                     self::REQUIREMENTS_XML_PREVIOUS_POSTFIX,
                     'xml'
                 );
@@ -448,7 +468,7 @@ class RequirementsProjectToXml
             );
             $export->addAttachment($filename, $zipContent, 'application/zip');
             $export->setStatus(Model\Export::EXPORT_STATUS_DONE);
-            $this->exporterFacade->save($export);
+            return $this->exporterFacade->save($export);
         } catch (\Exception $exception) {
             $export->setStatus(Model\Export::EXPORT_STATUS_ERROR);
             $this->exporterFacade->save($export);
@@ -804,5 +824,19 @@ class RequirementsProjectToXml
         $zip->close();
 
         return file_get_contents($zipFilename);
+    }
+
+    /**
+     * @param $filename
+     *
+     * @return mixed
+     */
+    private function getFilename($filename)
+    {
+        $search   = ['ä', 'ü', 'ü', 'ö', 'Ä', 'Ü', 'Ö']; // ü is not the same as ü
+        $replace  = ['ae', 'ue', 'ue', 'oe', 'Ae', 'Üe', 'Oe'];
+        $filename = str_replace($search, $replace, $filename);
+
+        return $filename;
     }
 }

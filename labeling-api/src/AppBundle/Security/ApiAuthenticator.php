@@ -55,6 +55,14 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
     private $lifetime;
 
     /**
+     * @var array
+     */
+    private $allowActions = [
+        'annostation.labeling_api.controller.api.organisation.project.export:getExportAction'
+    ];
+
+
+    /**
      * ApiAuthenticator constructor.
      * @param RouterInterface $router
      * @param UserPasswordEncoderInterface $encoder
@@ -188,6 +196,11 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
         $user->setTokenExpiresAt($exp);
 
         $this->userFacade->updateUser($user);
+
+        $allow = $request->attributes->get('_controller');
+        if(in_array($allow, $this->allowActions)) {
+            return;
+        }
 
         return new JsonResponse(
             [

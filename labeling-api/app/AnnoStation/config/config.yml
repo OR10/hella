@@ -79,5 +79,3 @@ swiftmailer:
     #encryption: "%mailer_encryption%"
     #auth_mode:  "%mailer_auth_mode%"
     #port:       "%mailer_port%"
-
-nelmio_api_doc: ~

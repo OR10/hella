@@ -161,15 +161,15 @@ class SecurityDocumentExistenceInTaskDatabases implements Check\CheckInterface
                     GuzzleHttp\Psr7\Response $response,
                     $index
                 ) use (
-                    &$missingSecurityDocuments
+                    $urls
                 ) {
                     if (!$this->isSecurityDocumentResponseValid($response)) {
-                        $this->missingSecurityDocuments[]  = $this->urls[$index];
+                        $this->missingSecurityDocuments[]  = $urls[$index];
                         $this->lastMissingSecurityDocument = time();
                     }
                 },
-                'rejected'    => function ($reason, $index) use (&$failedDatabases) {
-                    $this->failedDatabases[] = $this->urls[$index];
+                'rejected'    => function ($reason, $index) use ($urls, &$failedDatabases) {
+                    $this->failedDatabases[] = $urls[$index];
                 },
             ]
         );

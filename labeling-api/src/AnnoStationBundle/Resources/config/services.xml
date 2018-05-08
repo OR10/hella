@@ -471,5 +471,8 @@
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame"/>
             <argument type="service" id="annostation.labeling_api.database.facade.exporter"/>
         </service>
+
+        <service id="annostation.labeling_api.service.labeled.frame.service" class="AnnoStationBundle\Service\LabeledFrameService">
+        </service>
     </services>
 </container>

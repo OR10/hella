@@ -98,7 +98,9 @@ class Flysystem extends Service\FrameCdn
     public function getFrameLocations(
         Model\LabelingTask $labelingTask,
         ImageType\Base $imageType,
-        array $frameNumbers
+        array $frameNumbers,
+        string $projectId = null
+
     ) {
         $urls = [];
         $storage = $this->storageFactory->getStorage();
@@ -109,7 +111,7 @@ class Flysystem extends Service\FrameCdn
                 'url'        => sprintf(
                     '%s/%s/%s/%s.%s',
                     $frameCdnBaseUrl,
-                    $labelingTask->getVideoId(),
+                     ($projectId) ? $projectId : $labelingTask->getVideoId(),
                     $imageType->getName(),
                     $frameNumber,
                     $imageType->getExtension()

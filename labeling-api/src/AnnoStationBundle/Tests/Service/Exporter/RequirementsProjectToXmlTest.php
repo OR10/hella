@@ -81,6 +81,7 @@ class RequirementsProjectToXmlTest extends Tests\CouchDbTestCase
         $this->projectFacade->save($project);
         $video = $this->createVideoWithCalibration($organisation);
         $video->setOriginalId('e363906c1c4a5a5bd01e8902467d4b0e');
+        $video->setTags(['tag1', 'tag2', 'tag3']);
         $this->videoFacade->save($video);
 
         $taskConfiguration         = $this->createTaskConfiguration(

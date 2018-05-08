@@ -13,6 +13,7 @@ class ImageType
         'source'    => Source::class,
         'sourceJpg' => SourceJpg::class,
         'thumbnail' => Thumbnail::class,
+        'thumbnailPng' => ThumbnailPng::class
     ];
 
     /**

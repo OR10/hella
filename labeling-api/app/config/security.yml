@@ -22,7 +22,7 @@ security:
 
         unsecure:
             # will be redirected to FE (/labeling)
-            pattern: ^(/|/login_check)$
+            pattern: ^(/|/login_check|/version)$
             methods: [GET]
             security: false
 
@@ -52,7 +52,7 @@ security:
         - { path: ^/login_check, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/version, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
         - { path: ^/admin/, role: ROLE_SUPER_ADMIN }
         - { path: ^/monitor/, role: ROLE_SUPER_ADMIN }
-        - { path: ^/doc/, role: ROLE_SUPER_ADMIN }
