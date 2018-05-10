@@ -13,31 +13,37 @@ class ZipFrameUpload extends WorkerPool\Job
      * @var int
      */
     private $videoId;
+
     /**
      * @var string
      */
     private $path;
-    /**
-     * @var string
-     */
-    private $imageType;
 
     /**
-     * Video constructor.
-     * @param                $videoId
-     * @param                $path
-     * @param ImageType\Base $imageType
+     * @var string[]
+     */
+    private $imageTypes;
+
+    /**
+     * ZipFrameUpload constructor.
+     * @param string $videoId
+     * @param string $path
+     * @param array $imageTypes
      */
     public function __construct(
         string $videoId,
         string $path,
-        ImageType\Base $imageType
+        array $imageTypes
     ) {
         $this->videoId   = $videoId;
         $this->path      = $path;
-        $this->imageType = $imageType;
+        $this->imageTypes = $imageTypes;
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function __get($name)
     {
         return $this->$name;
