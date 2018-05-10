@@ -207,14 +207,12 @@ class VideoImporter
             $this->videoFacade->update();
         }
         //unzip and upload into frame storage
-        foreach ($imageTypes as $imageTypeName) {
-            $job = new Jobs\ZipFrameUpload(
-                $video->getId(),
-                $videoFilePath,
-                ImageType\Base::create($imageTypeName)
-            );
-            $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
-        }
+        $job = new Jobs\ZipFrameUpload(
+            $video->getId(),
+            $videoFilePath,
+            $imageTypes
+        );
+        $this->facadeAMQP->addJob($job, WorkerPool\Facade::LOW_PRIO);
 
         return $video;
     }

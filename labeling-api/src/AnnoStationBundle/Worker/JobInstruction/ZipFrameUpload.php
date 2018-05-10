@@ -107,40 +107,37 @@ class ZipFrameUpload extends JobInstruction
     protected function runJob(Job $job, \crosscan\Logger\Facade\LoggerFacade $logger)
     {
         try {
-            /** @var Model\Video $video */
             /** @var Jobs\ZipFrameUpload $job */
-            $video = $this->videoFacade->find($job->videoId);
-            if ($video === null) {
-                throw new \RuntimeException("Video '{$job->videoId}' could not be found");
-            }
-
-            $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $video->getSourceVideoPath(), $job->imageType, true);
-            $imageSizes = $this->videoFrameSplitter->getImageSizes();
-
-            $this->updateDocument(
-                $video,
-                $job->imageType,
-                $imageSizes[1][0],
-                $imageSizes[1][1],
-                array_sum($frameSizesInBytes)
-            );
-
-            $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
-
-            $projectIds = [];
-            foreach ($tasks as $task) {
-                $projectIds[] = $task->getProjectId();
-                $this->videoFacade->refresh($video);
-                $this->couchDbUpdateConflictRetryService->save(
-                    $task,
-                    function (Model\LabelingTask $task) use ($video) {
-                        $task->setStatusIfAllImagesAreConverted($video);
-                    }
+            foreach ($job->imageTypes as $imageType) {
+                $video = $this->videoFacade->find($job->videoId);
+                if ($video === null) {
+                    throw new \RuntimeException("Video '{$job->videoId}' could not be found");
+                }
+                $frameSizesInBytes = $this->videoFrameSplitter->splitVideoInFrames($video, $video->getSourceVideoPath(), ImageType\Base::create($imageType), true);
+                $imageSizes = $this->videoFrameSplitter->getImageSizes();
+                $this->updateDocument(
+                    $video,
+                    ImageType\Base::create($imageType),
+                    $imageSizes[1][0],
+                    $imageSizes[1][1],
+                    array_sum($frameSizesInBytes)
                 );
-            }
-            foreach (array_unique($projectIds) as $projectId) {
-                $job = new Jobs\CalculateProjectDiskSize($projectId);
-                $this->amqpFacade->addJob($job, WorkerPool\Facade::LOW_PRIO);
+                $tasks = $this->labelingTaskFacade->findByVideoIds([$video->getId()]);
+                $projectIds = [];
+                foreach ($tasks as $task) {
+                    $projectIds[] = $task->getProjectId();
+                    $this->videoFacade->refresh($video);
+                    $this->couchDbUpdateConflictRetryService->save(
+                        $task,
+                        function (Model\LabelingTask $task) use ($video) {
+                            $task->setStatusIfAllImagesAreConverted($video);
+                        }
+                    );
+                }
+                foreach (array_unique($projectIds) as $projectId) {
+                    $diskJob = new Jobs\CalculateProjectDiskSize($projectId);
+                    $this->amqpFacade->addJob($diskJob, WorkerPool\Facade::LOW_PRIO);
+                }
             }
         } catch (\Exception $exception) {
             $logger->logException($exception, \cscntLogPayload::SEVERITY_FATAL);
