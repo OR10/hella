@@ -16,16 +16,17 @@ class TaskDatabase extends Factory\TaskDatabase implements FacadeInterface
 
     /**
      * TaskDatabase constructor.
+     *
      * @param Facade\LabeledBlockInFrame $labeledThingInFrameFacade
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
      * @param Service\TaskDatabaseCreator $taskDatabaseCreatorService
-     * @param $readOnlyDatabase
+     * @param string $readOnlyDatabase
      */
     public function __construct(
         Facade\LabeledBlockInFrame $labeledThingInFrameFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $readOnlyDatabase
+        string $readOnlyDatabase
     ) {
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;

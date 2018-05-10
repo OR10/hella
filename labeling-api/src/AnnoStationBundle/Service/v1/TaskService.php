@@ -133,7 +133,7 @@ class TaskService
 
     /**
      * @param string $projectId
-     * @return array
+     * @return string[]
      */
     public function getTaskByPhase(string $projectId) : array
     {

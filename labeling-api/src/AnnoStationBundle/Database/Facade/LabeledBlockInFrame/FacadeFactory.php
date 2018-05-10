@@ -6,7 +6,7 @@ use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
 
-class FacadeFactory
+class FacadeFactory extends Facade\Factory\TaskFactoryFluent
 {
 
     /**
@@ -14,7 +14,7 @@ class FacadeFactory
      * @param Facade\LabeledBlockInFrame $labeledThingInFrameFacade
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
      * @param Service\TaskDatabaseCreator $taskDatabaseCreatorService
-     * @param $readOnlyDatabase
+     * @param string $readOnlyDatabase
      * @return TaskDatabase
      */
     public static function get(
@@ -22,10 +22,10 @@ class FacadeFactory
         Facade\LabeledBlockInFrame $labeledThingInFrameFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $readOnlyDatabase
+        string $readOnlyDatabase
     ) {
         switch ($type) {
-            case 'taskDatabase':
+            case self::TASK_DATABASE:
                 return new TaskDatabase(
                     $labeledThingInFrameFacade,
                     $databaseDocumentManagerFactory,

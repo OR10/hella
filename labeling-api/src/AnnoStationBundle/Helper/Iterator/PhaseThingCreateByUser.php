@@ -40,11 +40,17 @@ class PhaseThingCreateByUser implements \IteratorAggregate
         $this->userId             = $userId;
     }
 
+    /**
+     * @return \Generator
+     */
     public function getIterator()
     {
         return $this->labeledThingIteratorGenerator();
     }
 
+    /**
+     * @return \Generator
+     */
     private function labeledThingIteratorGenerator()
     {
         $this->labeledThings = $this->labeledThingFacade->findByTaskUserId($this->labelingTask, $this->userId);

@@ -38,7 +38,8 @@ class TaskTimer
     }
 
     /**
-     * @param Model\TaskTimer $task
+     * @param Model\LabelingTask $task
+     * @param string $userId
      * @return Model\TaskTimer[]|null
      */
     public function findByTaskId(Model\LabelingTask $task, string $userId)

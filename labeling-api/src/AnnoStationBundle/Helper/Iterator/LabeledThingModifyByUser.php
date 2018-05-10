@@ -40,11 +40,17 @@ class LabeledThingModifyByUser implements \IteratorAggregate
         $this->userId             = $userId;
     }
 
+    /**
+     * @return \Generator
+     */
     public function getIterator()
     {
         return $this->labeledThingIteratorGenerator();
     }
 
+    /**
+     * @return \Generator
+     */
     private function labeledThingIteratorGenerator()
     {
         $this->labeledThings = $this->labeledThingFacade->findByTaskUserModify($this->labelingTask, $this->userId);
