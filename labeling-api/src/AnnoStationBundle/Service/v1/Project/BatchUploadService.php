@@ -51,7 +51,7 @@ class BatchUploadService
      * @param $organisation
      * @param $user
      * @param $request
-     * @return static
+     * @return string[]|null
      */
     public function uploadFile($request, $organisation, $user, $project)
     {
@@ -133,6 +133,11 @@ class BatchUploadService
                     $res = $zip->open($targetPath);
                     if ($res === TRUE) {
                         $this->zipFilesCount = $zip->numFiles;
+                        if ($project->isFrameNumber($this->zipFilesCount)) {
+                            throw new ConflictHttpException(
+                                sprintf('Project "start frame number" is incorrect  for the file: %s', $flowRequest->getFileName())
+                            );
+                        }
                         if ($zip->extractTo($zipDir)) {
                             $zip->close();
                             //validate image
