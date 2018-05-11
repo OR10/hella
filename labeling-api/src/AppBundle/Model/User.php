@@ -280,6 +280,14 @@ class User extends BaseUser
     }
 
     /**
+     * @return bool
+     */
+    public function isLastOrganisation()
+    {
+        return (count($this->organisations) == 1) ? true : false;
+    }
+
+    /**
      * @param mixed $organisations
      */
     public function setOrganisations($organisations)
