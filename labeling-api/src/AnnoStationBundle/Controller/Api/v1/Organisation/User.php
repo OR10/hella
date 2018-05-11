@@ -135,27 +135,32 @@ class User extends Controller\Base
     ) {
         $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
 
-        $user->removeFromOrganisation($organisation);
-        $this->userFacade->updateUser($user);
-        $this->userRolesRebuilderService->rebuildForUser($user);
+        //check organisation
+        if(!$user->isLastOrganisation()) {
+            $user->removeFromOrganisation($organisation);
+            $this->userFacade->updateUser($user);
+            $this->userRolesRebuilderService->rebuildForUser($user);
 
-        $labelingGroups = $this->labelingGroupFacade->findAllByUser($user);
+            $labelingGroups = $this->labelingGroupFacade->findAllByUser($user);
 
-        $labelingGroups = array_filter(
-            $labelingGroups,
-            function (Model\LabelingGroup $labelingGroup) use ($organisation) {
-                return $organisation->getId() === $labelingGroup->getOrganisationId();
+            $labelingGroups = array_filter(
+                $labelingGroups,
+                function (Model\LabelingGroup $labelingGroup) use ($organisation) {
+                    return $organisation->getId() === $labelingGroup->getOrganisationId();
+                }
+            );
+
+            /** @var Model\LabelingGroup $labelingGroup */
+            foreach ($labelingGroups as $labelingGroup) {
+                $this->labelingGroupFacade->deleteUserFromLabelGroup($labelingGroup, $user);
             }
-        );
 
-        /** @var Model\LabelingGroup $labelingGroup */
-        foreach ($labelingGroups as $labelingGroup) {
-            $this->labelingGroupFacade->deleteUserFromLabelGroup($labelingGroup, $user);
+            $this->removeLabelingTaskAssignments($organisation, $user);
+
+            return View\View::create()->setData(['result' => ['success' => true]]);
+        } else {
+            return View\View::create()->setData(['result' => ['success' => true]]);
         }
-
-        $this->removeLabelingTaskAssignments($organisation, $user);
-
-        return View\View::create()->setData(['result' => ['success' => true]]);
     }
 
     /**
