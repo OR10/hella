@@ -1,0 +1,15 @@
+project_uuid: "8cd7a7db-562a-47b9-82eb-10484722f78e"
+major: 1
+minor: 3
+branch: dev
+docker:
+  images:
+    - "docker.io/softeqhaglannostation/api_cli:undefined"
+    - "docker.io/softeqhaglannostation/api_cron:undefined"
+    - "docker.io/softeqhaglannostation/api_fpm:undefined"
+    - "docker.io/softeqhaglannostation/api_nginx:undefined"
+    - "docker.io/softeqhaglannostation/doc_go_swagger:undefined"
+    - "docker.io/softeqhaglannostation/monitoring-logstash:undefined"
+    - "docker.io/softeqhaglannostation/proxy:undefined"
+    - "docker.io/softeqhaglannostation/video_fpm:undefined"
+    - "docker.io/softeqhaglannostation/video_nginx:undefined"
