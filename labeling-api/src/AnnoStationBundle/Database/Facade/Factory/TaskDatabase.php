@@ -23,7 +23,7 @@ abstract class TaskDatabase extends Cache
 
     abstract public function getFacadeInstance($databaseDocumentManager);
 
-    public function getFacadeByProjectIdAndTaskId($projectId, $taskId)
+    public function getFacadeByProjectIdAndTaskId(string $projectId, string $taskId)
     {
         $databaseName = $this->taskDatabaseCreatorService->getDatabaseName(
             $projectId,

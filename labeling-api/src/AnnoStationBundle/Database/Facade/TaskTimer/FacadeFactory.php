@@ -1,30 +1,36 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\Project;
+namespace AnnoStationBundle\Database\Facade\TaskTimer;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Service;
-use AnnoStationBundle\Service\Authentication;
 use AppBundle\Service as AppBundleService;
 
 class FacadeFactory extends Facade\Factory\TaskFactoryFluent
 {
+
+    /**
+     * @param string                                          $type
+     * @param Facade\TaskTimer                                $labelingTaskFacade
+     * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
+     * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
+     * @param string                                          $readOnlyDatabase
+     * @return TaskDatabase
+     */
     public static function get(
         string $type,
-        Facade\Project $projectFacade,
+        Facade\TaskTimer $labelingTaskFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
-        $readOnlyDatabase,
-        Authentication\UserPermissions $userPermissions
+        string $readOnlyDatabase
     ) {
         switch ($type) {
             case self::TASK_DATABASE:
                 return new TaskDatabase(
-                    $projectFacade,
+                    $labelingTaskFacade,
                     $databaseDocumentManagerFactory,
                     $taskDatabaseCreatorService,
-                    $readOnlyDatabase,
-                    $userPermissions
+                    $readOnlyDatabase
                 );
             default:
                 throw new \RuntimeException('Unknown facade type: ' . $type);

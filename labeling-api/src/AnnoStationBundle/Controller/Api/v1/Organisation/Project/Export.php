@@ -169,6 +169,7 @@ class Export extends Controller\Base
 
         $export = new Model\Export($project, $user);
         $this->exporterFacade->save($export);
+
         foreach ($project->getAvailableExports() as $exportType) {
             switch ($exportType) {
                 case 'legacy':
@@ -177,11 +178,40 @@ class Export extends Controller\Base
                 case 'requirementsXml':
                     $this->amqpFacade->addJob(new Jobs\RequirementsProjectToXml($export), WorkerPool\Facade::HIGH_PRIO);
                     break;
+                case 'kpi':
+                    $this->amqpFacade->addJob(new Jobs\KpiProjectToCsv($export), WorkerPool\Facade::HIGH_PRIO);
             }
         }
 
         return View\View::create()
             ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
             ->setData(['message' => 'Export started']);
+    }
+
+    /**
+     * @Rest\Post("/{organisation}/project/{project}/export/kpi")
+     * @Annotations\CheckPermissions({"canExportProject"})
+     *
+     * @param AnnoStationBundleModel\Organisation $organisation
+     * @param Model\Project                       $project
+     *
+     * @return HttpFoundation\Response
+     */
+    public function postKpiCsvExportAction(AnnoStationBundleModel\Organisation $organisation, Model\Project $project)
+    {
+        $this->authorizationService->denyIfOrganisationIsNotAccessable($organisation);
+        $this->authorizationService->denyIfProjectIsNotAssignedToOrganisation($organisation, $project);
+        $this->authorizationService->denyIfProjectIsNotReadable($project);
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $export = new Model\Export($project, $user);
+        $export->setStatus(Model\Export::EXPORT_STATUS_IN_WAITING);
+        $this->exporterFacade->save($export);
+
+        $this->amqpFacade->addJob(new Jobs\KpiProjectToCsv($export), WorkerPool\Facade::HIGH_PRIO);
+
+        return View\View::create()
+            ->setStatusCode(HttpFoundation\Response::HTTP_ACCEPTED)
+            ->setData(['message' => 'Export started  '.' '.$export->getId()]);
     }
 }

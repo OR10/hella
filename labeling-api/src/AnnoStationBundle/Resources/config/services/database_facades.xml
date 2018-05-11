@@ -91,6 +91,10 @@
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
         </service>
 
+        <service id="annostation.labeling_api.database.facade.task_timer" class="AnnoStationBundle\Database\Facade\TaskTimer">
+            <argument type="service" id="doctrine_couchdb.odm.default_document_manager" />
+        </service>
+
         <service id="annostation.labeling_api.database.facade.user_with_couch_db_sync" class="AnnoStationBundle\Database\Facade\UserWithCouchDbSync">
             <argument type="service" id="fos_user.user_manager"/>
             <argument type="service" id="doctrine_couchdb.odm.default_document_manager"/>
@@ -109,6 +113,26 @@
             <factory class="AnnoStationBundle\Database\Facade\LabeledThingInFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_thing_in_frame" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.task_timer"
+                 class="AnnoStationBundle\Database\Facade\TaskTimer\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\TaskTimer\FacadeFactory" method="get"/>
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.task_timer" />
+            <argument type="service" id="annostation.services.database_document_manager_factory"/>
+            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
+            <argument>%database_name_read_only%</argument>
+        </service>
+
+        <service id="annostation.labeling_api.database.facade.factory.labeled_block_in_frame"
+                 class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeInterface">
+            <factory class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeFactory" method="get"/>
+            <argument>%facade_factory_type%</argument>
+            <argument type="service" id="annostation.labeling_api.database.facade.labeled_block_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <argument>%database_name_read_only%</argument>
@@ -170,16 +194,6 @@
             <factory class="AnnoStationBundle\Database\Facade\LabeledFrame\FacadeFactory" method="get"/>
             <argument>%facade_factory_type%</argument>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_frame" />
-            <argument type="service" id="annostation.services.database_document_manager_factory"/>
-            <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
-            <argument>%database_name_read_only%</argument>
-        </service>
-
-        <service id="annostation.labeling_api.database.facade.factory.labeled_block_in_frame"
-                 class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeInterface">
-            <factory class="AnnoStationBundle\Database\Facade\LabeledBlockInFrame\FacadeFactory" method="get"/>
-            <argument>%facade_factory_type%</argument>
-            <argument type="service" id="annostation.labeling_api.database.facade.labeled_block_in_frame" />
             <argument type="service" id="annostation.services.database_document_manager_factory"/>
             <argument type="service" id="annostation.labeling_api.service.task_database_creator"/>
             <argument>%database_name_read_only%</argument>

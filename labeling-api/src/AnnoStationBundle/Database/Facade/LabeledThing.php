@@ -150,6 +150,36 @@ class LabeledThing
     }
 
     /**
+     * @param Model\LabelingTask $task
+     * @param string $userId
+     * @return Model\LabeledThing[]|null
+     */
+    public function findByTaskUserId(Model\LabelingTask $task, string $userId)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'by_task_userId')
+            ->setKey([$task->getId(), $userId])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
+     * @param Model\LabelingTask $task
+     * @param string $userId
+     * @return Model\LabeledThing[]|null
+     */
+    public function findByTaskUserModify(Model\LabelingTask $task, string $userId)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing', 'by_task_user_modify')
+            ->setKey([$task->getId(), $userId])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param Model\LabeledThing $labeledThing
      */
     public function delete(Model\LabeledThing $labeledThing)

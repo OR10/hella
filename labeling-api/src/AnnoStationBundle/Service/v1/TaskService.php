@@ -130,4 +130,97 @@ class TaskService
 
         return $result;
     }
+
+    /**
+     * @param string $projectId
+     * @return string[]
+     */
+    public function getTaskByPhase(string $projectId) : array
+    {
+        $offset     = 0;
+        $limit      = 100;
+        $taskPhase  = ['labeling', 'review', 'revision'];
+        $taskStatus = ['in_progress', 'todo'];
+
+        if ($projectId === null) {
+            throw new BadRequestHttpException('Please provide a project ID');
+        }
+
+        $result = [];
+        $project = $this->projectFacade->find($projectId);
+        if ($project === null) {
+            throw new BadRequestHttpException(sprintf('There is no project with the id "%s"', $projectId));
+        }
+
+        if (($offset !== null && $offset < 0) || ($limit !== null && $limit < 0)) {
+            throw new BadRequestHttpException('Invalid offset or limit');
+        }
+
+        $tasks = [];
+        foreach ($taskPhase as $phase) {
+
+            if (isset($phase)) {
+                $numberOfTotalDocumentsByStatus = $this->labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
+                $numberOfTotalDocumentsByStatus = $numberOfTotalDocumentsByStatus[$phase];
+            }
+
+            $numberOfTotalDocuments = 0;
+            foreach ($taskStatus as $status) {
+                switch ($status) {
+                    case LabelingTask::STATUS_IN_PROGRESS:
+                        $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
+                            LabelingTask::STATUS_IN_PROGRESS,
+                            $project,
+                            $offset,
+                            $limit,
+                            $phase
+                        )->toArray();
+                        $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[LabelingTask::STATUS_IN_PROGRESS];
+                        break;
+                    case LabelingTask::STATUS_TODO:
+                        $tasks = $this->labelingTaskFacade->findAllByStatusAndProject(
+                            LabelingTask::STATUS_TODO,
+                            $project,
+                            $offset,
+                            $limit,
+                            $phase
+                        )->toArray();
+                        $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[LabelingTask::STATUS_TODO];
+                        break;
+                    case LabelingTask::STATUS_DONE:
+                        $tasks[LabelingTask::STATUS_DONE] = $this->labelingTaskFacade->findAllByStatusAndProject(
+                            LabelingTask::STATUS_DONE,
+                            $project,
+                            $offset,
+                            $limit,
+                            $phase
+                        )->toArray();
+                        $numberOfTotalDocuments = $numberOfTotalDocumentsByStatus[LabelingTask::STATUS_DONE];
+                        break;
+                    case LabelingTask::STATUS_ALL_PHASES_DONE:
+                        $tasks[LabelingTask::STATUS_ALL_PHASES_DONE] = $this->labelingTaskFacade->getAllDoneLabelingTasksForProject(
+                            $project,
+                            $offset,
+                            $limit
+                        )->toArray();
+
+                        $numberOfTotalDocuments = $this->labelingTaskFacade->getSumOfAllDoneLabelingTasksForProject(
+                            $project
+                        );
+                        break;
+                }
+
+                if ($tasks) {
+                    $clearTask = [];
+                    foreach ($tasks as $key => $taskValue) {
+                        //get taskId
+                        $clearTask[] = $taskValue->getId();
+                    }
+                    $result[$phase] = $clearTask;
+                }
+            }
+        }
+
+        return $result;
+    }
 }

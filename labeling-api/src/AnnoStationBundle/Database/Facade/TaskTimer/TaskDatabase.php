@@ -1,41 +1,41 @@
 <?php
 
-namespace AnnoStationBundle\Database\Facade\LabeledBlockInFrame;
+namespace AnnoStationBundle\Database\Facade\TaskTimer;
 
 use AnnoStationBundle\Database\Facade;
 use AnnoStationBundle\Database\Facade\Factory;
 use AnnoStationBundle\Service;
 use AppBundle\Service as AppBundleService;
+use Doctrine\ODM\CouchDB\DocumentManager;
 
 class TaskDatabase extends Factory\TaskDatabase implements FacadeInterface
 {
     /**
-     * @var Facade\LabeledThingInFrame
+     * @var Facade\LabelingTask
      */
-    private $labeledThingInFrameFacade;
+    private $labelingTaskFacade;
 
     /**
      * TaskDatabase constructor.
-     *
-     * @param Facade\LabeledBlockInFrame $labeledThingInFrameFacade
+     * @param Facade\TaskTimer                                $labelingTaskFacade
      * @param AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory
-     * @param Service\TaskDatabaseCreator $taskDatabaseCreatorService
-     * @param string $readOnlyDatabase
+     * @param Service\TaskDatabaseCreator                     $taskDatabaseCreatorService
+     * @param string                                          $readOnlyDatabase
      */
     public function __construct(
-        Facade\LabeledBlockInFrame $labeledThingInFrameFacade,
+        Facade\TaskTimer $labelingTaskFacade,
         AppBundleService\DatabaseDocumentManagerFactory $databaseDocumentManagerFactory,
         Service\TaskDatabaseCreator $taskDatabaseCreatorService,
         string $readOnlyDatabase
     ) {
         $this->databaseDocumentManagerFactory = $databaseDocumentManagerFactory;
         $this->taskDatabaseCreatorService     = $taskDatabaseCreatorService;
-        $this->labeledThingInFrameFacade      = $labeledThingInFrameFacade;
+        $this->labelingTaskFacade             = $labelingTaskFacade;
         $this->readOnlyDatabase               = $readOnlyDatabase;
     }
 
     public function getFacadeInstance($databaseDocumentManager)
     {
-        return new Facade\LabeledBlockInFrame($databaseDocumentManager);
+        return new Facade\TaskTimer($databaseDocumentManager);
     }
 }
