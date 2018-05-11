@@ -63,6 +63,8 @@ class BatchUploadService
 
         /** @var UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
+        $params = $request->request->all();
+        $lossless = (isset($params['lossless'])) ? ($params['lossless'] === 'true') ? true : false : false;
 
         $flowRequest       = new Request(
             $request->request->all(),
@@ -202,7 +204,7 @@ class BatchUploadService
                             $project,
                             basename($targetPath),
                             $targetPath,
-                            false
+                            $lossless
                         );
                     } elseif ($this->isImageFile($flowRequest->getFileName())) {
                         // Image compression is determined by their input image type
