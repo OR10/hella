@@ -596,6 +596,16 @@ class Project extends Base
     }
 
     /**
+     * @param int $zipFileCount
+     * @return bool
+     */
+    public function isFrameNumber(int $zipFileCount)
+    {
+        $startFrame =  (isset($this->taskVideoSettings['startFrameNumber'])) ? (int)$this->taskVideoSettings['startFrameNumber'] : 1;
+        return ($startFrame > $zipFileCount) ? true : false;
+    }
+
+    /**
      * @return mixed
      */
     public function getLegacyTaskInstructions()
