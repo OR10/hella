@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
+use AnnoStationBundle\Helper\Iterator\TaskTimeByTask;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
@@ -115,6 +116,11 @@ class Project extends Controller\Base
     private $projectCreator;
 
     /**
+     * @var Facade\TaskTimer\FacadeInterface
+     */
+    private $labeledTimeFacadeFactory;
+
+    /**
      * Project constructor.
      *
      * @param ProjectFacadeFactory                          $projectFacade
@@ -132,6 +138,7 @@ class Project extends Controller\Base
      * @param AMQP\FacadeAMQP                               $amqpFacade
      * @param Authentication\UserPermissions                $userPermissions
      * @param Service\v1\Project\ProjectCreator             $projectCreator
+     * @param Facade\TaskTimer\FacadeInterface              $labeledTimeFacadeFactory
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -148,7 +155,8 @@ class Project extends Controller\Base
         Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions,
-        Service\v1\Project\ProjectCreator $projectCreator
+        Service\v1\Project\ProjectCreator $projectCreator,
+        Facade\TaskTimer\FacadeInterface $labeledTimeFacadeFactory
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
@@ -165,6 +173,7 @@ class Project extends Controller\Base
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
         $this->projectCreator                        = $projectCreator;
+        $this->labeledTimeFacadeFactory             = $labeledTimeFacadeFactory;
     }
 
     /**
@@ -253,6 +262,30 @@ class Project extends Controller\Base
 
         /** @var Model\Project $project */
         foreach ($projects as $project) {
+            //calculate project labeling time
+            $allProjectTask = $labelingTaskFacade->findAllByProject($project);
+            $projectLabelingTime = [];
+            foreach ($allProjectTask as $projectTask) {
+                if(isset($projectTask)) {
+                    $labeledTimeFacade = $this->labeledTimeFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $projectTask['id']
+                    );
+                    $task = $labelingTaskFacade->find($projectTask['id']);
+                    $labeledTimeIterator = new TaskTimeByTask(
+                        $task,
+                        $labeledTimeFacade
+                    );
+                    foreach ($labeledTimeIterator as $labelingTime) {
+                        if (isset($labelingTime)) {
+                            if ($labelingTime->getProjectId() === $project->getId()) {
+                                $projectLabelingTime[$project->getId()][] = $labelingTime->getTimeInSeconds('labeling');
+                            }
+                        }
+                    }
+                }
+            }
+
             if (!isset($sumOfTasksForProjects[$project->getId()])) {
                 $sumOfTasksForProjects[$project->getId()] = 0;
             }
@@ -299,7 +332,7 @@ class Project extends Controller\Base
                 $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
                 $responseProject['taskInProgressCount']        = $taskInProgressCount;
                 $responseProject['taskFailedCount']            = $taskFailedCount;
-                $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
+                $responseProject['totalLabelingTimeInSeconds'] = (isset($projectLabelingTime[$project->getId()])) ? array_sum($projectLabelingTime[$project->getId()]) : 0;
                 $responseProject['labeledThingInFramesCount'] = isset(
                     $numberOfLabeledThingInFramesByProjects[$project->getId()]
                 ) ? $numberOfLabeledThingInFramesByProjects[$project->getId()] : 0;
