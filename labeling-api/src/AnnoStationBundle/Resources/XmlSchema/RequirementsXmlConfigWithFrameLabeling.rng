@@ -91,7 +91,24 @@
     </define>
     <define name="Blockage">
         <element name="r:blockage">
-            <ref name="Class"/>
+            <ref name="BlockageClass"/>
+        </element>
+    </define>
+    <define name="BlockageClass">
+        <element name="r:class">
+            <choice>
+                <group>
+                    <attribute name="id"/>
+                    <attribute name="name"/>
+                    <optional>
+                        <attribute name="multi-selection"/>
+                    </optional>
+                    <optional>
+                        <ref name="Value"/>
+                    </optional>
+                </group>
+                <attribute name="ref"/>
+            </choice>
         </element>
     </define>
     <define name="Class">
