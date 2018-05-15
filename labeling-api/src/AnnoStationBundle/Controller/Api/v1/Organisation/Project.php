@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
+use AnnoStationBundle\Helper\Iterator\LabeledThingInFrame;
 use AnnoStationBundle\Helper\Iterator\TaskTimeByTask;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
@@ -121,6 +122,11 @@ class Project extends Controller\Base
     private $labeledTimeFacadeFactory;
 
     /**
+     * @var Facade\LabeledThingInFrame\FacadeInterface
+     */
+    private $labeledThingFrameFacadeFactory;
+
+    /**
      * Project constructor.
      *
      * @param ProjectFacadeFactory                          $projectFacade
@@ -139,6 +145,7 @@ class Project extends Controller\Base
      * @param Authentication\UserPermissions                $userPermissions
      * @param Service\v1\Project\ProjectCreator             $projectCreator
      * @param Facade\TaskTimer\FacadeInterface              $labeledTimeFacadeFactory
+     * @param Facade\LabeledThingInFrame\FacadeInterface    $labeledThingFrameFacadeFactory
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -156,7 +163,8 @@ class Project extends Controller\Base
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions,
         Service\v1\Project\ProjectCreator $projectCreator,
-        Facade\TaskTimer\FacadeInterface $labeledTimeFacadeFactory
+        Facade\TaskTimer\FacadeInterface $labeledTimeFacadeFactory,
+        Facade\LabeledThingInFrame\FacadeInterface $labeledThingFrameFacadeFactory
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
@@ -173,7 +181,8 @@ class Project extends Controller\Base
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
         $this->projectCreator                        = $projectCreator;
-        $this->labeledTimeFacadeFactory             = $labeledTimeFacadeFactory;
+        $this->labeledTimeFacadeFactory              = $labeledTimeFacadeFactory;
+        $this->labeledThingFrameFacadeFactory        = $labeledThingFrameFacadeFactory;
     }
 
     /**
@@ -265,6 +274,8 @@ class Project extends Controller\Base
             //calculate project labeling time
             $allProjectTask = $labelingTaskFacade->findAllByProject($project);
             $projectLabelingTime = [];
+            $projectThingInFrame = [];
+            $thingInProject = 0;
             foreach ($allProjectTask as $projectTask) {
                 if(isset($projectTask)) {
                     $labeledTimeFacade = $this->labeledTimeFacadeFactory->getFacadeByProjectIdAndTaskId(
@@ -283,7 +294,17 @@ class Project extends Controller\Base
                             }
                         }
                     }
+                    //calculate project thing in frame
+                    $labeledThingFacade = $this->labeledThingFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+                    $labeledThingInFrameIterator = new LabeledThingInFrame($labeledThingFacade, $task);
+                    foreach ($labeledThingInFrameIterator as $thingInFrame) {
+                        $thingInProject++;
+                    }
                 }
+                $projectThingInFrame[$project->getId()][] = $thingInProject;
             }
 
             if (!isset($sumOfTasksForProjects[$project->getId()])) {
@@ -334,8 +355,8 @@ class Project extends Controller\Base
                 $responseProject['taskFailedCount']            = $taskFailedCount;
                 $responseProject['totalLabelingTimeInSeconds'] = (isset($projectLabelingTime[$project->getId()])) ? array_sum($projectLabelingTime[$project->getId()]) : 0;
                 $responseProject['labeledThingInFramesCount'] = isset(
-                    $numberOfLabeledThingInFramesByProjects[$project->getId()]
-                ) ? $numberOfLabeledThingInFramesByProjects[$project->getId()] : 0;
+                    $projectThingInFrame[$project->getId()]
+                ) ? array_sum($projectThingInFrame[$project->getId()]) : 0;
                 $responseProject['videosCount']                = isset(
                     $numberOfVideos[$project->getId()]
                 ) ? $numberOfVideos[$project->getId()] : 0;

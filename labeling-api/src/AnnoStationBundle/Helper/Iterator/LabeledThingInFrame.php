@@ -33,12 +33,12 @@ class LabeledThingInFrame implements \IteratorAggregate
      *
      * @param Facade\LabeledThingInFrame      $labeledThingInFrameFacade
      * @param Model\LabelingTask              $task
-     * @param Service\GhostClassesPropagation $ghostClassesPropagation
+     * @param Service\GhostClassesPropagation $ghostClassesPropagation|null
      */
     public function __construct(
         Facade\LabeledThingInFrame $labeledThingInFrameFacade,
         Model\LabelingTask $task,
-        Service\GhostClassesPropagation $ghostClassesPropagation
+        Service\GhostClassesPropagation $ghostClassesPropagation = null
     ) {
         $this->labeledThingInFrameFacade = $labeledThingInFrameFacade;
         $this->task                      = $task;
@@ -58,9 +58,11 @@ class LabeledThingInFrame implements \IteratorAggregate
             );
         }
 
-        $this->labeledThingsInFrames = $this->ghostClassesPropagation->propagateGhostClasses(
-            $this->labeledThingsInFrames
-        );
+        if(isset($this->ghostClassesPropagation)) {
+            $this->labeledThingsInFrames = $this->ghostClassesPropagation->propagateGhostClasses(
+                $this->labeledThingsInFrames
+            );
+        }
 
         foreach ($this->labeledThingsInFrames as $labeledThingInFrame) {
             yield $labeledThingInFrame;
