@@ -159,12 +159,30 @@
                     <ref name="Thing"/>
                 </choice>
             </zeroOrMore>
+            <optional>
+                <ref name="BlockageLabeling"/>
+            </optional>
         </element>
     </define>
     <!-- </video> -->
+    <!-- <blockage-labeling> -->
+    <define name="BlockageLabeling">
+        <element name="e:blockage-labeling">
+            <optional>
+                <ref name="References"/>
+            </optional>
+            <optional>
+                <attribute name="incomplete"/>
+            </optional>
+        </element>
+    </define>
+    <!-- </blockage-labeling> -->
     <!-- <thing> -->
     <define name="Thing">
         <element name="e:thing">
+            <optional>
+                <ref name="Task"/>
+            </optional>
             <attribute name="id"/>
             <optional>
                 <attribute name="line-color"/>
