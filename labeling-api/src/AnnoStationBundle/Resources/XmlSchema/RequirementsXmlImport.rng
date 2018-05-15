@@ -16,7 +16,6 @@
             <attribute name="class"/>
         </optional>
     </define>
-    <!-- <metadata> -->
     <define name="Metadata">
         <element name="e:metadata">
             <interleave>
@@ -141,8 +140,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </metadata> -->
-    <!-- <video> -->
     <define name="Video">
         <element name="e:video">
             <attribute name="id"/>
@@ -164,8 +161,6 @@
             </optional>
         </element>
     </define>
-    <!-- </video> -->
-    <!-- <blockage-labeling> -->
     <define name="BlockageLabeling">
         <element name="e:blockage-labeling">
             <optional>
@@ -176,8 +171,6 @@
             </optional>
         </element>
     </define>
-    <!-- </blockage-labeling> -->
-    <!-- <thing> -->
     <define name="Thing">
         <element name="e:thing">
             <optional>
@@ -227,10 +220,6 @@
         <element name="e:task">
             <attribute name="id"/>
             <optional>
-                <!--
-                    optional workflow mapping.
-                    will be mandatory as soon as workflow.xml has been implemented
-                -->
                 <element name="e:workflow-phase">
                     <text/>
                 </element>
@@ -269,7 +258,6 @@
             <ref name="PolylineShape"/>
             <ref name="PointShape"/>
         </choice>
-        <!-- ... -->
     </define>
     <define name="RectangleShape">
         <element name="e:rectangle">
@@ -422,8 +410,6 @@
             </optional>
         </element>
     </define>
-    <!-- </thing> -->
-    <!-- <frame-labeling> -->
     <define name="FrameLabeling">
         <element name="e:frame-labeling">
             <optional>
@@ -437,8 +423,6 @@
             </oneOrMore>
         </element>
     </define>
-    <!-- </frame-labeling> -->
-    <!-- <group> -->
     <define name="Group">
         <element name="e:group">
             <attribute name="id"/>
@@ -475,8 +459,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </group> -->
-    <!-- <references> -->
     <define name="References">
         <element name="e:references">
             <ref name="Task"/>
@@ -487,8 +469,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </references> -->
-    <!-- <metadata> -->
     <define name="VideoMetadata">
         <element name="e:metadata">
             <zeroOrMore>
@@ -504,7 +484,6 @@
             </optional>
         </element>
     </define>
-    <!-- </metadata> -->
     <define name="Root">
         <element name="e:export">
             <ref name="Metadata"/>
