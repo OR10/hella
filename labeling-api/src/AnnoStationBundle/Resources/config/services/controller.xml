@@ -178,6 +178,7 @@
             <argument type="service" id="annostation.labeling_api.service.project_creator"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.task_timer"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.project"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\v1\Status">
