@@ -37,7 +37,7 @@ class Trapezoid extends ExportXml\Element
         $trapezoid->appendChild($bottomRight);
 
         //if trapezoid
-        if ($this->trapezoid->getTrapezoidType() == 'trapezoid') {
+        if ($this->trapezoid->isTrapezoid()) {
             $bottomRight = $document->createElementNS($this->namespace, 'handle-top');
             $bottomRight->setAttribute('x', $this->trapezoid->getHandleLeft());
             $bottomRight->setAttribute('y', $this->trapezoid->getHandleTop());

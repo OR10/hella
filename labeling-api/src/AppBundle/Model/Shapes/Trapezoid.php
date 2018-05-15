@@ -32,32 +32,27 @@ class Trapezoid extends Model\Shape
     private $bottom;
 
     /**
-     * @var
+     * @var float|null
      */
     private $handleLeft;
 
     /**
-     * @var
+     * @var float|null
      */
     private $handleTop;
 
     /**
-     * @var
+     * @var float|null
      */
     private $handleRight;
 
     /**
-     * @var
+     * @var float|null
      */
     private $handleBottom;
 
-    /*
-     * rectangle/trapezoid
-     */
-    private $trapezoidType;
-
     /**
-     * @param array $shape
+     * @param array|mixed[] $shape
      * @return Trapezoid
      */
     public static function createFromArray(array $shape)
@@ -67,36 +62,33 @@ class Trapezoid extends Model\Shape
             || !isset($shape['topLeft']['y'])
             || !isset($shape['bottomRight']['x'])
             || !isset($shape['bottomRight']['y'])
-            || !isset($shape['handleTop']['x'])
-            || !isset($shape['handleTop']['y'])
-            || !isset($shape['handleBottom']['x'])
-            || !isset($shape['handleBottom']['y'])
-            || !isset($shape['trapezoidType'])
         ) {
+            $format = 'Invalid trapezoid shape id:%s topLeft:[x:%s y:%s] bottomRight:[x:%s y:%s]';
+            $format .= ' handleTop:[x:%s y:%s] handleBottom:[x:%s y:%s].';
+
             throw new \RuntimeException(
                 sprintf(
-                    'Invalid trapezoid shape id:%s topLeft:[x:%s y:%s] bottomRight:[x:%s y:%s]',
+                    $format,
                     isset($shape['id']) ? $shape['id'] : '',
                     isset($shape['topLeft']['x']) ? $shape['topLeft']['x'] : '',
                     isset($shape['topLeft']['y']) ? $shape['topLeft']['y'] : '',
                     isset($shape['bottomRight']['x']) ? $shape['bottomRight']['x'] : '',
                     isset($shape['bottomRight']['y']) ? $shape['bottomRight']['y'] : '',
+                    //not required fields:
                     isset($shape['handleTop']['x']) ? $shape['handleTop']['x'] : '',
                     isset($shape['handleTop']['y']) ? $shape['handleTop']['y'] : '',
                     isset($shape['handleBottom']['x']) ? $shape['handleBottom']['x'] : '',
-                    isset($shape['handleBottom']['y']) ? $shape['handleBottom']['y'] : '',
-                    isset($shape['trapezoidType']) ? $shape['trapezoidType'] : ''
+                    isset($shape['handleBottom']['y']) ? $shape['handleBottom']['y'] : ''
                 )
             );
         }
 
-        return new Trapezoid(
+        return new self(
             $shape['id'],
             $shape['topLeft']['x'],
             $shape['topLeft']['y'],
             $shape['bottomRight']['x'],
             $shape['bottomRight']['y'],
-            $shape['trapezoidType'],
             [
                 'handleLeft' => $shape['handleTop']['x'],
                 'handleTop' => $shape['handleTop']['y'],
@@ -107,40 +99,41 @@ class Trapezoid extends Model\Shape
     }
 
     /**
+     * true - Full feature trapezoid
+     * false - Trapezoid with the appearance like a rectangle
+     *
+     * @return bool
+     */
+    public function isTrapezoid()
+    {
+        $isTrapezoid = true;
+        if (is_null($this->handleBottom) || is_null($this->handleTop)
+            || is_null($this->handleLeft) || is_null($this->handleRight)) {
+            $isTrapezoid = false;
+        }
+
+        return $isTrapezoid;
+    }
+
+    /**
      * @param string $id
      * @param float  $left
      * @param float  $top
      * @param float  $right
      * @param float  $bottom
+     * @param array[array] $handle
      */
-    public function __construct($id, $left, $top, $right, $bottom, $type, array $handle)
+    public function __construct($id, $left, $top, $right, $bottom, array $handle)
     {
         $this->id            = (string) $id;
         $this->left          = (float) $left;
         $this->top           = (float) $top;
         $this->right         = (float) $right;
         $this->bottom        = (float) $bottom;
-        $this->trapezoidType = (string) $type;
-        $this->handleLeft    = (isset($handle['handleLeft'])) ? (float)$handle['handleLeft'] : '';
-        $this->handleTop     = (isset($handle['handleTop'])) ? (float)$handle['handleTop'] : '';
-        $this->handleRight   = (isset($handle['handleRight'])) ? (float)$handle['handleRight'] : '';
-        $this->handleBottom  = (isset($handle['handleBottom'])) ? (float)$handle['handleBottom'] : '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTrapezoidType()
-    {
-        return $this->trapezoidType;
-    }
-
-    /**
-     * @param $type
-     */
-    public function setTrapezoidType($type)
-    {
-        $this->trapezoidType = $type;
+        $this->handleLeft    = (isset($handle['handleLeft'])) ? (float)$handle['handleLeft'] : null;
+        $this->handleTop     = (isset($handle['handleTop'])) ? (float)$handle['handleTop'] : null;
+        $this->handleRight   = (isset($handle['handleRight'])) ? (float)$handle['handleRight'] : null;
+        $this->handleBottom  = (isset($handle['handleBottom'])) ? (float)$handle['handleBottom'] : null;
     }
 
     /**
@@ -208,7 +201,7 @@ class Trapezoid extends Model\Shape
     }
 
     /**
-     * @return mixed
+     * @return float|null
      */
     public function getHandleLeft()
     {
@@ -216,7 +209,7 @@ class Trapezoid extends Model\Shape
     }
 
     /**
-     * @return mixed
+     * @return float|null
      */
     public function getHandleTop()
     {
@@ -224,7 +217,7 @@ class Trapezoid extends Model\Shape
     }
 
     /**
-     * @return mixed
+     * @return float|null
      */
     public function getHandleRight()
     {
@@ -232,7 +225,7 @@ class Trapezoid extends Model\Shape
     }
 
     /**
-     * @return mixed
+     * @return float|null
      */
     public function getHandleBottom()
     {
@@ -266,7 +259,6 @@ class Trapezoid extends Model\Shape
                 'x' => $this->getHandleRight(),
                 'y' => $this->getHandleBottom(),
             ],
-            'trapezoidType' => $this->getTrapezoidType()
         ];
     }
 }
