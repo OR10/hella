@@ -6,6 +6,7 @@ use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
 use AnnoStationBundle\Database\Facade;
+use AppBundle\Exception;
 use AppBundle\Model;
 use AnnoStationBundle\Model as AnnoStationBundleModel;
 use AnnoStationBundle\Service;
@@ -60,12 +61,20 @@ class ProjectImporter extends Controller\Base
     private $organisationFacade;
 
     /**
-     * @param Storage\TokenStorage           $tokenStorage
-     * @param Service\ProjectImporter\Import $projectImporter
-     * @param string                         $cacheDirectory
-     * @param \cscntLogger                   $logger
-     * @param Service\Authorization          $authorizationService
-     * @param Facade\Organisation            $organisationFacade
+     * @var Service\v1\Project\UploadProjectFileService
+     */
+    private $fileUploadService;
+
+    /**
+     * ProjectImporter constructor.
+     *
+     * @param Storage\TokenStorage                        $tokenStorage
+     * @param Service\ProjectImporter\Import              $projectImporter
+     * @param string                                      $cacheDirectory
+     * @param \cscntLogger                                $logger
+     * @param Service\Authorization                       $authorizationService
+     * @param Facade\Organisation                         $organisationFacade
+     * @param Service\v1\Project\UploadProjectFileService $fileUploadService
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -73,7 +82,8 @@ class ProjectImporter extends Controller\Base
         string $cacheDirectory,
         \cscntLogger $logger,
         Service\Authorization $authorizationService,
-        Facade\Organisation $organisationFacade
+        Facade\Organisation $organisationFacade,
+        Service\v1\Project\UploadProjectFileService $fileUploadService
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectImporter      = $projectImporter;
@@ -81,6 +91,7 @@ class ProjectImporter extends Controller\Base
         $this->loggerFacade         = new LoggerFacade($logger, self::class);
         $this->authorizationService = $authorizationService;
         $this->organisationFacade   = $organisationFacade;
+        $this->fileUploadService    = $fileUploadService;
 
         clearstatcache();
 
@@ -119,9 +130,8 @@ class ProjectImporter extends Controller\Base
         $user                 = $this->tokenStorage->getToken()->getUser();
         $uploadCacheDirectory = implode(DIRECTORY_SEPARATOR, [$this->cacheDirectory, $user, $uploadId]);
         $chunkDirectory       = $uploadCacheDirectory . DIRECTORY_SEPARATOR . 'chunks';
-
-        $this->ensureDirectoryExists($uploadCacheDirectory);
-        $this->ensureDirectoryExists($chunkDirectory);
+        $this->fileUploadService->ensureDirectoryExists($uploadCacheDirectory);
+        $this->fileUploadService->ensureDirectoryExists($chunkDirectory);
 
         /** @var HttpFoundation\File\UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
@@ -153,6 +163,8 @@ class ProjectImporter extends Controller\Base
         if ($file->validateFile()) {
             try {
                 $file->save($targetPath);
+                //validate files in zip
+                $this->fileUploadService->uploadImportZip($flowRequest, $uploadCacheDirectory, $targetPath);
             } catch (\InvalidArgumentException $exception) {
                 throw new HttpKernel\Exception\ConflictHttpException($exception->getMessage(), $exception);
             }
@@ -184,12 +196,14 @@ class ProjectImporter extends Controller\Base
         $overwriteTaskConfigurationId = $request->request->get('taskConfigurationId');
         $deactivateSha256             = $request->request->get('deactivateSha256', false);
         $tasks                        = [];
+
         try {
             foreach (glob(sprintf('%s%s*.xml', $uploadCacheDirectory, DIRECTORY_SEPARATOR)) as $filePath) {
                 $tasks = array_merge(
-                    $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId, $deactivateSha256),
+                    $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId, $deactivateSha256, $uploadCacheDirectory),
                     $tasks
                 );
+
             }
         } catch (\Exception $exception) {
             return new View\View(
@@ -216,18 +230,5 @@ class ProjectImporter extends Controller\Base
                 ],
             ]
         );
-    }
-
-    /**
-     * @param string $directory
-     */
-    private function ensureDirectoryExists(string $directory)
-    {
-        clearstatcache();
-        if (!is_dir($directory) && !@mkdir($directory, 0777, true)) {
-            if (!is_dir($directory)) {
-                throw new \RuntimeException(sprintf('Failed to create directory: %s', $directory));
-            }
-        }
     }
 }

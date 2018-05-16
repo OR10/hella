@@ -23,8 +23,7 @@ class LabelingTask
 
     /**
      * @param $id
-     *
-     * @return Model\LabelingTask
+     * @return Model\LabelingTask[]
      */
     public function find($id)
     {

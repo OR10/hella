@@ -82,6 +82,11 @@ class Import
     private $campaignFacade;
 
     /**
+     * @var Service\v1\Project\UploadProjectFileService
+     */
+    private $fileUploadService;
+
+    /**
      * Import constructor.
      *
      * @param Facade\Project         $projectFacade
@@ -105,7 +110,8 @@ class Import
         Service\XmlValidator $xmlValidatorForImportData,
         Service\XmlValidator $xmlValidatorForRequirementsConfiguration,
         Service\TaskCreator $taskCreatorService,
-        AMQP\FacadeAMQP $amqpFacade
+        AMQP\FacadeAMQP $amqpFacade,
+        Service\v1\Project\UploadProjectFileService $fileUploadService
     ) {
         $this->projectFacade                            = $projectFacade;
         $this->requirementsXmlFacade                    = $requirementsXmlFacade;
@@ -117,20 +123,20 @@ class Import
         $this->taskCreatorService                       = $taskCreatorService;
         $this->xmlValidatorForRequirementsConfiguration = $xmlValidatorForRequirementsConfiguration;
         $this->campaignFacade                           = $campaignFacade;
+        $this->fileUploadService    = $fileUploadService;
     }
 
     /**
-     * @param                                     $xmlImportFilePath
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param Model\User                          $user
-     * @param                                     $overwriteTaskConfigurationId
-     * @param bool                                $deactivateSha256
-     *
+     * @param string                               $xmlImportFilePath
+     * @param AnnoStationBundleModel\Organisation  $organisation
+     * @param Model\User                           $user
+     * @param string|null                          $overwriteTaskConfigurationId
+     * @param bool                                 $deactivateSha256
+     * @param string|null                          $uploadCacheDirectory
      * @return array
-     * @throws Model\TaskConfiguration\Exception\EmptyData
      * @throws \Exception
      */
-    public function importXml($xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, $overwriteTaskConfigurationId = null, $deactivateSha256 = false)
+    public function importXml(string $xmlImportFilePath, AnnoStationBundleModel\Organisation $organisation, Model\User $user, string $overwriteTaskConfigurationId = null, bool $deactivateSha256 = false, string $uploadCacheDirectory = null)
     {
         $xmlImport = new \DOMDocument();
         $xmlImport->load($xmlImportFilePath);
@@ -178,7 +184,7 @@ class Import
         $videoElements = $xpath->query('/x:export/x:video');
         $createdTasks  = [];
         foreach ($videoElements as $videoElement) {
-            $video        = $this->createVideo($organisation, $xpath, $videoElement, $project, $xmlImportFilePath);
+            $video        = $this->createVideo($organisation, $xpath, $videoElement, $project, $xmlImportFilePath, $uploadCacheDirectory);
             $tasks        = $this->taskCreatorService->createTasks($project, $video, $user, true);
             $createdTasks = array_merge($createdTasks, $tasks);
 
@@ -354,17 +360,18 @@ class Import
      * @param \DOMXPath                           $xpath
      * @param \DOMElement                         $videoDomElement
      * @param Model\Project                       $project
-     * @param                                     $xmlImportFilePath
-     *
-     * @return Model\Video
-     * @throws \Exception
+     * @param string                              $xmlImportFilePath
+     * @param string|null                         $uploadCacheDirectory
+     * @return                                    Model\Video
+     * @throws                                    \Exception
      */
     private function createVideo(
         AnnoStationBundleModel\Organisation $organisation,
         \DOMXPath $xpath,
         \DOMElement $videoDomElement,
         Model\Project $project,
-        $xmlImportFilePath
+        string $xmlImportFilePath,
+        string $uploadCacheDirectory = null
     ) {
         $filename                         = $videoDomElement->getAttribute('filename');
         $videoSourcePath                  = sprintf('%s/%s', dirname($xmlImportFilePath), $filename);
@@ -399,13 +406,38 @@ class Import
         }
 
         // Decide between importing an image or a video
-        if ($this->isVideoASingleFrameImage($filename)) {
+        if ($this->isVideoASingleFrameImage($filename) && !$this->isZipFile($filename)) {
             $video = $this->videoImporter->importImage(
                 $organisation,
                 $project,
                 $filename,
                 $videoSourcePath
             );
+        } else if ($this->isZipFile($filename)) {
+            //upload zip file
+            $dirTempName ='unzip_'.uniqid();
+            $zipDir = $uploadCacheDirectory . DIRECTORY_SEPARATOR . $dirTempName;
+            $zipFileCount = 0;
+            $zip = new \ZipArchive();
+            $res = $zip->open($videoSourcePath);
+            if ($res === TRUE) {
+                $zipFileCount = $zip->numFiles;
+                if ($zip->extractTo($zipDir)) {
+                    $zip->close();
+                }
+            }
+            $video = $this->videoImporter->importZipImage(
+                $organisation,
+                $project,
+                $filename,
+                $videoSourcePath,
+                $zipFileCount,
+                false
+            );
+            //delete do not need image
+            @unlink($videoSourcePath);
+            $this->fileUploadService->deleteDir($zipDir);
+
         } else {
             $video = $this->videoImporter->importVideo(
                 $organisation,
@@ -459,4 +491,14 @@ class Import
 
         return in_array($fileExtension, $imageExtensions);
     }
+    /**
+     * @param string $filename
+     *
+     * @return bool
+     */
+    private function isZipFile(string $filename)
+    {
+        return in_array(pathinfo($filename, PATHINFO_EXTENSION), ['zip']);
+    }
+
 }

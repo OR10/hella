@@ -312,6 +312,7 @@
             <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.task_creator"/>
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
+            <argument type="service" id="annostation.labeling_api.service.project.upload_file"/>
         </service>
 
         <service id="annostation.labeling_api.service.project_importer.facade.project" class="AnnoStationBundle\Service\ProjectImporter\Facade\Project">
@@ -440,6 +441,7 @@
                  class="AnnoStationBundle\Service\v1\Project\BatchUploadService">
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
+            <argument type="service" id="annostation.labeling_api.service.project.upload_file"/>
         </service>
 
         <service id="annostation.labeling_api.service.task"
@@ -475,6 +477,9 @@
         </service>
 
         <service id="annostation.labeling_api.service.labeled.frame.service" class="AnnoStationBundle\Service\LabeledFrameService">
+        </service>
+
+        <service id="annostation.labeling_api.service.project.upload_file" class="AnnoStationBundle\Service\v1\Project\UploadProjectFileService">
         </service>
     </services>
 </container>

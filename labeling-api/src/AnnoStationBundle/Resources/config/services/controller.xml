@@ -253,6 +253,7 @@
             <argument type="service" id="annostation.labeling_api.vendor.logger"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
             <argument type="service" id="annostation.labeling_api.database.facade.organisation"/>
+            <argument type="service" id="annostation.labeling_api.service.project.upload_file"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation" class="AnnoStationBundle\Controller\Api\v1\Organisation">
