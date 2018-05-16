@@ -465,6 +465,15 @@
         <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
         </service>
 
+        <service id="annostation.labeling_api.service.project" class="AnnoStationBundle\Service\v1\Project\ProjectService">
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.task_timer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
+        </service>
+
         <service id="annostation.labeling_api.service.kpi_export" class="AnnoStationBundle\Service\KpiExport">
             <argument type="service" id="annostation.labeling_api.database.facade.project"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeling_task"/>
