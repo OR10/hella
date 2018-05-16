@@ -431,11 +431,14 @@ class LabelingTask extends Base
     /**
      * @param $phase
      *
-     * @return array
+     * @return array|object
      */
     public function getStatus($phase)
     {
-        return $this->status[$phase];
+        if(isset($this->status[$phase])) {
+            return $this->status[$phase];
+        }
+        return $this;
     }
 
     /**

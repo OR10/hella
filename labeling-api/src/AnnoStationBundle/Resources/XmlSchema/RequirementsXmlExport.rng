@@ -16,7 +16,6 @@
             <attribute name="class"/>
         </optional>
     </define>
-    <!-- <metadata> -->
     <define name="Metadata">
         <element name="e:metadata">
             <interleave>
@@ -131,8 +130,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </metadata> -->
-    <!-- <video> -->
     <define name="Video">
         <element name="e:video">
             <attribute name="id"/>
@@ -151,8 +148,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </video> -->
-    <!-- <thing> -->
     <define name="Thing">
         <element name="e:thing">
             <attribute name="id"/>
@@ -389,8 +384,6 @@
             <ref name="FrameRangeAttributes"/>
         </element>
     </define>
-    <!-- </thing> -->
-    <!-- <frame-labeling> -->
     <define name="FrameLabeling">
         <element name="e:frame-labeling">
             <optional>
@@ -402,8 +395,6 @@
             </oneOrMore>
         </element>
     </define>
-    <!-- </frame-labeling> -->
-    <!-- <group> -->
     <define name="Group">
         <element name="e:group">
             <attribute name="id"/>
@@ -440,8 +431,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </group> -->
-    <!-- <references> -->
     <define name="References">
         <element name="e:references">
             <ref name="Task"/>
@@ -452,8 +441,6 @@
             </zeroOrMore>
         </element>
     </define>
-    <!-- </references> -->
-    <!-- <metadata> -->
     <define name="VideoMetadata">
         <element name="e:metadata">
             <zeroOrMore>
@@ -469,7 +456,6 @@
             </optional>
         </element>
     </define>
-    <!-- </metadata> -->
     <define name="Root">
         <element name="e:export">
             <ref name="Metadata"/>
