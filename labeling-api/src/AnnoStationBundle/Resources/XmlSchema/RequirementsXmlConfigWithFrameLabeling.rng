@@ -6,7 +6,7 @@
         - Things with classes/values
         - Groups with classes/values
         - Values with children (dependent classes)
-        
+
         It explicitly disallows logical expressions
     -->
     <a:documentation/>
@@ -103,9 +103,9 @@
                     <optional>
                         <attribute name="multi-selection"/>
                     </optional>
-                    <optional>
+                    <zeroOrMore>
                         <ref name="Value"/>
-                    </optional>
+                    </zeroOrMore>
                 </group>
                 <attribute name="ref"/>
             </choice>
