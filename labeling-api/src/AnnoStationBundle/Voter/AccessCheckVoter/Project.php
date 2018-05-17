@@ -45,6 +45,7 @@ class Project extends Voter\AccessCheckVoter
                 new AccessCheck\HasSuperAdminRole($userPermissions),
                 new AccessCheck\HasExternalCoordinatorRole($userPermissions),
                 new AccessCheck\HasLabelManagerRole($userPermissions),
+                new AccessCheck\HasObserverRole($userPermissions),
             ],
         ];
     }
