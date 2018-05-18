@@ -91,7 +91,9 @@
     </define>
     <define name="Blockage">
         <element name="r:blockage">
-            <ref name="BlockageClass"/>
+            <zeroOrMore>
+                <ref name="BlockageClass"/>
+            </zeroOrMore>
         </element>
     </define>
     <define name="BlockageClass">
