@@ -1,6 +1,7 @@
 <?php
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
+use AnnoStationBundle\Helper\Project\ProjectFileHelper;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Response;
@@ -64,6 +65,13 @@ class TaskConfiguration extends Controller\Base
     private $authorizationService;
 
     /**
+     * @var ProjectFileHelper
+     */
+    private $projectFileHelper;
+
+    /**
+     * TaskConfiguration constructor.
+     *
      * @param Facade\TaskConfiguration                     $taskConfigurationFacade
      * @param Facade\Project                               $projectFacade
      * @param Storage\TokenStorage                         $tokenStorage
@@ -71,6 +79,7 @@ class TaskConfiguration extends Controller\Base
      * @param Service\XmlValidator                         $requirementsXmlValidator
      * @param Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory
      * @param Service\Authorization                        $authorizationService
+     * @param ProjectFileHelper                            $projectFileHelper
      */
     public function __construct(
         Facade\TaskConfiguration $taskConfigurationFacade,
@@ -79,7 +88,8 @@ class TaskConfiguration extends Controller\Base
         Service\XmlValidator $simpleXmlValidator,
         Service\XmlValidator $requirementsXmlValidator,
         Service\TaskConfigurationXmlConverterFactory $configurationXmlConverterFactory,
-        Service\Authorization $authorizationService
+        Service\Authorization $authorizationService,
+        ProjectFileHelper $projectFileHelper
     ) {
         $this->taskConfigurationFacade          = $taskConfigurationFacade;
         $this->tokenStorage                     = $tokenStorage;
@@ -88,6 +98,7 @@ class TaskConfiguration extends Controller\Base
         $this->configurationXmlConverterFactory = $configurationXmlConverterFactory;
         $this->authorizationService             = $authorizationService;
         $this->projectFacade                    = $projectFacade;
+        $this->projectFileHelper                = $projectFileHelper;
     }
 
     /**
@@ -236,12 +247,11 @@ class TaskConfiguration extends Controller\Base
             || !$request->get('name')
             || $request->files->get('file')->getClientOriginalExtension() !== 'xml'
         ) {
-//            'headline' => 'Invalid file extension',
             throw new BadRequestHttpException('Only XML files can be uploaded. Or file or name is missing');
         }
 
         $user = $this->tokenStorage->getToken()->getUser();
-        $name = $request->get('name');
+        $name = preg_replace('/[^a-zA-Z0-9_.]/', '', $request->get('name'));
         if (count($this->taskConfigurationFacade->getTaskConfigurationsByUserAndName($organisation, $user, $name)) > 0) {
             throw new ConflictHttpException(
                 sprintf(
@@ -255,9 +265,6 @@ class TaskConfiguration extends Controller\Base
         $xml->load($request->files->get('file'));
         $errorMessage = $this->requirementsXmlValidator->validateRelaxNg($xml);
         if ($errorMessage !== null) {
-//            ->setData([
-//                'headline' => 'Incorrect XML data',
-//            ])
             throw new NotAcceptableHttpException($errorMessage);
         }
 
@@ -265,14 +272,15 @@ class TaskConfiguration extends Controller\Base
             throw new NotAcceptableHttpException('Found duplicate IDs in XML file.');
         }
 
-        $file    = $request->files->get('file');
-        $xmlData = file_get_contents($file->getPathName());
-        $user    = $this->tokenStorage->getToken()->getUser();
+        $file            = $request->files->get('file');
+        $xmlData         = file_get_contents($file->getPathName());
+        $user            = $this->tokenStorage->getToken()->getUser();
+        $attachmentName  = $this->projectFileHelper->removeSpecialCharacter($file->getClientOriginalName());
 
         $taskConfiguration = new TaskConfigurationModel\RequirementsXml(
             $organisation,
             $name,
-            str_replace(' ', '_', $file->getClientOriginalName()),
+            $attachmentName,
             $file->getMimeType(),
             $xmlData,
             $user->getId(),
