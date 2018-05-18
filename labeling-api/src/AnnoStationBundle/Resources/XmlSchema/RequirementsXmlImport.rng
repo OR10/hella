@@ -257,6 +257,7 @@
             <ref name="PedestrianShape"/>
             <ref name="PolylineShape"/>
             <ref name="PointShape"/>
+            <ref name="TrapezoidShape"/>
         </choice>
     </define>
     <define name="RectangleShape">
@@ -265,6 +266,22 @@
                 <ref name="XYCoordinateAttributes"/>
             </element>
             <element name="e:bottom-right">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+        </element>
+    </define>
+    <define name="TrapezoidShape">
+        <element name="e:trapezoid">
+            <element name="e:top-left">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:bottom-right">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:handle-top">
+                <ref name="XYCoordinateAttributes"/>
+            </element>
+            <element name="e:handle-bottom">
                 <ref name="XYCoordinateAttributes"/>
             </element>
         </element>
