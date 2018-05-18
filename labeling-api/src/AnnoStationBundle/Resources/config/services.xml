@@ -442,6 +442,7 @@
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.project.upload_file"/>
+            <argument type="service" id="annostation.labeling_api.helper.project_file_helper"/>
         </service>
 
         <service id="annostation.labeling_api.service.task"
