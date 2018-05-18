@@ -33,6 +33,9 @@ class CheckPermissions
 
     public function onKernelController(Event\FilterControllerEvent $event)
     {
+        $request = $event->getRequest();
+        $requestController = ($request->attributes->get('_controller'));
+
         if (!is_array($controllerEvent = $event->getController())) {
             return;
         }
@@ -50,7 +53,11 @@ class CheckPermissions
                     }
                 }
                 if (!$allowed) {
-                    throw new AccessDeniedHttpException();
+                    if($requestController == 'annostation.labeling_api.controller.api.organisation.project:assignProjectToUserAction') {
+                        throw new AccessDeniedHttpException('You need label manager permissions');
+                    } else {
+                        throw new AccessDeniedHttpException();
+                    }
                 }
             }
         }
