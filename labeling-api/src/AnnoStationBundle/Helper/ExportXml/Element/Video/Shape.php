@@ -3,7 +3,6 @@
 namespace AnnoStationBundle\Helper\ExportXml\Element\Video;
 
 use AnnoStationBundle\Helper\ExportXml;
-use AnnoStationBundle\Helper\ExportXml\Element\Video\Shape;
 use AnnoStationBundle\Service;
 use AppBundle\Model;
 
@@ -12,7 +11,7 @@ class Shape extends ExportXml\Element
     /**
      * @var Model\Shape
      */
-    private $shape;
+    private $objectShape;
 
     /**
      * @var
@@ -39,15 +38,25 @@ class Shape extends ExportXml\Element
      */
     private $depthBufferService;
 
+    /**
+     * Shape constructor.
+     *
+     * @param Model\Shape                $shape
+     * @param int                        $start
+     * @param int                        $end
+     * @param string                     $namespace
+     * @param Model\CalibrationData|null $calibrationData
+     * @param Service\DepthBuffer        $depthBufferService
+     */
     public function __construct(
         Model\Shape $shape,
-        $start,
-        $end,
-        $namespace,
+        int $start,
+        int $end,
+        string $namespace,
         Model\CalibrationData $calibrationData = null,
         Service\DepthBuffer $depthBufferService
     ) {
-        $this->shape              = $shape;
+        $this->objectShape        = $shape;
         $this->start              = $start;
         $this->end                = $end;
         $this->namespace          = $namespace;
@@ -55,42 +64,46 @@ class Shape extends ExportXml\Element
         $this->depthBufferService = $depthBufferService;
     }
 
+    /**
+     * @param \DOMDocument $document
+     * @return \DOMElement
+     */
     public function getElement(\DOMDocument $document)
     {
         $shape = $document->createElementNS($this->namespace, 'shape');
-        $shape->setAttribute('id', $this->shape->getId());
+        $shape->setAttribute('id', $this->objectShape->getId());
         $shape->setAttribute('start', $this->start);
         $shape->setAttribute('end', $this->end);
 
         switch (true) {
-            case $this->shape instanceof Model\Shapes\Rectangle:
-                $shapeElement = new Shape\Rectangle($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Rectangle:
+                $shapeElement = new Shape\Rectangle($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\Cuboid3d:
+            case $this->objectShape instanceof Model\Shapes\Cuboid3d:
                 $shapeElement = new Shape\Cuboid3d(
-                    $this->shape,
+                    $this->objectShape,
                     $this->namespace,
                     $this->calibrationData,
                     $this->depthBufferService
                 );
                 break;
-            case $this->shape instanceof Model\Shapes\Polyline:
-                $shapeElement = new Shape\Polyline($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Polyline:
+                $shapeElement = new Shape\Polyline($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\Polygon:
-                $shapeElement = new Shape\Polygon($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Polygon:
+                $shapeElement = new Shape\Polygon($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\Pedestrian:
-                $shapeElement = new Shape\Pedestrian($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Pedestrian:
+                $shapeElement = new Shape\Pedestrian($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\Point:
-                $shapeElement = new Shape\Point($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Point:
+                $shapeElement = new Shape\Point($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\BrightestPixel:
-                $shapeElement = new Shape\BrightestPixel($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\BrightestPixel:
+                $shapeElement = new Shape\BrightestPixel($this->objectShape, $this->namespace);
                 break;
-            case $this->shape instanceof Model\Shapes\Trapezoid:
-                $shapeElement = new Shape\Trapezoid($this->shape, $this->namespace);
+            case $this->objectShape instanceof Model\Shapes\Trapezoid:
+                $shapeElement = new Shape\Trapezoid($this->objectShape, $this->namespace);
                 break;
         }
 

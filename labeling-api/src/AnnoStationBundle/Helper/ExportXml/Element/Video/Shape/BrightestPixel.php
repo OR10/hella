@@ -6,6 +6,8 @@ use AppBundle\Model\Shapes;
 
 class BrightestPixel extends ExportXml\Element
 {
+    use ShapeSetting;
+
     /**
      * @var Shapes\BrightestPixel
      */
@@ -16,29 +18,39 @@ class BrightestPixel extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct(Shapes\BrightestPixel $brightestPixel, $namespace)
+    /**
+     * BrightestPixel constructor.
+     *
+     * @param Shapes\BrightestPixel $brightestPixel
+     * @param string                $namespace
+     */
+    public function __construct(Shapes\BrightestPixel $brightestPixel, string $namespace)
     {
         $this->brightestPixel = $brightestPixel;
         $this->namespace = $namespace;
     }
 
+    /**
+     * @param \DOMDocument $document
+     * @return \DOMElement
+     */
     public function getElement(\DOMDocument $document)
     {
         $pixel = $document->createElementNS($this->namespace, 'lsr-pixel');
 
         $topLeft = $document->createElementNS($this->namespace, 'lsr-roi-top-left');
-        $topLeft->setAttribute('x', $this->brightestPixel->getLeft());
-        $topLeft->setAttribute('y', $this->brightestPixel->getTop());
+        $topLeft->setAttribute('x', round($this->brightestPixel->getLeft(), $this->roundPoint));
+        $topLeft->setAttribute('y', round($this->brightestPixel->getTop(), $this->roundPoint));
         $pixel->appendChild($topLeft);
 
         $bottomRight = $document->createElementNS($this->namespace, 'lsr-roi-bottom-right');
-        $bottomRight->setAttribute('x', $this->brightestPixel->getRight());
-        $bottomRight->setAttribute('y', $this->brightestPixel->getBottom());
+        $bottomRight->setAttribute('x', round($this->brightestPixel->getRight(), $this->roundPoint));
+        $bottomRight->setAttribute('y', round($this->brightestPixel->getBottom(), $this->roundPoint));
         $pixel->appendChild($bottomRight);
 
         $center = $document->createElementNS($this->namespace, 'lsr-pixel-position');
-        $center->setAttribute('x', $this->brightestPixel->getPoint()['x']);
-        $center->setAttribute('y', $this->brightestPixel->getPoint()['y']);
+        $center->setAttribute('x', round($this->brightestPixel->getPoint()['x'], $this->roundPoint));
+        $center->setAttribute('y', round($this->brightestPixel->getPoint()['y'], $this->roundPoint));
         $pixel->appendChild($center);
         return $pixel;
     }

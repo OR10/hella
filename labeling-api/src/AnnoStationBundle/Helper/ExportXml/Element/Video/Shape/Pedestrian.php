@@ -7,6 +7,8 @@ use AppBundle\Model\Shapes;
 
 class Pedestrian extends ExportXml\Element
 {
+    use ShapeSetting;
+
     const ASPECT_RATIO = 0.41;
 
     /**
@@ -19,7 +21,13 @@ class Pedestrian extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct(Shapes\Pedestrian $pedestrian, $namespace)
+    /**
+     * Pedestrian constructor.
+     *
+     * @param Shapes\Pedestrian $pedestrian
+     * @param string            $namespace
+     */
+    public function __construct(Shapes\Pedestrian $pedestrian, string $namespace)
     {
         $this->pedestrian = $pedestrian;
         $this->namespace  = $namespace;
@@ -33,23 +41,23 @@ class Pedestrian extends ExportXml\Element
         $width  = $height * self::ASPECT_RATIO;
 
         $topLeft = $document->createElementNS($this->namespace, 'top-center');
-        $topLeft->setAttribute('x', $this->pedestrian->getTopCenterX());
-        $topLeft->setAttribute('y', $this->pedestrian->getTopCenterY());
+        $topLeft->setAttribute('x', round($this->pedestrian->getTopCenterX(), $this->roundPoint));
+        $topLeft->setAttribute('y', round($this->pedestrian->getTopCenterY(), $this->roundPoint));
         $pedestrian->appendChild($topLeft);
 
         $topLeft = $document->createElementNS($this->namespace, 'top-left');
-        $topLeft->setAttribute('x', round($this->pedestrian->getTopCenterX() - ($width / 2)));
-        $topLeft->setAttribute('y', $this->pedestrian->getTopCenterY());
+        $topLeft->setAttribute('x', round($this->pedestrian->getTopCenterX() - ($width / 2), $this->roundPoint));
+        $topLeft->setAttribute('y', round($this->pedestrian->getTopCenterY(), $this->roundPoint));
         $pedestrian->appendChild($topLeft);
 
         $bottomRight = $document->createElementNS($this->namespace, 'bottom-center');
-        $bottomRight->setAttribute('x', $this->pedestrian->getBottomCenterX());
-        $bottomRight->setAttribute('y', $this->pedestrian->getBottomCenterY());
+        $bottomRight->setAttribute('x', round($this->pedestrian->getBottomCenterX(), $this->roundPoint));
+        $bottomRight->setAttribute('y', round($this->pedestrian->getBottomCenterY(), $this->roundPoint));
         $pedestrian->appendChild($bottomRight);
 
         $bottomRight = $document->createElementNS($this->namespace, 'bottom-right');
-        $bottomRight->setAttribute('x', round($this->pedestrian->getBottomCenterX() + ($width / 2)));
-        $bottomRight->setAttribute('y', $this->pedestrian->getBottomCenterY());
+        $bottomRight->setAttribute('x', round($this->pedestrian->getBottomCenterX() + ($width / 2), $this->roundPoint));
+        $bottomRight->setAttribute('y', round($this->pedestrian->getBottomCenterY(), $this->roundPoint));
         $pedestrian->appendChild($bottomRight);
 
         $aspectRatio = $document->createElementNS($this->namespace, 'aspect-ratio', self::ASPECT_RATIO);

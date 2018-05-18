@@ -6,6 +6,8 @@ use AppBundle\Model\Shapes;
 
 class Polygon extends ExportXml\Element
 {
+    use ShapeSetting;
+
     /**
      * @var Shapes\Polygon
      */
@@ -15,20 +17,29 @@ class Polygon extends ExportXml\Element
      */
     private $namespace;
 
-    public function __construct(Shapes\Polygon $polygon, $namespace)
+    /**
+     * Polygon constructor.
+     * @param Shapes\Polygon $polygon
+     * @param string         $namespace
+     */
+    public function __construct(Shapes\Polygon $polygon, string $namespace)
     {
         $this->polygon   = $polygon;
         $this->namespace = $namespace;
     }
 
+    /**
+     * @param \DOMDocument $document
+     * @return \DOMElement
+     */
     public function getElement(\DOMDocument $document)
     {
         $polygon = $document->createElementNS($this->namespace, 'polygon');
 
         foreach ($this->polygon->getPoints() as $point) {
             $pointElement = $document->createElementNS($this->namespace, 'point');
-            $pointElement->setAttribute('x', $point['x']);
-            $pointElement->setAttribute('y', $point['y']);
+            $pointElement->setAttribute('x', round($point['x'], $this->roundPoint));
+            $pointElement->setAttribute('y', round($point['y'], $this->roundPoint));
             $polygon->appendChild($pointElement);
         }
 
