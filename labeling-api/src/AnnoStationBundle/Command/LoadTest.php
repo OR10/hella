@@ -164,7 +164,6 @@ class LoadTest extends Base
         $couchUser,
         $couchReadOnlyUser
     ) {
-		ini_set('memory_limit','512M');
         parent::__construct();
 
         $this->couchClient                      = $couchClient;
@@ -196,6 +195,8 @@ class LoadTest extends Base
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        ini_set('memory_limit','512M');
+
         if (!$this->createUsers($output)) {
             $output->writeln("createUsers failed");
 
