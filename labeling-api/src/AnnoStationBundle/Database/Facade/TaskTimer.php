@@ -52,6 +52,19 @@ class TaskTimer
             ->toArray();
     }
 
+    /**
+     * @param Model\LabelingTask $task
+     * @return Model\TaskTimer[]|null
+     */
+    public function findByTask(Model\LabelingTask $task)
+    {
+        return $this->documentManager
+            ->createQuery('annostation_task_timer', 'by_taskId')
+            ->setKey([$task->getId()])
+            ->onlyDocs(true)
+            ->execute()
+            ->toArray();
+    }
 
     /**
      * @param Model\TaskTimer $taskExport

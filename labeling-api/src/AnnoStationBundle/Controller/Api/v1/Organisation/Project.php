@@ -2,6 +2,8 @@
 
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
+use AnnoStationBundle\Helper\Iterator\LabeledThingInFrame;
+use AnnoStationBundle\Helper\Iterator\TaskTimeByTask;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
@@ -115,6 +117,21 @@ class Project extends Controller\Base
     private $projectCreator;
 
     /**
+     * @var Facade\TaskTimer\FacadeInterface
+     */
+    private $labeledTimeFacadeFactory;
+
+    /**
+     * @var Facade\LabeledThingInFrame\FacadeInterface
+     */
+    private $labeledThingFrameFacadeFactory;
+
+    /**
+     * @var Service\v1\Project\ProjectService
+     */
+    private $projectService;
+
+    /**
      * Project constructor.
      *
      * @param ProjectFacadeFactory                          $projectFacade
@@ -132,6 +149,9 @@ class Project extends Controller\Base
      * @param AMQP\FacadeAMQP                               $amqpFacade
      * @param Authentication\UserPermissions                $userPermissions
      * @param Service\v1\Project\ProjectCreator             $projectCreator
+     * @param Facade\TaskTimer\FacadeInterface              $labeledTimeFacadeFactory
+     * @param Facade\LabeledThingInFrame\FacadeInterface    $labeledThingFrameFacadeFactory
+     * @param Service\v1\Project\ProjectService             $projectService
      */
     public function __construct(
         Facade\Project $projectFacade,
@@ -148,7 +168,10 @@ class Project extends Controller\Base
         Service\TaskDatabaseSecurityPermissionService $taskDatabaseSecurityPermissionService,
         AMQP\FacadeAMQP $amqpFacade,
         Authentication\UserPermissions $userPermissions,
-        Service\v1\Project\ProjectCreator $projectCreator
+        Service\v1\Project\ProjectCreator $projectCreator,
+        Facade\TaskTimer\FacadeInterface $labeledTimeFacadeFactory,
+        Facade\LabeledThingInFrame\FacadeInterface $labeledThingFrameFacadeFactory,
+        Service\v1\Project\ProjectService $projectService
     ) {
         $this->projectFacade                         = $projectFacade;
         $this->labelingTaskFacade                    = $labelingTaskFacade;
@@ -165,6 +188,9 @@ class Project extends Controller\Base
         $this->labelingTaskFacadeFactory             = $labelingTaskFacadeFactory;
         $this->labeledThingInFrameFacadeFactory      = $labeledThingInFrameFacadeFactory;
         $this->projectCreator                        = $projectCreator;
+        $this->labeledTimeFacadeFactory              = $labeledTimeFacadeFactory;
+        $this->labeledThingFrameFacadeFactory        = $labeledThingFrameFacadeFactory;
+        $this->projectService                        = $projectService;
     }
 
     /**
@@ -215,139 +241,24 @@ class Project extends Controller\Base
             $projects = array_slice($projects, $offset, $limit);
         }
 
-        $result = array(
-            Model\Project::STATUS_IN_PROGRESS => array(),
-            Model\Project::STATUS_TODO        => array(),
-            Model\Project::STATUS_DONE        => array(),
-            Model\Project::STATUS_DELETED     => array(),
-            null                              => array() //@TODO remove this later
-        );
-
-        foreach ($this->projectFacadeReadOnly->getTimePerProject() as $mapping) {
-            $projectTimeMapping[$mapping['key'][0]] = array_sum($mapping['value']);
-        }
-
-        $tasksByProjects = $labelingTaskFacade->findAllByProjects($projects);
-        $numberOfVideos     = array();
-        foreach ($tasksByProjects as $taskByProjects) {
-            $projectId                    = $taskByProjects['key'];
-            $videoId                      = $taskByProjects['value'];
-            $numberOfVideos[$projectId][] = $videoId;
-        }
-
-        $numberOfVideos = array_map(
-            function ($videoByProject) {
-                return count(array_unique($videoByProject));
-            },
-            $numberOfVideos
-        );
-
-        $users                                  = [];
-        $users_ids                              = [];
-        $sumOfTasksForProjects                  = $this->getSumOfTasksForProjects($projects);
-        $sumOfCompletedTasksForProjects         = $labelingTaskFacade->getSumOfAllDoneLabelingTasksForProjects(
-            $projects
-        );
-        $numberOfLabeledThingInFramesByProjects = $this->labeledThingInFrameFacadeFactory->getReadOnlyFacade()
-            ->getSumOfLabeledThingInFramesByProjects($projects);
-
-        /** @var Model\Project $project */
-        foreach ($projects as $project) {
-            if (!isset($sumOfTasksForProjects[$project->getId()])) {
-                $sumOfTasksForProjects[$project->getId()] = 0;
-            }
-            $timeInSeconds = isset($projectTimeMapping[$project->getId()]) ? $projectTimeMapping[$project->getId()] : 0;
-
-            $sumOfCompletedTasksForProject = !isset($sumOfCompletedTasksForProjects[$project->getId()]) ? 0 : $sumOfCompletedTasksForProjects[$project->getId()];
-            $sumOfTasksByPhaseForProject   = $labelingTaskFacade->getSumOfTasksByPhaseForProject($project);
-
-            $sumOfFailedTasks        = 0;
-            $sumOfPreProcessingTasks = 0;
-            foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
-                $sumOfFailedTasks += $states[Model\LabelingTask::STATUS_FAILED];
-                if ($phase === Model\LabelingTask::PHASE_PREPROCESSING) {
-                    $sumOfPreProcessingTasks += $states[Model\LabelingTask::STATUS_TODO];
-                }
-            }
-
-            $responseProject               = array(
-                'id'                          => $project->getId(),
-                'userId'                      => $project->getUserId(),
-                'name'                        => $project->getName(),
-                'status'                      => $project->getStatus(),
-                'lastStatusChangeTimestamp'   => $project->getLastStateForStatus($project->getStatus()) === null ? null : $project->getLastStateForStatus($project->getStatus())['timestamp'],
-                'labelingGroupId'             => $project->getLabelingGroupId(),
-                'finishedPercentage'          => floor(
-                    $sumOfTasksForProjects[$project->getId()] === 0 ? 0 : 100 / $sumOfTasksForProjects[$project->getId()] * $sumOfCompletedTasksForProject
-                ),
-                'creationTimestamp'           => $project->getCreationDate(),
-                'taskInPreProcessingCount'    => $sumOfPreProcessingTasks,
-                'diskUsage'                   => $project->getDiskUsageInBytes() === null ? [] : ['total' => $project->getDiskUsageInBytes()],
-                'campaigns'                   => $this->mapCampaignIdsToCampaigns($organisation, $project->getCampaigns()),
-            );
-
-            if ($this->userPermissions->hasPermission('canViewProjectManagementRelatedStatisticsColumn')) {
-                $taskInProgressCount = 0;
-                $taskFailedCount     = 0;
-
-                foreach ($sumOfTasksByPhaseForProject as $phase => $states) {
-                    $taskInProgressCount += $states[Model\LabelingTask::STATUS_IN_PROGRESS];
-                    $taskFailedCount     += $states[Model\LabelingTask::STATUS_FAILED];
-                }
-
-                $responseProject['taskCount']                  = $sumOfTasksForProjects[$project->getId()];
-                $responseProject['taskFinishedCount']          = $sumOfCompletedTasksForProject;
-                $responseProject['taskInProgressCount']        = $taskInProgressCount;
-                $responseProject['taskFailedCount']            = $taskFailedCount;
-                $responseProject['totalLabelingTimeInSeconds'] = $timeInSeconds;
-                $responseProject['labeledThingInFramesCount'] = isset(
-                    $numberOfLabeledThingInFramesByProjects[$project->getId()]
-                ) ? $numberOfLabeledThingInFramesByProjects[$project->getId()] : 0;
-                $responseProject['videosCount']                = isset(
-                    $numberOfVideos[$project->getId()]
-                ) ? $numberOfVideos[$project->getId()] : 0;
-                $responseProject['dueTimestamp']               = $project->getDueDate();
-                if (!empty($project->getGenericXmlTaskInstructions())) {
-                    $responseProject['taskInstructionType'] = 'genericXml';
-                } elseif (!empty($project->getRequirementsXmlTaskInstructions())) {
-                    $responseProject['taskInstructionType'] = 'requirementsXml';
-                } else {
-                    $responseProject['taskInstructionType'] = 'legacy';
-                }
-            }
-
-            if ($this->userPermissions->hasPermission('canViewDeletedProjects')) {
-                $responseProject['deletedState'] = $project->getDeletedState();
-            }
-
-            if ($this->userPermissions->hasPermission('canViewProjectsAssignedLabelManager')) {
-                $responseProject['labelManager'] = $project->getLatestAssignedLabelManagerUserId();
-                if ($responseProject['labelManager'] !== null) {
-                    $users_ids[] = $responseProject['labelManager'];
-                    $users[] = $this->userFacade->getUserById($responseProject['labelManager']);
-                }
-            }
-
-            $result[$project->getStatus()][] = $responseProject;
-            $users_ids[] = $project->getUserId();
-        }
+        $projectList = $this->projectService->projectList($projects, $labelingTaskFacade ,$organisation);
 
         if (!$this->userPermissions->hasPermission('canViewProjectsCreationTimestamp')) {
-            foreach (array_keys($result) as $status) {
-                $result[$status] = array_map(
+            foreach (array_keys($projectList['result']) as $status) {
+                $projectList['result'][$status] = array_map(
                     function ($data) {
                         unset($data['creationTimestamp']);
 
                         return $data;
                     },
-                    $result[$status]
+                    $projectList['result'][$status]
                 );
             }
         }
 
-        $users = new Response\SimpleUsers($users);
+        $users = new Response\SimpleUsers($projectList['users']);
         $allUsers = array();
-        foreach($this->userFacade->getUserByIds(array_unique($users_ids)) as $user) {
+        foreach($this->userFacade->getUserByIds(array_unique($projectList['usersIds'])) as $user) {
             $allUsers[$user->getId()] = array(
                 'id'                => $user->getId(),
                 'email'             => $user->getEmail(),
@@ -367,11 +278,11 @@ class Project extends Controller\Base
             [
                 'totalRows' => $totalRows,
                 'result'    => array_merge(
-                    $result[Model\Project::STATUS_IN_PROGRESS],
-                    $result[Model\Project::STATUS_TODO],
-                    $result[Model\Project::STATUS_DONE],
-                    $result[Model\Project::STATUS_DELETED],
-                    $result[null] //@TODO remove this later
+                    $projectList['result'][Model\Project::STATUS_IN_PROGRESS],
+                    $projectList['result'][Model\Project::STATUS_TODO],
+                    $projectList['result'][Model\Project::STATUS_DONE],
+                    $projectList['result'][Model\Project::STATUS_DELETED],
+                    $projectList['result'][null] //@TODO remove this later
                 ),
                 'users' => $users->getResult(),
                 'allUsers' => $allUsers
@@ -403,32 +314,6 @@ class Project extends Controller\Base
     }
 
     /**
-     * @param AnnoStationBundleModel\Organisation $organisation
-     * @param                                     $campaignIds
-     *
-     * @return array
-     */
-    private function mapCampaignIdsToCampaigns(AnnoStationBundleModel\Organisation $organisation, $campaignIds) {
-        
-        //TODO Will be better for the future prevent empty elements.
-        if ($campaignIds === null || count(array_filter($campaignIds)) < 1) {
-            return [];
-        }
-
-        return array_map(
-            function ($id) {
-                $campaign = $this->campaignFacade->find($id);
-
-                return [
-                    'id'   => $campaign->getId(),
-                    'name' => $campaign->getName(),
-                ];
-            },
-            $campaignIds
-        );
-    }
-
-    /**
      * Create a new Project
      *
      * @Rest\Post("/{organisation}/project")
@@ -455,26 +340,6 @@ class Project extends Controller\Base
                 'result' => $project,
             ]
         );
-    }
-
-    /**
-     * @param $projects
-     *
-     * @return array
-     */
-    private function getSumOfTasksForProjects($projects)
-    {
-
-        $labelingTaskFacade  = $this->labelingTaskFacadeFactory->getReadOnlyFacade();
-        $taskIdsByProjectIds = $labelingTaskFacade->findAllByProjects($projects);
-
-        $numberOfTaskInProject = [];
-        foreach ($taskIdsByProjectIds as $taskIdsByProjectId) {
-            $projectId                         = $taskIdsByProjectId['key'];
-            $numberOfTaskInProject[$projectId] = isset($numberOfTaskInProject[$projectId]) ? $numberOfTaskInProject[$projectId] + 1 : 1;
-        }
-
-        return $numberOfTaskInProject;
     }
 
     /**

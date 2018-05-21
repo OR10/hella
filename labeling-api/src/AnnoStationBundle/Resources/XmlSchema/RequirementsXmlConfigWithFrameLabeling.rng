@@ -6,7 +6,7 @@
         - Things with classes/values
         - Groups with classes/values
         - Values with children (dependent classes)
-        
+
         It explicitly disallows logical expressions
     -->
     <a:documentation/>
@@ -91,7 +91,24 @@
     </define>
     <define name="Blockage">
         <element name="r:blockage">
-            <ref name="Class"/>
+            <ref name="BlockageClass"/>
+        </element>
+    </define>
+    <define name="BlockageClass">
+        <element name="r:class">
+            <choice>
+                <group>
+                    <attribute name="id"/>
+                    <attribute name="name"/>
+                    <optional>
+                        <attribute name="multi-selection"/>
+                    </optional>
+                    <zeroOrMore>
+                        <ref name="Value"/>
+                    </zeroOrMore>
+                </group>
+                <attribute name="ref"/>
+            </choice>
         </element>
     </define>
     <define name="Class">

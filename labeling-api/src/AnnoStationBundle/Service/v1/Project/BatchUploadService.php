@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Service\v1\Project;
 
+use AnnoStationBundle\Helper\Project\ProjectFileHelper;
 use AnnoStationBundle\Service\VideoImporter;
 use AppBundle\Exception;
 use Flow\Config;
@@ -13,7 +14,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BatchUploadService
 {
-
 
     /**
      * @var string
@@ -31,21 +31,29 @@ class BatchUploadService
     private $zipFilesCount = 0;
 
     /**
+     * @var ProjectFileHelper
+     */
+    private $projectFileHelper;
+
+    /**
      * BatchUploadService constructor.
      *
-     * @param string                    $cacheDirectory
-     * @param VideoImporter             $videoImporter
-     * @param UploadProjectFileService  $fileUploadService
+     * @param string                   $cacheDirectory
+     * @param VideoImporter            $videoImporter
+     * @param UploadProjectFileService $fileUploadService
+     * @param ProjectFileHelper        $projectFileHelper
      */
     public function __construct(
         string $cacheDirectory,
         VideoImporter $videoImporter,
-        UploadProjectFileService $fileUploadService
+        UploadProjectFileService $fileUploadService,
+        ProjectFileHelper $projectFileHelper
     )
     {
         $this->cacheDirectory    = $cacheDirectory;
         $this->videoImporter     = $videoImporter;
         $this->fileUploadService = $fileUploadService;
+        $this->projectFileHelper = $projectFileHelper;
     }
 
 
@@ -66,6 +74,8 @@ class BatchUploadService
 
         /** @var UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
+        $lossless = $request->query->get('lossless');
+        $lossless = (isset($lossless)) ? ($lossless === 'true') ? true : false : false;
 
         $flowRequest       = new Request(
             $request->request->all(),
@@ -79,7 +89,8 @@ class BatchUploadService
         );
         $config            = new Config(['tempDir' => $chunkDirectory]);
         $file              = new File($config, $flowRequest);
-        $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $flowRequest->getFileName()]);
+        $fileName          = $this->projectFileHelper->removeSpecialCharacter($flowRequest->getFileName());
+        $targetPath        = implode(DIRECTORY_SEPARATOR, [$projectCacheDirectory, $fileName]);
 
         if (!$file->validateChunk()) {
             throw new BadRequestHttpException();
@@ -90,35 +101,35 @@ class BatchUploadService
         // and we have to check if the request may be a duplicate
         clearstatcache();
 
-        if ($this->fileUploadService->isVideoFile($flowRequest->getFileName())) {
-            if ($project->hasVideo($flowRequest->getFileName())) {
+        if ($this->fileUploadService->isVideoFile($fileName)) {
+            if ($project->hasVideo($fileName)) {
 
                 throw new ConflictHttpException(
-                    sprintf('Video/Zip already exists in project: %s', $flowRequest->getFileName())
+                    sprintf('Video/Zip already exists in project: %s', $fileName)
                 );
             }
-        } elseif ($this->fileUploadService->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
-            if ($project->hasAdditionalFrameNumberMapping($flowRequest->getFileName())) {
+        } elseif ($this->fileUploadService->isAdditionalFrameNumberMappingFile($fileName)) {
+            if ($project->hasAdditionalFrameNumberMapping($fileName)) {
                 throw new ConflictHttpException(
-                    sprintf('FrameMapping data already exists in project: %s', $flowRequest->getFileName())
+                    sprintf('FrameMapping data already exists in project: %s', $fileName)
                 );
             }
-        } elseif ($this->fileUploadService->isCalibrationFile($flowRequest->getFileName())) {
-            if ($project->hasCalibrationData($flowRequest->getFileName())) {
+        } elseif ($this->fileUploadService->isCalibrationFile($fileName)) {
+            if ($project->hasCalibrationData($fileName)) {
                 throw new ConflictHttpException(
-                    sprintf('Calibration data already exists in project: %s', $flowRequest->getFileName())
+                    sprintf('Calibration data already exists in project: %s', $fileName)
                 );
             }
-        } elseif ($this->fileUploadService->isImageFile($flowRequest->getFileName())) {
-            if ($project->hasVideo($flowRequest->getFileName())) {
+        } elseif ($this->fileUploadService->isImageFile($fileName)) {
+            if ($project->hasVideo($fileName)) {
                 throw new ConflictHttpException(
-                    sprintf('Image already exists in project (either as video or image file): %s', $flowRequest->getFileName())
+                    sprintf('Image already exists in project (either as video or image file): %s', $fileName)
                 );
             }
         } else {
-            if(!$this->fileUploadService->isZipFile($flowRequest->getFileName())) {
+            if(!$this->fileUploadService->isZipFile($fileName)) {
                 throw new BadRequestHttpException(
-                    sprintf('Invalid file: %s', $flowRequest->getFileName())
+                    sprintf('Invalid file: %s', $fileName)
                 );
             }
         }
@@ -127,8 +138,8 @@ class BatchUploadService
         if ($file->validateFile()) {
             try {
                 $file->save($targetPath);
-                if($this->fileUploadService->isZipFile($flowRequest->getFileName())) {
-                    $tempPrefix = explode('.', $flowRequest->getFileName());
+                if($this->fileUploadService->isZipFile($fileName)) {
+                    $tempPrefix = explode('.', $fileName);
                     $dirTempName = (is_array($tempPrefix)) ? 'unzip_'.$tempPrefix[0] : 'unzip_'.uniqid();
                     $zipDir = $projectCacheDirectory . DIRECTORY_SEPARATOR . $dirTempName;
                     //validate zip file
@@ -138,7 +149,7 @@ class BatchUploadService
                         $this->zipFilesCount = $zip->numFiles;
                         if ($project->isFrameNumber($this->zipFilesCount)) {
                             throw new ConflictHttpException(
-                                sprintf('Project "start frame number" is incorrect  for the file: %s', $flowRequest->getFileName())
+                                sprintf('Project "start frame number" is incorrect  for the file: %s', $fileName)
                             );
                         }
                         if ($zip->extractTo($zipDir)) {
@@ -147,12 +158,12 @@ class BatchUploadService
                             $this->fileUploadService->validatePngDepth($zipDir, $targetPath, true, $project);
                         } else {
                             throw new ConflictHttpException(
-                                sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                                sprintf('Error while unpacking the archive: %s', $fileName)
                             );
                         }
                     } else {
                         throw new ConflictHttpException(
-                            sprintf('Error while unpacking the archive: %s', $flowRequest->getFileName())
+                            sprintf('Error while unpacking the archive: %s', $fileName)
                         );
                     }
 
@@ -169,16 +180,16 @@ class BatchUploadService
                     //delete do not need image
                     $this->fileUploadService->deleteDir($zipDir);
                 } else {
-                    if ($this->fileUploadService->isVideoFile($flowRequest->getFileName())) {
+                    if ($this->fileUploadService->isVideoFile($fileName)) {
                         // for now, we always use compressed images
                         $this->videoImporter->importVideo(
                             $organisation,
                             $project,
                             basename($targetPath),
                             $targetPath,
-                            false
+                            $lossless
                         );
-                    } elseif ($this->fileUploadService->isImageFile($flowRequest->getFileName())) {
+                    } elseif ($this->fileUploadService->isImageFile($fileName)) {
                         // Image compression is determined by their input image type
                         // PNG -> lossless, jpeg -> compressed.
                         $this->videoImporter->importImage(
@@ -187,17 +198,17 @@ class BatchUploadService
                             basename($targetPath),
                             $targetPath
                         );
-                    } elseif ($this->fileUploadService->isAdditionalFrameNumberMappingFile($flowRequest->getFileName())) {
+                    } elseif ($this->fileUploadService->isAdditionalFrameNumberMappingFile($fileName)) {
                         $this->videoImporter->importAdditionalFrameNumberMapping(
                             $organisation,
                             $project,
                             $targetPath
                         );
-                    } elseif ($this->fileUploadService->isCalibrationFile($flowRequest->getFileName())) {
+                    } elseif ($this->fileUploadService->isCalibrationFile($fileName)) {
                         $this->videoImporter->importCalibrationData($organisation, $project, $targetPath);
                     } else {
                         throw new BadRequestHttpException(
-                            sprintf('Invalid file: %s', $flowRequest->getFileName())
+                            sprintf('Invalid file: %s', $fileName)
                         );
                     }
                 }

@@ -442,6 +442,7 @@
             <argument>%annostation.labeling_api.project_batch_upload_cache_dir%</argument>
             <argument type="service" id="annostation.labeling_api.service.video_importer"/>
             <argument type="service" id="annostation.labeling_api.service.project.upload_file"/>
+            <argument type="service" id="annostation.labeling_api.helper.project_file_helper"/>
         </service>
 
         <service id="annostation.labeling_api.service.task"
@@ -463,6 +464,15 @@
         </service>
 
         <service id="annostation.labeling_api.service.header_converter" class="AnnoStationBundle\Service\HeaderConverter">
+        </service>
+
+        <service id="annostation.labeling_api.service.project" class="AnnoStationBundle\Service\v1\Project\ProjectService">
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.task_timer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeling_task"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.campaign"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.user"/>
         </service>
 
         <service id="annostation.labeling_api.service.kpi_export" class="AnnoStationBundle\Service\KpiExport">

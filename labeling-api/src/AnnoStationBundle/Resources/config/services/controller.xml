@@ -176,6 +176,9 @@
             <argument type="service" id="annostation.labeling_api.vendor.worker_pool.amqp"/>
             <argument type="service" id="annostation.labeling_api.service.authentication.user_permissions"/>
             <argument type="service" id="annostation.labeling_api.service.project_creator"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.task_timer"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame"/>
+            <argument type="service" id="annostation.labeling_api.service.project"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.status" class="AnnoStationBundle\Controller\Api\v1\Status">
@@ -214,6 +217,7 @@
             <argument type="service" id="annostation.labeling_api.service.requirements_xml_validator"/>
             <argument type="service" id="annostation.labeling_api.service.task_configuration_xml_converter_factory"/>
             <argument type="service" id="annostation.labeling_api.service.authorization"/>
+            <argument type="service" id="annostation.labeling_api.helper.project_file_helper"/>
         </service>
 
         <service id="annostation.labeling_api.controller.api.organisation.labeling_group"
