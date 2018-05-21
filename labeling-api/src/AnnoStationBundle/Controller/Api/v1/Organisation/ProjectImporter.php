@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1\Organisation;
 
+use AnnoStationBundle\Helper\Project\ProjectFileHelper;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
@@ -66,15 +67,21 @@ class ProjectImporter extends Controller\Base
     private $fileUploadService;
 
     /**
+     * @var ProjectFileHelper
+     */
+    private $projectFileHelper;
+
+    /**
      * ProjectImporter constructor.
      *
-     * @param Storage\TokenStorage                        $tokenStorage
+     *@param Storage\TokenStorage                         $tokenStorage
      * @param Service\ProjectImporter\Import              $projectImporter
      * @param string                                      $cacheDirectory
      * @param \cscntLogger                                $logger
      * @param Service\Authorization                       $authorizationService
      * @param Facade\Organisation                         $organisationFacade
      * @param Service\v1\Project\UploadProjectFileService $fileUploadService
+     * @param ProjectFileHelper                           $projectFileHelper
      */
     public function __construct(
         Storage\TokenStorage $tokenStorage,
@@ -83,7 +90,8 @@ class ProjectImporter extends Controller\Base
         \cscntLogger $logger,
         Service\Authorization $authorizationService,
         Facade\Organisation $organisationFacade,
-        Service\v1\Project\UploadProjectFileService $fileUploadService
+        Service\v1\Project\UploadProjectFileService $fileUploadService,
+        ProjectFileHelper $projectFileHelper
     ) {
         $this->tokenStorage         = $tokenStorage;
         $this->projectImporter      = $projectImporter;
@@ -92,6 +100,7 @@ class ProjectImporter extends Controller\Base
         $this->authorizationService = $authorizationService;
         $this->organisationFacade   = $organisationFacade;
         $this->fileUploadService    = $fileUploadService;
+        $this->projectFileHelper    = $projectFileHelper;
 
         clearstatcache();
 
@@ -135,11 +144,12 @@ class ProjectImporter extends Controller\Base
 
         /** @var HttpFoundation\File\UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
+        $flowName = $this->projectFileHelper->removeSpecialCharacter($uploadedFileChunk->getClientOriginalName());
         $flowRequest       = new Flow\Request(
             $request->request->all(),
             [
                 'error'    => $uploadedFileChunk->getError(),
-                'name'     => $uploadedFileChunk->getClientOriginalName(),
+                'name'     => $flowName,
                 'type'     => $uploadedFileChunk->getClientMimeType(),
                 'tmp_name' => $uploadedFileChunk->getPathname(),
                 'size'     => $uploadedFileChunk->getSize(),
@@ -147,7 +157,7 @@ class ProjectImporter extends Controller\Base
         );
         $config            = new Flow\Config(['tempDir' => $chunkDirectory]);
         $file              = new Flow\File($config, $flowRequest);
-        $targetPath        = implode(DIRECTORY_SEPARATOR, [$uploadCacheDirectory, $flowRequest->getFileName()]);
+        $targetPath        = implode(DIRECTORY_SEPARATOR, [$uploadCacheDirectory, $flowName]);
 
         if (!$file->validateChunk()) {
             throw new HttpKernel\Exception\BadRequestHttpException('The uploaded chunk is invalid');
@@ -203,7 +213,6 @@ class ProjectImporter extends Controller\Base
                     $this->projectImporter->importXml($filePath, $organisation, $user, $overwriteTaskConfigurationId, $deactivateSha256, $uploadCacheDirectory),
                     $tasks
                 );
-
             }
         } catch (\Exception $exception) {
             return new View\View(
