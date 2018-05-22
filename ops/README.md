@@ -203,3 +203,32 @@ $ MACHINE_USER=softeq-dev API_MACHINE={machine-name} COUCHDB_MACHINE={machine-na
 ```bash
 $ docker-compose run --rm api-cron app/AnnoStation/console annostation:init -v
 ```
+
+## PHP Profiling
+
+We do it by xhprof (fork tideways/php-xhprof-extension) and legacy GUI (phacility/xhprof see ops/docker/maintenance/xhprof)
+
+Profiling logs is collecting from API service and from workers
+ 
+### How to enable profiling in project 
+
+You need to set environment variable `XHPROF_DIVIDER`. It define how frequently logs will be collected. 
+Eg: `XHPROF_DIVIDER=1000 docker-compose up` will trigger collecting once per 1000 runs
+By default `XHPROF_DIVIDER=0`. It means profiling is disabled.
+ 
+ 
+### How to copy profiling logs
+
+Copy form container:
+```bash  
+$ docker cp $(docker ps -f name=api-fpm -q):/tmp/ .xhprof
+```
+
+### How to view profiling info
+
+Run docker container with gui: 
+```bash  
+$ run --rm -p 8101:80 -v $PWD/.xhprof/tmp:/tmp maintenance-xhprof  bash -c "php -S 0.0.0.0:80 /code/src/router.php"
+```
+
+Open Gui in browser [127.0.0.1:8101](http://127.0.0.1:8101/) 
