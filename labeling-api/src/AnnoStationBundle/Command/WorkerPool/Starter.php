@@ -27,6 +27,9 @@ class Starter extends Command
 
     protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
     {
+        //TODO: Add profiler, optimize app and remove it
+        ini_set('memory_limit','2048M');
+
         $command = $this->getApplication()->find('hagl:workerpool:starter');
 
         return $command->run($input, $output);

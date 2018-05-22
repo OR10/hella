@@ -61,7 +61,8 @@ doctrine_couch_db:
         port: "%couchdb_port%"
         user: "%couchdb_user%"
         password: "%couchdb_password%"
-        timeout: 1
+        #TODO: Add profiler, optimize app and get old value back
+        timeout: 3
     odm:
         document_managers:
             default:
