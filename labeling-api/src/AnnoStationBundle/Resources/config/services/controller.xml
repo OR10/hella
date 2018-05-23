@@ -156,6 +156,8 @@
             <argument type="service" id="annostation.labeling_api.service.task"/>
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_frame"/>
             <argument type="service" id="annostation.labeling_api.service.labeled.frame.service"/>
+            <argument type="service" id="annostation.labeling_api.database.facade.project_requirements"/>
+            <argument type="service" id="annostation.labeling_api.helper.project_xml_read"/>
         </service>
 
         <service

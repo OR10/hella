@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Helper\TaskConfiguration;
 
+use AnnoStationBundle\Controller\CustomException\RequirementsXmlElementException;
 use AppBundle\Model\TaskConfiguration;
 
 class RequirementsXml
@@ -258,5 +259,37 @@ class RequirementsXml
         restore_error_handler();
 
         return $document;
+    }
+
+    /**
+     * @param TaskConfiguration\RequirementsXml $requirement
+     * @return string[]
+     */
+    public function getTaskConfigAttribute(TaskConfiguration\RequirementsXml $requirement) : array
+    {
+        $xml = simplexml_load_string($requirement->getRawData(), "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $array = json_decode($json, TRUE);
+        $needAttr = [];
+        $availableAttr = [];
+        try {
+            foreach ($array['frame']['class'] as $elem) {
+                $needAttr[] = $elem['@attributes']['name'];
+                foreach ($elem['value'] as $attrName) {
+                    $name = explode(' ', $attrName['@attributes']['name']);
+                    if (count($name) == 1) {
+                        $newAttrName = strtolower($name[0]);
+                    } else {
+                        $name[0] = strtolower($name[0]);
+                        $newAttrName = implode('', $name);
+                    }
+                    $availableAttr[$newAttrName] = $elem['@attributes']['name'];
+                }
+            }
+        } catch (\Exception $e) {
+            throw new RequirementsXmlElementException('Element do not exist in xml requirements', $e, 500);
+        }
+
+        return ['needAttr' => $needAttr, 'availableAttr' => $availableAttr];
     }
 }
