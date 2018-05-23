@@ -37,7 +37,16 @@ RUN chmod 0644 /etc/cron.d/republisher-cron
 
 CMD service cron start
 
-COPY ./labeling-api /code
-
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
+
+RUN git clone https://github.com/tideways/php-profiler-extension.git /tmp/x \
+    && cd /tmp/x \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && echo "extension=tideways_xhprof.so" > /usr/local/etc/php/php.ini \
+    && rm -R /tmp/x
+
+COPY ./labeling-api /code

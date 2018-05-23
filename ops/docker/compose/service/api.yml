@@ -51,6 +51,7 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER
 
   api-workerpool-low:
     restart: unless-stopped
@@ -98,6 +99,7 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER
 
   api-workerpool-normallow:
     restart: unless-stopped
@@ -145,6 +147,7 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER
 
   api-workerpool-normal:
     restart: unless-stopped
@@ -192,6 +195,7 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER
 
   api-workerpool-high:
     restart: unless-stopped
@@ -239,6 +243,7 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER
 
   api-cron:
     restart: unless-stopped
@@ -286,3 +291,4 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
+      - XHPROF_DIVIDER

@@ -43,6 +43,13 @@ services:
       - SYMFONY__AZURE__DIR__FRAME=${AZURE_DIR_FRAME}
       - SYMFONY__AZURE__BASE__URL=${AZURE_BASE_URL}
       - SYMFONY__STORAGE__TYPE=${STORAGE_TYPE}
-      #- SYMFONY__MAILER__ENCRYPTION=${MAILER_ENCRYPTION}
-      #- SYMFONY__MAILER__AUTH__MODE=${MAILER_AUTH_MODE}
-      #- SYMFONY__MAILER__PORT=${MAILER_PORT}
+      - XHPROF_DIVIDER
+
+  maintenance-xhprof:
+    build:
+      dockerfile: 'ops/docker/maintenance/xhprof/Dockerfile'
+      context: ../../../../
+    ports:
+      - 8101:80
+    volumes:
+      - ../../../../ops/docker/maintenance/xhprof/src:/code/src

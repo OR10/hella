@@ -95,9 +95,22 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 #Do not remove pip. It will break s3cmd
 
-COPY ./labeling-video-processing /code
-
 COPY ops/docker/video/fpm/config/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
+
+RUN apt-get update && \
+    apt-get install -y git && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/tideways/php-profiler-extension.git /tmp/x \
+    && cd /tmp/x \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && echo "extension=tideways_xhprof.so" > /usr/local/etc/php/php.ini \
+    && rm -R /tmp/x
+
+COPY ./labeling-video-processing /code

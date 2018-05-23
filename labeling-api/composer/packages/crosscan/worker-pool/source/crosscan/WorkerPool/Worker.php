@@ -95,6 +95,7 @@ class Worker
 
             if ($jobDelivery !== null) {
 
+                \ProfilingFacade::start();
                 $this->logger->logString("Trying to get next job", \cscntLogPayload::SEVERITY_DEBUG);
                 $job = $jobDelivery->getJob();
                 $this->logger->logString(
@@ -102,6 +103,7 @@ class Worker
                     \cscntLogPayload::SEVERITY_DEBUG
                 );
 
+                $profillerNS = str_replace("\\", "", get_class($job));
                 try {
                     $jobInstruction = $this->findJobInstruction($job);
                     $this->logger->logString("Running the Job", \cscntLogPayload::SEVERITY_DEBUG);
@@ -124,6 +126,8 @@ class Worker
                     $jobDelivery->ack();
 
                     $this->resetIdentityMap();
+
+                    \ProfilingFacade::stop($profillerNS);
                 } catch (\Exception $exception) {
 
                     $this->eventHandler->jobFailed($job, $exception);
@@ -148,7 +152,12 @@ class Worker
                     $this->rescheduleManager->handle($job, $jobDelivery, $exception);
                     $this->eventHandler->jobRescheduled($job);
                     $this->stop();
+
+                    \ProfilingFacade::stop($profillerNS);
                     return;
+                } catch (\Throwable $e) {
+                    \ProfilingFacade::stop($profillerNS);
+                    throw $e;
                 }
             }
 

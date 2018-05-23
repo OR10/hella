@@ -25,3 +25,4 @@ services:
       - AZURE_DIR_FRAME
       - AZURE_ACCOUNT_KEY
       - AZURE_BLOB_ENDPOINT
+      - XHPROF_DIVIDER
