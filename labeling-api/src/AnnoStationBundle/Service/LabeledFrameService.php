@@ -6,38 +6,16 @@ use AnnoStationBundle\Database\Facade\LabeledFrame;
 class LabeledFrameService
 {
 
-    public function getFrameEmptyAttribute(array $labeledFrames)
+    /**
+     * @param array $labeledFrames
+     * @param array $availableAttr
+     * @param array $needAttribute
+     * @return string[]|null
+     */
+    public function getFrameEmptyAttribute(array $labeledFrames, array $availableAttr, array $needAttribute)
     {
         $lFrame = [];
-        $availableAttr = [
-            'day' => 'Time of day',
-            'night' => 'Time of day',
-            'duskDawn' => 'Time of day',
-            'dry' => 'Road cover',
-            'wet' => 'Road cover',
-            'snowcover' => 'Road cover',
-            'city' => 'Road type',
-            'highway' => 'Road type',
-            'ruralRoad' => 'Road type',
-            'clear' => 'Sky',
-            'lowSun' => 'Sky',
-            'overcast' => 'Sky',
-            'partlyCloudy' => 'Sky',
-            'inTunnel' => 'Sky',
-            'undefined' => 'Sky',
-            'rain' => 'Precipitation',
-            'none' => 'Precipitation',
-            'snow' => 'Precipitation'
-        ];
-        $needAttribute = [
-            'Time of day',
-            'Road cover',
-            'Road type',
-            'Sky',
-            'Precipitation'
-        ];
         $attrExist = [];
-
         if ($labeledFrames) {
             foreach ($labeledFrames  as $labeledFrame) {
                 $frameAttribute = $labeledFrame->getClasses();
@@ -60,4 +38,5 @@ class LabeledFrameService
 
         return (strlen($lFrame[0]) != 0 ) ? $lFrame : null;
     }
+
 }

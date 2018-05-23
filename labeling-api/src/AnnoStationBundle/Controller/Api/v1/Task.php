@@ -2,6 +2,7 @@
 
 namespace AnnoStationBundle\Controller\Api\v1;
 
+use AnnoStationBundle\Helper\TaskConfiguration\RequirementsXml;
 use AppBundle\Annotations\CloseSession;
 use AnnoStationBundle\Annotations;
 use AnnoStationBundle\Controller;
@@ -78,6 +79,16 @@ class Task extends Controller\Base
     private $labeledFrameService;
 
     /**
+     * @var Facade\RequirementsXml
+     */
+    private $requirementFacade;
+
+    /**
+     * @var RequirementsXml
+     */
+    private $xmlReader;
+
+    /**
      * Task constructor.
      *
      * @param Facade\Video            $videoFacade
@@ -88,6 +99,8 @@ class Task extends Controller\Base
      * @param Storage\TokenStorage    $tokenStorage
      * @param Service\Authorization   $authorizationService
      * @param Service\v1\TaskService  $taskService
+     * @param Facade\RequirementsXml  $requirementFacade
+     * @param RequirementsXml         $xmlReader
      */
     public function __construct(
         Facade\Video $videoFacade,
@@ -99,7 +112,9 @@ class Task extends Controller\Base
         Service\Authorization $authorizationService,
         Service\v1\TaskService $taskService,
         Facade\LabeledFrame\TaskDatabase $labeledFrameFactory,
-        Service\LabeledFrameService $labeledFramService
+        Service\LabeledFrameService $labeledFramService,
+        Facade\RequirementsXml $requirementFacade,
+        RequirementsXml $xmlReader
     ) {
         $this->videoFacade          = $videoFacade;
         $this->labelingTaskFacade   = $labelingTaskFacade;
@@ -111,6 +126,8 @@ class Task extends Controller\Base
         $this->taskService          = $taskService;
         $this->labeledFrameFactory  = $labeledFrameFactory;
         $this->labeledFrameService  = $labeledFramService;
+        $this->requirementFacade    = $requirementFacade;
+        $this->xmlReader            = $xmlReader;
 
     }
 
@@ -206,8 +223,20 @@ class Task extends Controller\Base
             $projectId,
             $task->getId()
         );
+
+        $project = $this->projectFacade->find($projectId);
+        $projectConf = $project->getRequirementsXmlTaskInstructions();
+
+        if (isset($projectConf[0]['taskConfigurationId'])) {
+            $requirement = $this->requirementFacade->find($projectConf[0]['taskConfigurationId']);
+        } else {
+            throw new \Exception("Project $projectId does not have a configuration xml file");
+        }
+
+        $xmlAttribute = $this->xmlReader->getTaskConfigAttribute($requirement);
+
         $labeledFrames = $labeledFrameFactory->findBylabelingTask($task, $frameIndex);
-        $lFrameAttr = $this->labeledFrameService->getFrameEmptyAttribute($labeledFrames);
+        $lFrameAttr = $this->labeledFrameService->getFrameEmptyAttribute($labeledFrames, $xmlAttribute['availableAttr'], $xmlAttribute['needAttr']);
 
         return View\View::create()->setData(
             [
