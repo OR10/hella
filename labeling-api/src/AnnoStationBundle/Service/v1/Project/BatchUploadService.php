@@ -63,7 +63,7 @@ class BatchUploadService
 
         /** @var UploadedFile $uploadedFileChunk */
         $uploadedFileChunk = $request->files->get('file');
-        $lossless = $request->query->get('lossless');
+        $lossless = $request->request->get('lossless');
         $lossless = (isset($lossless)) ? ($lossless === 'true') ? true : false : false;
 
         $flowRequest       = new Request(
