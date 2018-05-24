@@ -344,7 +344,7 @@ class VideoImporter
     private function getImageTypes(bool $lossless, bool $isZip = false)
     {
         if ($lossless) {
-            return ['source', 'thumbnail'];
+            return ['source', 'thumbnailPng'];
         }
 
         if ($isZip) {
