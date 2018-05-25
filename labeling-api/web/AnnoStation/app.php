@@ -11,7 +11,7 @@ if ($notProd = ENV_NAME_PROD !== $env) {
     ini_set('display_errors', 1);
 }
 
-ProfilingFacade::start();
+ProfilingFacade::start($notProd);
 
 try {
     $loader = require_once __DIR__ . '/../../app/AnnoStation/bootstrap.php.cache';
@@ -27,9 +27,9 @@ try {
     $response = $kernel->handle($request);
     $response->send();
     $kernel->terminate($request, $response);
-} catch (\Throwable $e) {
-    throw $e;
-} finally {
     ProfilingFacade::stop('api');
+} catch (\Throwable $e) {
+    ProfilingFacade::stopAbnormally('api');
+    throw $e;
 }
 
