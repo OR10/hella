@@ -84,6 +84,11 @@ class LabeledThingInFrame extends Base
     private $stopPropagation;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $notExtrClassesGroups;
+
+    /**
      * @param LabeledThing $labeledThing
      * @param int $frameIndex
      * @param array $classes
@@ -158,6 +163,14 @@ class LabeledThingInFrame extends Base
         }
 
         return $copy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotExtrClasses()
+    {
+        return $this->notExtrClassesGroups;
     }
 
     /**

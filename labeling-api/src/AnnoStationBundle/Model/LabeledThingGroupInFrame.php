@@ -54,6 +54,11 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     private $stopPropagation;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    private $notExtrClassesGroups;
+
+    /**
      * @CouchDB\Field(type="boolean")
      */
     private $incomplete;
@@ -111,6 +116,14 @@ class LabeledThingGroupInFrame extends AppBundleModel\Base
     public function getFrameIndex()
     {
         return $this->frameIndex;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotExtrClasses()
+    {
+        return $this->notExtrClassesGroups;
     }
 
     /**

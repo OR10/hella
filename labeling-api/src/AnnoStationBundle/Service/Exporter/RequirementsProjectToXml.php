@@ -154,6 +154,7 @@ class RequirementsProjectToXml
      * @param LabeledThingGroupInFrame\FacadeInterface                $labeledThingGroupInFrameFacadeFactory
      * @param Service\DepthBuffer                                     $depthBufferService
      * @param Facade\LabeledBlockInFrame                              $labeledBlockInFrame
+     * @param Facade\LabeledThingInFrame\FacadeInterface              $thinInFrameFactory
      */
     public function __construct(
         Facade\Exporter $exporterFacade,
@@ -175,7 +176,8 @@ class RequirementsProjectToXml
         LabeledThingGroupInFrame\FacadeInterface $labeledThingGroupInFrameFacadeFactory,
         Service\DepthBuffer $depthBufferService,
         Facade\LabeledBlockInFrame $labeledBlockInFrame,
-        Facade\LabeledBlockInFrame\FacadeInterface $labeledBlockInFrameFacade
+        Facade\LabeledBlockInFrame\FacadeInterface $labeledBlockInFrameFacade,
+        Facade\LabeledThingInFrame\FacadeInterface $thinInFrameFactory
     ) {
         $this->exporterFacade                                  = $exporterFacade;
         $this->projectFacade                                   = $projectFacade;
@@ -197,6 +199,7 @@ class RequirementsProjectToXml
         $this->campaignFacade                                  = $campaignFacade;
         $this->blockInFrameFacade                              = $labeledBlockInFrame;
         $this->labeledBlockInFrameFacadeFactory                = $labeledBlockInFrameFacade;
+        $this->labeledThingInFrameFactory                      = $thinInFrameFactory;
     }
 
     /**
@@ -209,7 +212,6 @@ class RequirementsProjectToXml
         $export = $this->exporterFacade->find($export->getId());
         $export->setStatus(Model\Export::EXPORT_STATUS_IN_PROGRESS);
         $this->exporterFacade->save($export);
-
         try {
             $zipData                    = array();
             $project                    = $this->projectFacade->find($export->getProjectId());
@@ -266,6 +268,12 @@ class RequirementsProjectToXml
                         $project->getId(),
                         $task->getId()
                     );
+
+                    $labeledThingInFrameFacade = $this->labeledThingInFrameFactory->getFacadeByProjectIdAndTaskId(
+                        $project->getId(),
+                        $task->getId()
+                    );
+
                     $labeledBlockInFrameFacade = $this->labeledBlockInFrameFacadeFactory->getFacadeByProjectIdAndTaskId(
                         $project->getId(),
                         $task->getId()
@@ -278,8 +286,27 @@ class RequirementsProjectToXml
                         $labeledThingFacade
                     );
 
-                    /** @var Model\LabeledThing $labeledThing */
+
+
+
+                    $labeledThingOrderByFrame = [];
                     foreach ($labeledThingIterator as $labeledThing) {
+                        $labeledThingOrderByFrame[] = $labeledThing;
+                    }
+                    $byFrame = [];
+                    foreach ($labeledThingOrderByFrame as $key => $row)
+                    {
+                        $frameRange = $row->getFrameRange();
+                        $byFrame[$key] =  $frameRange->getStartFrameIndex();
+                    }
+                    array_multisort($byFrame, SORT_ASC, $labeledThingOrderByFrame);
+
+
+
+
+
+                    /** @var Model\LabeledThing $labeledThing */
+                    foreach ($labeledThingOrderByFrame as $labeledThing) { // old iterator $labeledThingIterator
                         $references = new ExportXml\Element\Video\References(
                             new ExportXml\Element\Video\Task($task, self::XML_NAMESPACE),
                             self::XML_NAMESPACE
@@ -364,7 +391,15 @@ class RequirementsProjectToXml
                             $thing->setType($labeledThingInFrame->getIdentifierName());
                         }
 
-                        $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing);
+
+
+
+
+
+
+                        $valuesForRanges = $this->getValuesRanges($labeledThingInFrameForLabeledThing, $labeledThingInFrameFacade, $labeledThing, $task);
+
+
                         $taskConfiguration = array_values($taskConfigurations)[0];
                         foreach ($valuesForRanges as $value) {
                             $class = $this->findClassIdForValue($value['value'], $taskConfiguration);
@@ -386,7 +421,15 @@ class RequirementsProjectToXml
                             }
                         }
                         $xmlVideo->addThing($thing);
+
+
+
+
+
+
+
                     }
+
 
                     /*blockage*/
                     $labeledFrameBlockIterator = new Iterator\LabeledBlockInFrame(
@@ -772,27 +815,81 @@ class RequirementsProjectToXml
      *
      * @return array
      */
-    private function getValuesRanges(Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator)
+    private function getValuesRanges(Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator, $labeledThingInFrameFacade, $labeledThing, $task)
     {
         $values                  = [];
         $lastFrameIndexForValues = [];
         /** @var Model\LabeledThingInFrame $labeledThingInFrame */
         foreach ($labeledThingInFramesIterator as $labeledThingInFrame) {
-            foreach ($labeledThingInFrame->getClassesWithGhostClasses() as $class) {
-                $key = sprintf('%s-%s', $class, $labeledThingInFrame->getFrameIndex());
 
-                if ((isset($lastFrameIndexForValues[$class]) && isset($values[$lastFrameIndexForValues[$class]]['end']))
-                    && $values[$lastFrameIndexForValues[$class]]['end'] === $labeledThingInFrame->getFrameIndex() - 1
+            foreach ($labeledThingInFrame->getClassesWithGhostClasses() as $class) {
+                //$key = sprintf('%s-%s', $class, $labeledThingInFrame->getFrameIndex());
+                $key = sprintf('%s', $class, $labeledThingInFrame->getFrameIndex());
+
+
+                //find next frame with this class if notExtrClassesGroups  empty or not exist
+                //$labeledThingInFrame->getNotExtrClasses()
+                $notExtr = [
+                    [
+                        "0_occlusion",
+                        "1_occlusion-fb",
+                        "2_occlusion-fb",
+                        "3_occlusion-fb"
+                    ],
+                    [
+                        "0_occlusion",
+                        "1_occlusion-side",
+                        "2_occlusion-side",
+                        "3_occlusion-side"
+                    ]
+                ];
+                $futureShapeAttributeIndex = null;
+                if ($notExtr !== null) {
+                    $isExtr = false;
+                    foreach ($notExtr as $classGroup) {
+                        if ( in_array($class, $classGroup)) {
+                            $isExtr = true;
+                            break;
+                        } else {
+                            $isExtr = false;
+                            $futureShapeAttributeIndex = null;
+                        }
+                    }
+                    if ($isExtr) {
+                        //only if extrapolation is enabled
+                        $currentThingParam = [
+                            'className' => $class,
+                            'thingIndex' => $labeledThingInFrame->getFrameIndex()
+                        ];
+                        //return $currentThingParam;
+                        $nextClassThing = new Iterator\NextClassThingInFrame(
+                            $labeledThingInFrameFacade,
+                            $task,
+                            $this->ghostClassesPropagation,
+                            $currentThingParam
+                        );
+                        foreach ($nextClassThing as $nextThing) {
+                            $futureShapeAttributeIndex = $nextThing->getFrameIndex();
+
+                        }
+                    }
+                }
+
+                if (
+                    (isset($lastFrameIndexForValues[$class]) && isset($values[$lastFrameIndexForValues[$class]]['end']))
+                    &&
+                    $values[$lastFrameIndexForValues[$class]]['end'] === $labeledThingInFrame->getFrameIndex() - 1
                 ) {
                     $values[$lastFrameIndexForValues[$class]]['end'] = $labeledThingInFrame->getFrameIndex();
                 } else {
                     $values[$key]                    = [
                         'value' => $class,
                         'start' => $labeledThingInFrame->getFrameIndex(),
-                        'end'   => $labeledThingInFrame->getFrameIndex(),
+                        'end'   => ($futureShapeAttributeIndex) ? ($labeledThingInFrame->getFrameIndex() == $futureShapeAttributeIndex) ? $labeledThingInFrame->getFrameIndex() : $futureShapeAttributeIndex - 1 : $labeledThingInFrame->getFrameIndex(),
                     ];
                     $lastFrameIndexForValues[$class] = $key;
                 }
+                $futureShapeAttributeIndex = null;
             }
         }
 
