@@ -174,6 +174,15 @@ class LabeledThingInFrame extends Base
     }
 
     /**
+     * @param array $classGroup
+     * @return array
+     */
+    public function setNotExtrClasses(array $classGroup)
+    {
+        return $this->notExtrClassesGroups[] = $classGroup;
+    }
+
+    /**
      * @return string
      */
     public function getLabeledThingId()
