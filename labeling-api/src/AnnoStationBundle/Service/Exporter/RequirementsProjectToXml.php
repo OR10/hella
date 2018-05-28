@@ -791,10 +791,10 @@ class RequirementsProjectToXml
     /**
      * @param Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator
      * @param Facade\LabeledThingInFrame                  $labeledThingInFrameFacade
-     * @param LabelingTask                                $task
+     * @param Model\LabelingTask                          $task
      * @return int[]
      */
-    private function getValuesRanges(Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator, Facade\LabeledThingInFrame $labeledThingInFrameFacade, LabelingTask $task)
+    private function getValuesRanges(Iterator\LabeledThingInFrameForLabeledThing $labeledThingInFramesIterator, Facade\LabeledThingInFrame $labeledThingInFrameFacade, Model\LabelingTask $task)
     {
         $values                    = [];
         $lastFrameIndexForValues   = [];
