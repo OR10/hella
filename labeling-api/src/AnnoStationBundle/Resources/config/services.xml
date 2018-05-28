@@ -201,6 +201,7 @@
             <argument type="service" id="annostation.labeling_api.service.depth_buffer"/>
             <argument type="service" id="annostation.labeling_api.database.facade.labeled_block_in_frame" />
             <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_block_in_frame" />
+            <argument type="service" id="annostation.labeling_api.database.facade.factory.labeled_thing_in_frame" />
         </service>
 
         <service id="annostation.labeling_api.service.class_columns_factory"

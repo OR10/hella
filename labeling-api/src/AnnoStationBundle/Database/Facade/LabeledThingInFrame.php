@@ -76,6 +76,30 @@ class LabeledThingInFrame
     }
 
     /**
+     * @param Model\LabelingTask $task
+     * @param array $currentThingParam
+     * @return Model\LabeledThingInFrame[]
+     */
+    public function getNextThingByTaskClass(Model\LabelingTask $task, array $currentThingParam)
+    {
+        $frameMapping = $task->getFrameNumberMapping();
+        $searchEndFrame = array_keys($frameMapping, max($frameMapping));
+        if ($currentThingParam['thingIndex'] === $searchEndFrame[0]) {
+            $searchStartFrame = $currentThingParam['thingIndex'];
+        } elseif ($currentThingParam['thingIndex'] < $searchEndFrame[0]) {
+            $searchStartFrame = $currentThingParam['thingIndex'] + 1;
+        }
+        return $this->documentManager
+            ->createQuery('annostation_labeled_thing_in_frame', 'by_task_id_class')
+            ->setStartKey([$task->getId() , $currentThingParam['className'], $searchStartFrame])
+            ->setEndKey([$task->getId() , $currentThingParam['className'], $searchEndFrame])
+            ->onlyDocs(true)
+            ->setLimit(1)
+            ->execute()
+            ->toArray();
+    }
+
+    /**
      * @param Model\LabeledThing $labeledThing
      *
      * @return Model\LabeledThingInFrame[]
