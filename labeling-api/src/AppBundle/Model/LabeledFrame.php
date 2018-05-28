@@ -56,11 +56,6 @@ class LabeledFrame extends Base
     private $stopPropagation;
 
     /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $notExtrClassesGroups;
-
-    /**
      * @param LabelingTask $task
      * @param int          $frameIndex
      *
@@ -84,14 +79,6 @@ class LabeledFrame extends Base
         $this->projectId  = $task->getProjectId();
         $this->taskId     = $task->getId();
         $this->frameIndex = $frameIndex;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNotExtrClasses()
-    {
-        return $this->notExtrClassesGroups;
     }
 
     /**

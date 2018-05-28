@@ -17,6 +17,11 @@ abstract class Base
     protected $lastModifiedAt;
 
     /**
+     * @CouchDB\Field(type="mixed")
+     */
+    protected $notExtrClassesGroups;
+
+    /**
      * @param mixed $createdAt
      */
     public function setCreatedAt($createdAt)
@@ -46,5 +51,22 @@ abstract class Base
     public function getLastModifiedAt()
     {
         return $this->lastModifiedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotExtrClasses()
+    {
+        return $this->notExtrClassesGroups;
+    }
+
+    /**
+     * @param array $classGroup
+     * @return array
+     */
+    public function setNotExtrClasses(array $classGroup)
+    {
+        return $this->notExtrClassesGroups[] = $classGroup;
     }
 }

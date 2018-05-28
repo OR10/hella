@@ -60,11 +60,6 @@ class LabeledBlockInFrame extends Base
     private $classes;
 
     /**
-     * @CouchDB\Field(type="mixed")
-     */
-    private $notExtrClassesGroups;
-
-    /**
      * @CouchDB\Field(type="string")
      */
     private $lastModifiedByUserId;
@@ -111,14 +106,6 @@ class LabeledBlockInFrame extends Base
     public function getTaskId()
     {
         return $this->taskId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNotExtrClasses()
-    {
-        return $this->notExtrClassesGroups;
     }
 
     /**
