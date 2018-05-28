@@ -95,7 +95,7 @@ class Worker
 
             if ($jobDelivery !== null) {
 
-                \ProfilingFacade::start();
+                \ProfilingFacade::start('prod' != getenv('APP_ENV'));
                 $this->logger->logString("Trying to get next job", \cscntLogPayload::SEVERITY_DEBUG);
                 $job = $jobDelivery->getJob();
                 $this->logger->logString(
@@ -153,10 +153,10 @@ class Worker
                     $this->eventHandler->jobRescheduled($job);
                     $this->stop();
 
-                    \ProfilingFacade::stop($profillerNS);
+                    \ProfilingFacade::stopAbnormally($profillerNS);
                     return;
                 } catch (\Throwable $e) {
-                    \ProfilingFacade::stop($profillerNS);
+                    \ProfilingFacade::stopAbnormally($profillerNS);
                     throw $e;
                 }
             }
