@@ -1,7 +1,9 @@
 FROM php:7.1-fpm
 
+# apt-get install -y apt-utils libmcrypt-dev libpq-dev netcat libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libpng-
+
 RUN apt-get update && \
-    apt-get install -y apt-utils libmcrypt-dev libpq-dev netcat libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libpng-dev zlib1g-dev libicu-dev g++ && \
+    apt-get install -y apt-utils libmcrypt-dev libpq-dev netcat libfreetype6-dev libjpeg62-turbo-dev libpng-dev zlib1g-dev libicu-dev g++ && \
     rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install \

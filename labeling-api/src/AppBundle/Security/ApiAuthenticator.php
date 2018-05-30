@@ -202,6 +202,8 @@ class ApiAuthenticator extends AbstractFormLoginAuthenticator
             return;
         }
 
+        return;
+
         return new JsonResponse(
             [
                 'result' => [

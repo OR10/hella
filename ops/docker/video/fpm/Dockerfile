@@ -4,6 +4,16 @@ RUN apt-get update && \
     apt-get install -y libmcrypt-dev libpq-dev netcat && \
     rm -rf /var/lib/apt/lists/*
 
+# === Start My code
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
+# === End My code
+
 RUN docker-php-ext-install \
 #        mcrypt \
         bcmath \
@@ -19,18 +29,43 @@ WORKDIR /code
 
 CMD ["bash", "/usr/local/bin/boot.sh"]
 
+RUN apt-get update && apt-get install -my wget gnupg
 
 RUN apt-get update && \
-    apt-get install lsb-release -y && \
+    apt-get install lsb-release -y --allow-unauthenticated && \
     AZ_REPO=$(lsb_release -cs) && \
     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" >> /etc/apt/sources.list.d/azure-cli.list && \
     apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893 && \
-    apt-get install apt-transport-https -y && \
+
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 2E2BCDBCB38A8516 && \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5C808C2B65558117 && \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D530E028F59EAE4D && \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7EA0A9C3F273FCD8 && \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF && \  
+
+    apt-get install apt-transport-https -y --allow-unauthenticated && \
     apt-get update && \
-    apt-get install azure-cli -y
+    apt-get install azure-cli -y --allow-unauthenticated
+
+#RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 2E2BCDBCB38A8516 \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5C808C2B65558117 \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D530E028F59EAE4D \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7EA0A9C3F273FCD8 \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF
 
 RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
+    
+    echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu artful stable" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.ua.debian.org/debian/ jessie main" >> /etc/apt/sources.list && \    
+
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 2E2BCDBCB38A8516 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5C808C2B65558117 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D530E028F59EAE4D && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7EA0A9C3F273FCD8 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF && \
+
     apt-get update -y && \
     apt-get install -y --force-yes deb-multimedia-keyring && \
     apt-get update -y && \
